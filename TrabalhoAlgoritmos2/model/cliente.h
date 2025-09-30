@@ -8,8 +8,13 @@
 // Estrutura básica de Cliente
 typedef struct {
     int id;
-    char nome[50];
+    char nome_cliente[50]; //nome do cliente
+    char nome_razao[100]; //nome da empresa
     int idade;
+    char endereco[256];
+    int cpf[11]; //do cliente
+    int cnpj[14]; // da empresa
+    char email[50];
     // Aqui você pode expandir: adicionar CPF, email, endereço, telefone, etc.
 } Cliente;
 
@@ -19,3 +24,4 @@ void atualizar_cliente(Cliente* cliente, const char* nome, int idade);
 void deletar_cliente(Cliente* cliente);
 
 #endif
+
