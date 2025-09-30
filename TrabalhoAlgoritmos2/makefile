@@ -1,6 +1,7 @@
 # ==============================
 # MAKEFILE PARA PROJETO MVC EM C
 # ==============================
+
 # Compilador
 CC = gcc
 
@@ -47,3 +48,4 @@ controller/cliente_controller.o: controller/cliente_controller.c controller/clie
 # Limpeza completa (manual)
 clean:
 	del $(OBJ) $(TARGET)
+
