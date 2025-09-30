@@ -4,13 +4,13 @@
 #include "cliente.h"
 
 // Cria e inicializa um cliente
-Cliente* criar_cliente(int id, const char* nome, int idade) {
+Cliente* criar_cliente(int id, const char* nome, int idade, const char* nome_razao, const int* cpf, const int* cnpj, char endereco, char email) {
     Cliente* novo = (Cliente*) malloc(sizeof(Cliente));
     if (!novo) {
         return NULL; // erro de memória
     }
     novo->id = id;
-    strncpy(novo->nome, nome, sizeof(novo->nome));
+    strncpy(novo->nome_cliente, nome, sizeof(novo->nome_cliente));
     novo->idade = idade;
     return novo;
 }
@@ -18,7 +18,7 @@ Cliente* criar_cliente(int id, const char* nome, int idade) {
 // Atualiza os dados do cliente
 void atualizar_cliente(Cliente* cliente, const char* nome, int idade) {
     if (!cliente) return;
-    strncpy(cliente->nome, nome, sizeof(cliente->nome));
+    strncpy(cliente->nome_cliente, nome, sizeof(cliente->nome_cliente));
     cliente->idade = idade;
 }
 
@@ -26,3 +26,4 @@ void atualizar_cliente(Cliente* cliente, const char* nome, int idade) {
 void deletar_cliente(Cliente* cliente) {
     if (cliente) free(cliente);
 }
+
