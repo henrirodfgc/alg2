@@ -17,7 +17,7 @@ void iniciar_sistema() {
                 if (cliente) {
                     exibir_mensagem("Já existe um cliente. Delete-o antes de criar outro.");
                 } else {
-                    cliente = criar_cliente(temp.id, temp.nome_cliente, temp.idade);
+                    cliente = criar_cliente(temp.id, temp.nome_cliente, temp.idade, temp.nome_razao, temp.cpf, temp.cnpj, temp.endereco, temp.email);
                     exibir_mensagem("Cliente criado com sucesso!");
                 }
                 break;
@@ -56,3 +56,4 @@ void iniciar_sistema() {
 
     if (cliente) deletar_cliente(cliente);
 }
+
