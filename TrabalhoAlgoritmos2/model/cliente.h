@@ -19,8 +19,8 @@ typedef struct {
 } Cliente;
 
 // Funções do modelo (CRUD)
-Cliente* criar_cliente(int id, const char* nome, int idade);
-void atualizar_cliente(Cliente* cliente, const char* nome, int idade);
+Cliente* criar_cliente(int id, const char* nome_cliente, int idade, const char* nome_razao, const int* cpf, const int* cnpj, char endereco, char email);
+void atualizar_cliente(Cliente* cliente, const char* nome, int idade, const char* nome_razao, int cpf, int cnpj, const char* endereco, const char* email);
 void deletar_cliente(Cliente* cliente);
 
 #endif
