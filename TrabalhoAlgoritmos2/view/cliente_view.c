@@ -52,8 +52,8 @@ Cliente ler_dados_cliente() {
     printf("Nome Empresa: "); scanf("%[^\n]", c.nome_razao);
     printf("Idade: "); scanf("%d", &c.idade);
     printf("Endereco: "); scanf("%[^\n]", c.endereco);
-    printf("cpf: "); scanf("%d", &c.cpf);
-    printf("cnpj: "); scanf("%d", &c.cnpj);
+    printf("cpf: "); scanf("%lld", &c.cpf);
+    printf("cnpj: "); scanf("%lld", &c.cnpj);
     printf("email: "); scanf("%[^\n]", c.email);
     return c;  // retorna a struct preenchida
 }

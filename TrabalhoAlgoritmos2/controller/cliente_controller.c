@@ -17,7 +17,7 @@ void iniciar_sistema() {
                 if (cliente) {
                     exibir_mensagem("Já existe um cliente. Delete-o antes de criar outro.");
                 } else {
-                    // Chamada está correta, pois temp.cpf/cnpj são arrays (decaem para ponteiro)
+            
                     cliente = criar_cliente(temp.id, temp.nome_cliente, temp.idade, temp.nome_razao, temp.cpf, temp.cnpj, temp.endereco, temp.email);
                     exibir_mensagem("Cliente criado com sucesso!");
                 }
@@ -27,7 +27,7 @@ void iniciar_sistema() {
                 if (!cliente) {
                     exibir_mensagem("Nenhum cliente cadastrado!");
                 } else {
-                    // CORREÇÃO: Declarar todas as variáveis que serão atualizadas
+                    
                     char nome[50];
                     int idade;
                     char endereco[256]; 
@@ -36,10 +36,10 @@ void iniciar_sistema() {
                     int cpf[11]; 
                     int cnpj[14]; 
 
-                    // CORREÇÃO: Chamar a view para ler todos os dados
+                    
                     ler_dados_atualizacao(nome, &idade, endereco, nome_razao, email, cpf, cnpj);
                     
-                    // CORREÇÃO: Chamar o model com todos os 8 argumentos
+                    
                     atualizar_cliente(cliente, nome, idade, nome_razao, cpf, cnpj, endereco, email);
                     exibir_mensagem("Cliente atualizado!");
                 }

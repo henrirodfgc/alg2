@@ -8,11 +8,11 @@
 Cliente* criar_cliente(int id, const char* nome_cliente, int idade, const char* nome_razao, const int* cpf, const int* cnpj, const char* endereco, const char* email) {
     Cliente* novo = (Cliente*) malloc(sizeof(Cliente));
     if (!novo) {
-        return NULL; // erro de memória
+        return NULL; 
     }
     novo->id = id;
     
-    // CORREÇÃO: Garantir cópia segura das strings
+    
     strncpy(novo->nome_cliente, nome_cliente, sizeof(novo->nome_cliente) - 1);
     novo->nome_cliente[sizeof(novo->nome_cliente) - 1] = '\0';
     
@@ -21,7 +21,7 @@ Cliente* criar_cliente(int id, const char* nome_cliente, int idade, const char* 
     strncpy(novo->nome_razao, nome_razao, sizeof(novo->nome_razao) - 1);
     novo->nome_razao[sizeof(novo->nome_razao) - 1] = '\0'; 
     
-    // CORREÇÃO: Copiar o conteúdo do array
+    
     memcpy(novo->cpf, cpf, sizeof(novo->cpf));
     memcpy(novo->cnpj, cnpj, sizeof(novo->cnpj));
     
@@ -39,7 +39,7 @@ Cliente* criar_cliente(int id, const char* nome_cliente, int idade, const char* 
 void atualizar_cliente(Cliente* cliente, const char* nome_cliente, int idade, const char* nome_razao, const int* cpf, const int* cnpj, const char* endereco, const char* email) {
     if (!cliente) return;
     
-    // CORREÇÃO: Usar o nome do parâmetro correto (nome_cliente) e garantir cópia segura
+    
     strncpy(cliente->nome_cliente, nome_cliente, sizeof(cliente->nome_cliente) - 1);
     cliente->nome_cliente[sizeof(cliente->nome_cliente) - 1] = '\0';
     
@@ -48,7 +48,7 @@ void atualizar_cliente(Cliente* cliente, const char* nome_cliente, int idade, co
     
     cliente->idade = idade;
     
-    // CORREÇÃO: Copiar o conteúdo do array
+    
     memcpy(cliente->cpf, cpf, sizeof(cliente->cpf));
     memcpy(cliente->cnpj, cnpj, sizeof(cliente->cnpj));
     
