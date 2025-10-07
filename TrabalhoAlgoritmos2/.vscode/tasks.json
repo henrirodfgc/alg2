@@ -1,0 +1,39 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "make build (Compilar)",
+            "type": "shell",
+            // Use as barras INVERTIDAS DUPLAS para o JSON aceitar:
+            "command": "C:\\MinGW\\bin\\mingw32-make.exe", 
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Executar Programa",
+            "type": "shell",
+            "command": "./seed_Alfg2.exe", 
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "make clean (Limpar)",
+            "type": "shell",
+            // Use as barras INVERTIDAS DUPLAS aqui também:
+            "command": "C:\\MinGW\\bin\\mingw32-make.exe",
+            "args": ["clean"],
+            "group": "clean"
+        }
+    ]
+}
