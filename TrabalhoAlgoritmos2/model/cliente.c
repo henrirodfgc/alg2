@@ -5,7 +5,7 @@
 
 // Cria e inicializa um cliente
 // Assinatura de acordo com o .h
-Cliente* criar_cliente(int id, const char* nome_cliente, int idade, const char* nome_razao, const int* cpf, const int* cnpj, const char* endereco, const char* email) {
+Cliente* criar_cliente(int id, const char* nome_cliente, int idade, const char* nome_razao, const char* cpf, const char* cnpj, const char* endereco, const char* email) {
     Cliente* novo = (Cliente*) malloc(sizeof(Cliente));
     if (!novo) {
         return NULL; 
@@ -21,9 +21,12 @@ Cliente* criar_cliente(int id, const char* nome_cliente, int idade, const char* 
     strncpy(novo->nome_razao, nome_razao, sizeof(novo->nome_razao) - 1);
     novo->nome_razao[sizeof(novo->nome_razao) - 1] = '\0'; 
     
+    // Corrigido: usando strncpy para strings (CPF/CNPJ)
+    strncpy(novo->cpf, cpf, sizeof(novo->cpf) - 1);
+    novo->cpf[sizeof(novo->cpf) - 1] = '\0';
     
-    memcpy(novo->cpf, cpf, sizeof(novo->cpf));
-    memcpy(novo->cnpj, cnpj, sizeof(novo->cnpj));
+    strncpy(novo->cnpj, cnpj, sizeof(novo->cnpj) - 1);
+    novo->cnpj[sizeof(novo->cnpj) - 1] = '\0';
     
     strncpy(novo->endereco, endereco, sizeof(novo->endereco) - 1);
     novo->endereco[sizeof(novo->endereco) - 1] = '\0';
@@ -36,7 +39,7 @@ Cliente* criar_cliente(int id, const char* nome_cliente, int idade, const char* 
 
 // Atualiza os dados do cliente
 // Assinatura de acordo com o .h
-void atualizar_cliente(Cliente* cliente, const char* nome_cliente, int idade, const char* nome_razao, const int* cpf, const int* cnpj, const char* endereco, const char* email) {
+void atualizar_cliente(Cliente* cliente, const char* nome_cliente, int idade, const char* nome_razao, const char* cpf, const char* cnpj, const char* endereco, const char* email) {
     if (!cliente) return;
     
     
@@ -48,9 +51,11 @@ void atualizar_cliente(Cliente* cliente, const char* nome_cliente, int idade, co
     
     cliente->idade = idade;
     
+    strncpy(cliente->cpf, cpf, sizeof(cliente->cpf) - 1);
+    cliente->cpf[sizeof(cliente->cpf) - 1] = '\0';
     
-    memcpy(cliente->cpf, cpf, sizeof(cliente->cpf));
-    memcpy(cliente->cnpj, cnpj, sizeof(cliente->cnpj));
+    strncpy(cliente->cnpj, cnpj, sizeof(cliente->cnpj) - 1);
+    cliente->cnpj[sizeof(cliente->cnpj) - 1] = '\0';
     
     strncpy(cliente->endereco, endereco, sizeof(cliente->endereco) - 1);
     cliente->endereco[sizeof(cliente->endereco) - 1] = '\0';

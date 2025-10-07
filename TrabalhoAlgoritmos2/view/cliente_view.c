@@ -24,8 +24,8 @@ void exibir_cliente(const Cliente* cliente) {
     printf("| Nome_empresa : %s\n", cliente->nome_razao);
     printf("| Idade: %d\n", cliente->idade);
     printf("| Endereco : %s\n", cliente->endereco);
-    printf("| Cpf: %d\n", cliente->cpf);
-    printf("| Cnpj: %d\n", cliente->cnpj);
+    printf("| Cpf: %s\n", cliente->cpf);
+    printf("| Cnpj: %s\n", cliente->cnpj);
     printf("| email : %s\n", cliente->email);
     printf("+--------------------------+\n");
 }
@@ -49,23 +49,23 @@ Cliente ler_dados_cliente() {
     Cliente c;
     printf("ID: "); scanf("%d", &c.id);
     printf("Nome: "); scanf(" %[^\n]", c.nome_cliente);
-    printf("Nome Empresa: "); scanf("%[^\n]", c.nome_razao);
+    printf("Nome Empresa: "); scanf(" %[^\n]", c.nome_razao);
     printf("Idade: "); scanf("%d", &c.idade);
-    printf("Endereco: "); scanf("%[^\n]", c.endereco);
-    printf("cpf: "); scanf("%lld", &c.cpf);
-    printf("cnpj: "); scanf("%lld", &c.cnpj);
-    printf("email: "); scanf("%[^\n]", c.email);
+    printf("Endereco: "); scanf(" %[^\n]", c.endereco);
+    printf("cpf: "); scanf(" %11[^\n]", c.cpf);
+    printf("cnpj: "); scanf(" %14[^\n]", c.cnpj);
+    printf("email: "); scanf(" %[^\n]", c.email);
     return c;  // retorna a struct preenchida
 }
 
-void ler_dados_atualizacao(char* nome_cliente, int* idade, char* endereco, char* nome_razao, char* email, int* cpf, int* cnpj) {
+void ler_dados_atualizacao(char* nome_cliente, int* idade, char* endereco, char* nome_razao, char* email, char* cpf, char* cnpj) {
     printf("Novo nome: "); scanf(" %[^\n]", nome_cliente);
     printf("Nova idade: "); scanf("%d", idade);
     printf("Novo endereco: "); scanf(" %[^\n]", endereco);
     printf("Novo nome de razão: "); scanf(" %[^\n]", nome_razao);
     printf("Novo email: "); scanf(" %[^\n]", email);
-    printf("Novo cpf: "); scanf("%d", cpf);
-    printf("Novo cnpj: "); scanf("%d", cnpj);
+    printf("Novo cpf: "); scanf(" %11[^\n]", cpf);
+    printf("Novo cnpj: "); scanf(" %14[^\n]", cnpj);
 }
 
 void exibir_mensagem(const char* msg) {

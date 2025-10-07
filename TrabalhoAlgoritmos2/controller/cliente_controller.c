@@ -17,7 +17,7 @@ void iniciar_sistema() {
                 if (cliente) {
                     exibir_mensagem("Já existe um cliente. Delete-o antes de criar outro.");
                 } else {
-            
+                    
                     cliente = criar_cliente(temp.id, temp.nome_cliente, temp.idade, temp.nome_razao, temp.cpf, temp.cnpj, temp.endereco, temp.email);
                     exibir_mensagem("Cliente criado com sucesso!");
                 }
@@ -33,8 +33,8 @@ void iniciar_sistema() {
                     char endereco[256]; 
                     char nome_razao[100];
                     char email[50]; 
-                    int cpf[11]; 
-                    int cnpj[14]; 
+                    char cpf[12]; 
+                    char cnpj[15]; 
 
                     
                     ler_dados_atualizacao(nome, &idade, endereco, nome_razao, email, cpf, cnpj);
