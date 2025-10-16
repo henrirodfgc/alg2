@@ -4,16 +4,16 @@
 #include "cliente.h"
 #include "../view/cliente_view.h"
 
-//--- FUNÇÕES AUXILIARES ---
-// Copia TUDO de uma struct Cliente pra outra de forma segura
+//--- funções auxiliares ---
+//copia tudo de uma struct cliente pra outra de forma segura
 void copiar_dados(Cliente *destino, const Cliente *origem) {
-    if (!origem || !destino) return; // Se for NULL sai fora
+    if (!origem || !destino) return; //se for null sai fora pra n dar bo
     
     destino->id = origem->id;
     destino->idade = origem->idade;
+    destino->status = origem->status; //agora copia o status tbm!
     
-    // Cópia segura de todas as strings pra n dar BO
-    // Uso strncpy e garanto q o ultimo é \0
+    //cópia segura de todas as strings (strncpy é vida)
     strncpy(destino->nome_cliente, origem->nome_cliente, sizeof(destino->nome_cliente) - 1);
     destino->nome_cliente[sizeof(destino->nome_cliente) - 1] = '\0';
     strncpy(destino->nome_razao, origem->nome_razao, sizeof(destino->nome_razao) - 1);
@@ -32,47 +32,86 @@ void copiar_dados(Cliente *destino, const Cliente *origem) {
     destino->nome_contato[sizeof(destino->nome_contato) - 1] = '\0';
 }
 
-
-//--- FUNÇÕES DE MANIPULAÇÃO DE LISTA LIGADA (CRUD) ---
-// Adiciona um nó no começo da lista (CREATE)
-NoCliente* adicionar_cliente_na_lista(NoCliente* lista, Cliente novo_cliente) {
-    NoCliente *novo_no = (NoCliente*) malloc(sizeof(NoCliente)); // Aloca a memoria pro novo nó
-    if (novo_no == NULL) {
-        exibir_mensagem("ERRO: Falha ao alocar nó da lista"); // Avisa q n deu pra alocar
-        return lista; 
-    }
-
-    // Copia os dados pro espaço alocado
-    copiar_dados(&(novo_no->dados), &novo_cliente);
-
-    // O novo nó vira a cabeça da lista
-    novo_no->proximo = lista;
-
-    return novo_no; // Retorna a nova cabeça
-}
-
-// Procura o client pelo ID (READ)
-Cliente* buscar_cliente_por_id(NoCliente* lista, int id_busca) {
+//procura um client pelo id e retorna o ponteiro pra struct cliente independente do status
+//essa é auxiliar pra exclusão/restauração e nao é exportada no .h
+Cliente* buscar_cliente_qualquer_status(NoCliente* lista, int id_busca) {
     NoCliente *atual = lista;
-    // Roda a lista até achar o ID ou a lista acabar
     while (atual != NULL) {
-        if (atual->dados.id == id_busca) {
-            return &(atual->dados); // Retorna o ponteiro pros dados do client
+        if (atual->dados.id == id_busca) { 
+            return &(atual->dados); //achou, não importa o status
         }
         atual = atual->proximo;
     }
-    return NULL; // Não achou
+    return NULL; //não achou
 }
 
-// Atualiza os dados do client q a gente achou (UPDATE)
+//--- funções de manipulação de lista ligada (crud) ---
+//cria um novo nó e põe ele no começo da lista (create)
+NoCliente* adicionar_cliente_na_lista(NoCliente* lista, Cliente novo_cliente) {
+    NoCliente *novo_no = (NoCliente*) malloc(sizeof(NoCliente)); //pede memoria pro novo nó
+    if (novo_no == NULL) {
+        exibir_mensagem("erro: falha ao alocar nó da lista");
+        return lista; 
+    }
+    
+    //o cliente que a view le nao tem status, ent a gente seta ele pra 1 aqui (ativo)
+    novo_cliente.status = 1; 
+
+    //copia os dados pro espaço alocado
+    copiar_dados(&(novo_no->dados), &novo_cliente);
+
+    //o novo nó vira a cabeça da lista
+    novo_no->proximo = lista;
+
+    return novo_no; //devolve a nova cabeça
+}
+
+//procura um client pelo id e retorna o ponteiro pra struct cliente
+//agora só retorna se o status for 1 (ativo)
+Cliente* buscar_cliente_por_id(NoCliente* lista, int id_busca) {
+    NoCliente *atual = lista;
+    //percorre a lista
+    while (atual != NULL) {
+        //checa se o id bate e se o status é 1
+        if (atual->dados.id == id_busca && atual->dados.status == 1) { 
+            return &(atual->dados); //achou e tá ativo
+        }
+        atual = atual->proximo;
+    }
+    return NULL; //não achou ou tá inativo
+}
+
+//muda o status pra 0 (soft delete)
+void deletar_cliente_por_id_logico(NoCliente* lista, int id_busca) {
+    //aqui a gente busca ele mesmo se tiver inativo pra n criar duplicidade na restauração
+    Cliente *cliente_existente = buscar_cliente_qualquer_status(lista, id_busca); 
+    
+    //se a busca encontrar o cliente, muda o status
+    if (cliente_existente) { 
+        cliente_existente->status = 0; //seta pra inativo/deletado
+    }
+}
+
+//novo: muda o status de 0 pra 1 (restauração)
+void restaurar_cliente_por_id(NoCliente* lista, int id_busca) {
+    //aqui a gente busca ele com qualquer status, já que ele tá "escondido"
+    Cliente *cliente_existente = buscar_cliente_qualquer_status(lista, id_busca);
+    
+    //se encontrou e ele estava inativo, reativa
+    if (cliente_existente && cliente_existente->status == 0) { 
+        cliente_existente->status = 1; //seta pra ativo
+    }
+}
+
+//atualiza os dados de um client q já existe pelo id
 void atualizar_cliente_por_id(NoCliente* lista, int id_busca, const char* nome_cliente, int idade, const char* nome_razao, const char* cpf, const char* cnpj, const char* endereco, const char* email, const char* telefone, const char* nome_contato) {
     Cliente *cliente_existente = buscar_cliente_por_id(lista, id_busca);
     
     if (cliente_existente) {
-        // Atualiza campos q n são string
+        //o status continua 1, a gente só atualiza os outros campos
         cliente_existente->idade = idade;
         
-        // Atualiza os campos string com CÓPIA SEGURA (strncpy)
+        //atualiza os campos string com cópia segura (strncpy)
         strncpy(cliente_existente->nome_cliente, nome_cliente, sizeof(cliente_existente->nome_cliente) - 1);
         cliente_existente->nome_cliente[sizeof(cliente_existente->nome_cliente) - 1] = '\0';
         strncpy(cliente_existente->nome_razao, nome_razao, sizeof(cliente_existente->nome_razao) - 1);
@@ -93,55 +132,38 @@ void atualizar_cliente_por_id(NoCliente* lista, int id_busca, const char* nome_c
 }
 
 
-// Deleta o nó da lista (DELETE)
-NoCliente* deletar_cliente_por_id(NoCliente* lista, int id_busca) {
-    NoCliente *atual = lista;
-    NoCliente *anterior = NULL;
-
-    // Acha o nó a ser deletado
-    while (atual != NULL && atual->dados.id != id_busca) {
-        anterior = atual;
-        atual = atual->proximo;
-    }
-
-    if (atual == NULL) return lista; // Se n achou volta a lista como ta
-
-    if (anterior == NULL) {
-        lista = atual->proximo; // Se for o primeiro o próximo vira a cabeça
-    } else {
-        anterior->proximo = atual->proximo; // Pula o nó q vai ser deletado
-    }
-    
-    free(atual); // Libera a memoria do nó deletado (MT IMPORTANTE)
-    return lista;
-}
-
-// FUNÇÃO ESSENCIAL: Libera a memória de GERAL
+//função essencial: libera a memória
 void desalocar_lista_clientes(NoCliente* lista) {
     NoCliente *atual = lista;
     NoCliente *proximo_no;
-    // Roda a lista toda liberando um por um
+    //roda a lista toda dando free em cada nó
     while (atual != NULL) {
-        proximo_no = atual->proximo; // Guarda o próximo antes de dar free no atual
+        proximo_no = atual->proximo; 
         free(atual);
         atual = proximo_no;
     }
 }
 
-// FUNÇÃO PRA MOSTRAR GERAL (READ ALL)
+//função pra mostrar todos (read all)
+//so mostra quem tem status 1
 void exibir_todos_clientes(NoCliente* lista) {
     NoCliente *atual = lista;
-    if (atual == NULL) {
-        printf("+--------------------------+\n");
-        printf("| Nenhum cliente cadastrado! |\n");
-        printf("+--------------------------+\n");
-        return;
+    int contador_ativos = 0;
+
+    printf("\n==== lista de clientes cadastrados ====\n");
+    while (atual != NULL) {
+        //so mostra se o cliente tiver ativo
+        if (atual->dados.status == 1) {
+            exibir_cliente(&(atual->dados)); //chama a view pra mostrar cada cliente
+            contador_ativos++;
+        }
+        atual = atual->proximo;
     }
 
-    printf("\n==== LISTA DE CLIENTES CADASTRADOS ====\n");
-    while (atual != NULL) {
-        exibir_cliente(&(atual->dados)); // Chama a view pra mostrar cada client
-        atual = atual->proximo;
+    if (contador_ativos == 0) {
+        printf("+--------------------------+\n");
+        printf("| nenhum cliente cadastrado! |\n");
+        printf("+--------------------------+\n");
     }
     printf("=======================================\n");
 }
