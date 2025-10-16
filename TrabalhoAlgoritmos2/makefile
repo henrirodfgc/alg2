@@ -12,7 +12,7 @@ TARGET	=	projeto_final.exe # O nome do arquivo final
 OBJ  = main.o	\
 			model/cliente.o\
 			controller/cliente_controller.o\
-			view/cliente_view.o
+			view/cliente_view.o\
 			controller/saida_controller.o
 	
 # Regra principal: compilar tudo

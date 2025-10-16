@@ -5,96 +5,120 @@
 #include "../view/cliente_view.h"
 #include "cliente_controller.h"
 
-// Lista ligada q guarda todos os clients tá ligado
-// No começo e nulo tipo lista vazia
+//lista ligada q guarda todos os clients tá ligado
+//no começo e nulo tipo lista vazia
 NoCliente *listaClientes = NULL; 
 
-// A função q lê o ID tá na view ent tô só dando um aviso aqui pro compilador
+//a função q lê o id tá na view ent tô só dando um aviso aqui pro compilador
 int ler_id_para_operacao(const char* operacao); 
 
-// Função principal q inicia o trampo a parada roda aqui
+//função principal q inicia o trampo a parada roda aqui
 void iniciar_sistema() {
-    int opcao; // Pra ver o q o user escolheu no menu
-    int id_busca; // Pra guardar o ID q a gente vai usar
-    Cliente temp; // Client temporário pra ler os dados rapidão
+    int opcao; //pra ver o q o user escolheu no menu
+    int id_busca; //pra guardar o id q a gente vai usar
+    Cliente temp; //client temporário pra ler os dados rapidão
 
-    // [FUTURO]: Se for pra salvar em arquivo (persistência) o código pra CARREGAR
-    // os dados do arquivo pra lista ligada entra aqui
+    //[futuro]: se for pra salvar em arquivo (persistência) o código pra carregar
+    //os dados do arquivo pra lista ligada entra aqui
     
-    // Loop infinito até o cara digitar zero pra sair
+    //loop infinito até o cara digitar zero pra sair
     do {
-        opcao = exibir_menu(); // Mostra o menu e pega a escolha na view
+        //mudei o menu (tem que mudar no cliente_view.c tambem!)
+        printf("\n==== menu cliente ====\n");
+        printf("1 - criar cliente\n");
+        printf("2 - atualizar cliente\n");
+        printf("3 - exibir cliente\n");
+        printf("4 - deletar cliente (inativar)\n");
+        printf("5 - listar todos\n"); 
+        printf("6 - restaurar cliente (reativar)\n"); 
+        printf("0 - sair\n");
+        printf("escolha: ");
+        scanf("%d", &opcao); //pega a escolha
+        
+        //se quiser usar a funcao exibir_menu() do view, tem que atualizar ela la!
+        //opcao = exibir_menu(); 
+        
         switch (opcao) {
-            case 1: { // CASO 1: CRIAR um client
-                temp = ler_dados_cliente(); // View lê tudo pra mim
+            case 1: { //caso 1: criar um cliente
+                temp = ler_dados_cliente(); //view lê tudo pra mim
 
-                // Confere se o ID já existe pq tem q ser único né
+                //confere se o id já existe pq tem q ser único né
+                //o buscar cliente so retorna se o cliente ja ta ativo (status 1)
                 if (buscar_cliente_por_id(listaClientes, temp.id) != NULL) {
-                    exibir_mensagem("ERRO: Já existe um cliente com este ID Tente novamente");
-                    break; // Vaza e volta pro menu
+                    exibir_mensagem("erro: já existe um cliente ativo com este id tente novamente");
+                    break; //vaza e volta pro menu
                 }
                 
-                // Model cria o nó novo e eu atualizo a listaClientes
+                //model cria o nó novo e eu atualizo a listaClientes
                 listaClientes = adicionar_cliente_na_lista(listaClientes, temp);
-                exibir_mensagem("Cliente criado com sucesso");
+                exibir_mensagem("cliente criado com sucesso");
                 break;
             }
-            case 2: { // CASO 2: ATUALIZAR um client
-                id_busca = ler_id_para_operacao("atualizar"); // Pergunta qual ID mudar
-                Cliente *cliente_encontrado = buscar_cliente_por_id(listaClientes, id_busca); // Vê se ele existe
+            case 2: { //caso 2: atualizar um cliente
+                id_busca = ler_id_para_operacao("atualizar"); //pergunta qual id mudar
+                Cliente *cliente_encontrado = buscar_cliente_por_id(listaClientes, id_busca); //vê se ele existe (e está ativo)
 
                 if (cliente_encontrado == NULL) {
-                    exibir_mensagem("Nenhum cliente cadastrado com este ID");
+                    exibir_mensagem("nenhum cliente ativo cadastrado com este id");
                 } else {
-                    // Crio as variáveis rapidão pra pegar os dados novos da view
+                    //crio as variáveis rapidão pra pegar os dados novos da view
                     char nome[50], nome_razao[100], endereco[256], email[50], cpf[12], cnpj[15], telefone[20], nome_contato[50];
                     int idade;
 
-                    // View preenche essas var aí com o q o user digitar
+                    //view preenche essas var aí com o q o user digitar
                     ler_dados_atualizacao(nome, &idade, endereco, nome_razao, email, cpf, cnpj, telefone, nome_contato); 
 
-                    // Mando o Model atualizar a parada lá
-                    // ORDEM MT IMPORTANTE: nome idade nome_razao CPF CNPJ endereco email telefone nome_contato
+                    //mando o model atualizar a parada lá
+                    //ordem mt importante: nome idade nome_razao cpf cnpj endereco email telefone nome_contato
                     atualizar_cliente_por_id(listaClientes, id_busca, nome, idade, nome_razao, cpf, cnpj, endereco, email, telefone, nome_contato);
                     
-                    exibir_mensagem("Cliente atualizado");
+                    exibir_mensagem("cliente atualizado");
                 }
                 break;
             }
-            case 3: { // CASO 3: Exibir SÓ UM client
-                id_busca = ler_id_para_operacao("exibir"); // Pede o ID
-                Cliente *cliente_encontrado = buscar_cliente_por_id(listaClientes, id_busca); // Procura
-                exibir_cliente(cliente_encontrado); // View q mostra ou avisa q n achou
+            case 3: { //caso 3: exibir só um cliente
+                id_busca = ler_id_para_operacao("exibir"); //pede o id
+                Cliente *cliente_encontrado = buscar_cliente_por_id(listaClientes, id_busca); //procura (só ativos)
+                exibir_cliente(cliente_encontrado); //view q mostra ou avisa q n achou
                 break;
             }
-            case 4: { // CASO 4: Deletar um client
-                id_busca = ler_id_para_operacao("deletar"); // Pede o ID pra apagar
+            case 4: { //caso 4: deletar um cliente (soft delete)
+                id_busca = ler_id_para_operacao("deletar"); //pede o id pra 'apagar'
 
+                //o buscar cliente so retorna se o status for 1 (ativo)
                 if (buscar_cliente_por_id(listaClientes, id_busca) == NULL) {
-                     exibir_mensagem("Nenhum cliente para deletar com este ID");
+                     exibir_mensagem("nenhum cliente ativo para deletar com este id");
                      break;
                 }
                 
-                // Model deleta e libera a memória e eu atualizo a lista caso o primeiro tenha vazado
-                listaClientes = deletar_cliente_por_id(listaClientes, id_busca);
-                exibir_mensagem("Cliente deletado");
+                //model muda o status do cliente pra 0 (inativo) e pronto
+                deletar_cliente_por_id_logico(listaClientes, id_busca);
+                exibir_mensagem("cliente marcado como deletado/inativo");
                 break;
             }
-            case 5: { // CASO 5: Lista todos os clients
-                exibir_todos_clientes(listaClientes); // View mostra tudo
+            case 5: { //caso 5: lista todos os clients
+                exibir_todos_clientes(listaClientes); //view mostra tudo (só ativos)
+                break;
+            }
+            case 6: { //novo caso 6: restaurar cliente (reativar)
+                id_busca = ler_id_para_operacao("restaurar"); //pede o id pra 'reativar'
+                
+                //chama a função de restauração
+                restaurar_cliente_por_id(listaClientes, id_busca);
+                exibir_mensagem("cliente restaurado para ativo");
                 break;
             }
             case 0:
-                exibir_mensagem("Saindo");
+                exibir_mensagem("saindo");
                 break;
             default:
-                exibir_mensagem("Opção inválida");
+                exibir_mensagem("opção inválida");
         }
-    } while (opcao != 0); // Fica aqui até o cara cansar e digitar zero
+    } while (opcao != 0); //fica aqui até o cara cansar e digitar zero
 
-    // [FUTURO]: Se for pra salvar em arquivo o código pra SALVAR os dados
+    // [futuro]: se for pra salvar em arquivo o código pra salvar os dados
     // da lista ligada de volta pro arquivo entra aqui
 
-    // CRÍTICO: Tem q desalocar a memória de todos os nós com free pra não dar memory leak 
+    //crítico: tem q desalocar a memória de todos os nós com free pra não dar memory leak 
     desalocar_lista_clientes(listaClientes);
 }
