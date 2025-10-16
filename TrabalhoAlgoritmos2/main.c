@@ -5,12 +5,13 @@
 
 // =============================
 // PONTO DE ENTRADA DO SISTEMA
+// Onde tudo começa
 // =============================
 
 int main() {
-    system("chcp 65001");
-    setlocale(LC_ALL, "pt-BR");
-    iniciar_sistema();
+    system("chcp 65001"); // Pra funcionar acento no Windows (UTF-8)
+    setlocale(LC_ALL, "pt-BR"); // Pra data e hora (n vai usar agr mas é bom ter)
+    iniciar_sistema(); // Chama o Controller pra começar o menu
 
-    return 0;
+    return 0; // Finaliza o programa de boa
 }
