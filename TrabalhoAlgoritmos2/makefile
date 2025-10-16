@@ -13,6 +13,7 @@ OBJ  = main.o	\
 			model/cliente.o\
 			controller/cliente_controller.o\
 			view/cliente_view.o
+			controller/saida_controller.o
 	
 # Regra principal: compilar tudo
 $(TARGET):	$(OBJ)	

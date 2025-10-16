@@ -2,16 +2,57 @@
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "controller/saida.h"
 
 // =============================
 // PONTO DE ENTRADA DO SISTEMA
-// Onde tudo começa
 // =============================
 
 int main() {
-    system("chcp 65001"); // Pra funcionar acento no Windows (UTF-8)
-    setlocale(LC_ALL, "pt-BR"); // Pra data e hora (n vai usar agr mas é bom ter)
-    iniciar_sistema(); // Chama o Controller pra começar o menu
+    system("chcp 65001");
+    setlocale(LC_ALL, "pt-BR");
+    
+    //Funcao em saida_controller
+    if (verificar_tipo_saida() == 0) {
+    
+    char escolha;
+    printf("Escolha o tipo de armazenamento: \n");
+    printf("[t] para Txt\n");
+    printf("[b] para BIN\n");
+    printf("[m] para Memória\n");
+    printf("Escolha a opção: ");
+    scanf(" %c", &escolha);
 
-    return 0; // Finaliza o programa de boa
+    FILE *file = fopen("../b_output/tipo_file.txt", "w");
+    // salva a escolha no arquivo
+    if (escolha == 't') {
+        fprintf(file, "txt");
+    } else if (escolha == 'b') {
+        fprintf(file, "bin");
+    } else if (escolha == 'm') {
+        fprintf(file, "mem");
+    } else {
+        printf("Opção inválida!\n");
+        fecharArquivos(file);
+        return 1;
+    }
+    fecharArquivos(file);
+}else
+        {
+            if(verificar_tipo_saida() == 1)
+            {
+                printf("Armazenamento tipo: TXT\n");
+            }else if(verificar_tipo_saida() == 2)
+            {
+                printf("Armazenamento tipo: BIN\n");
+            }else if(verificar_tipo_saida() == 3)
+            {
+                printf("Armazenamento tipo: Memória\n");
+            }
+        }
+
+    
+     iniciar_sistema();
+
+    return 0;
 }
