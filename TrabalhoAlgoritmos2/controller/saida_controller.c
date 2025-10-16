@@ -41,6 +41,61 @@ int verificar_tipo_saida (){
 }
 
 
+int troca_txt_bin(char troca){
+
+    int atual = verificar_tipo_saida(); //verifica qual tipo atual escolhido -> 1=txt / 2=bin / 3=memoria. Dependendo de qual foi a saida da funao anterior
+    
+    if (atual == -1)
+    {
+        return 0; //erro para verificar
+    }
+    
+    if ((atual == 1 && troca == 't') || (atual == 2 && troca == 'b'))
+    {
+        printf("Não é necessário trocar o formato, o arquivo já está selecionado neste formato.\n");
+        return 0; // a troca nao é efetuada pois o usuario nao selecionou uma mudanca diferente da que ja estava selecionada.
+    }
+
+    // caso o valor da troca seja valido, abrir um arquivo txt para alterar. Como vai alterar informaçoes, seria "w"
+    FILE* temp_file = fopen ("../b_output/tipo_file.txt", "w");
+    
+    if (temp_file==NULL)
+    {
+        printf("Erro ao criar arquivo.\n");
+        return 0;
+    }
+
+
+    if (troca == 't')
+    {
+        fprintf (temp_file, "txt\n");
+    }
+    else if (troca == 'b')
+    {
+        fprintf (temp_file, "bin\n");
+    }
+    else if (troca == 'm')
+    {
+        fprintf (temp_file, "mem\n");
+    }
+    else 
+    {
+        printf("tipo de troca inválido. \n");
+        fclose(temp_file);
+        return 0;
+    }
+
+    fclose(temp_file);
+
+    printf("sua troca foi realizada com sucesso!!");
+    
+}
+
+
+
+
+
+
 
 void fecharArquivos(FILE *file) {
     if (file != NULL)

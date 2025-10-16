@@ -4,5 +4,5 @@
 
 int verificar_tipo_saida();
 void fecharArquivos(FILE *file);
-// a
+int troca_txt_bin(char troca);
 #endif

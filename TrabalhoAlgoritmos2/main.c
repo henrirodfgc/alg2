@@ -49,7 +49,13 @@ int main() {
             {
                 printf("Armazenamento tipo: Memória\n");
             }
+
         }
+            
+            
+
+       
+        
 
     
      iniciar_sistema();
