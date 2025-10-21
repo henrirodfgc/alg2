@@ -50,9 +50,35 @@ int main() {
                 printf("Armazenamento tipo: Memória\n");
             }
 
+            char selec;
+            printf("Deseja mudar o tipo armazenado ?\n");
+            printf("[s] para sim\n");
+            printf("[n] para nao\n");
+            scanf(" %c", &selec);
+
+            if (selec=='s')
+            {
+                char troca;
+                printf("Escolha o tipo de armazenamento: \n");
+                printf("[t] para Txt\n");
+                printf("[b] para BIN\n");
+                printf("[m] para Memória\n");
+                printf("Escolha a opção: ");
+                scanf(" %c", &troca);
+                int troca_txt_bin(char troca);
+            }
+            else
+            {
+                return 0;
+            }
+            
+
+            
+
         }
             
             
+
 
        
         
