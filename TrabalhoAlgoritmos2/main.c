@@ -11,7 +11,7 @@
 int main() {
     system("chcp 65001");
     setlocale(LC_ALL, "pt-BR");
-    
+    char selec;
     //Funcao em saida_controller
     if (verificar_tipo_saida() == 0) {
     
@@ -50,11 +50,19 @@ int main() {
                 printf("Armazenamento tipo: Memória\n");
             }
 
-            char selec;
-            printf("Deseja mudar o tipo armazenado ?\n");
-            printf("[s] para sim\n");
-            printf("[n] para nao\n");
-            scanf(" %c", &selec);
+            do
+            {
+                printf("Deseja mudar o tipo armazenado ?\n");
+                printf("[s] para sim\n");
+                printf("[n] para nao\n");
+                scanf(" %c", &selec);
+                if (selec !='s' && selec != 'n')
+                {
+                    printf("opção inválida\n");
+                }
+                
+            } while (selec !='s' && selec != 'n');
+            
 
             if (selec=='s')
             {
@@ -69,11 +77,11 @@ int main() {
             }
             else
             {
-                return 0;
+                 printf("tipo mantido!\n");
             }
             
 
-            
+            iniciar_sistema();
 
         }
             
@@ -84,7 +92,7 @@ int main() {
         
 
     
-     iniciar_sistema();
+    
 
     return 0;
 }
