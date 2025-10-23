@@ -22,7 +22,6 @@ void iniciar_sistema() {
     //os dados do arquivo pra lista ligada entra aqui
     
     //loop infinito até o cara digitar zero pra sair
-    //loop infinito até o cara digitar zero pra sair
     do {
         //mudei o menu (tem que mudar no cliente_view.c tambem!)
         printf("\n==== menu cliente ====\n");
@@ -30,9 +29,9 @@ void iniciar_sistema() {
         printf("2 - atualizar cliente\n");
         printf("3 - exibir cliente\n");
         printf("4 - deletar cliente (inativar)\n");
-        printf("5 - listar todos (ativos)\n"); //mudei o texto pra ficar claro
+        printf("5 - listar todos (ativos)\n"); 
         printf("6 - restaurar cliente (reativar)\n"); 
-        printf("7 - listar inativos e ativos (todos)\n"); // <<-- NOVO AQUI
+        printf("7 - listar SÓ clientes INATIVOS (deletados)\n"); // <<-- MENU CORRIGIDO!
         printf("0 - sair\n");
         printf("escolha: ");
         scanf("%d", &opcao); //pega a escolha
@@ -45,7 +44,7 @@ void iniciar_sistema() {
                 temp = ler_dados_cliente(); //view lê tudo pra mim
 
                 //confere se o id já existe pq tem q ser único né
-                //o buscar cliente so retorna se o cliente ja ta ativo (status 1)
+                //o buscar cliente so retorna se o cliente ja esta ativo (status 1)
                 if (buscar_cliente_por_id(listaClientes, temp.id) != NULL) {
                     exibir_mensagem("erro: já existe um cliente ativo com este id tente novamente");
                     break; //vaza e volta pro menu
@@ -102,8 +101,8 @@ void iniciar_sistema() {
                 exibir_todos_clientes(listaClientes); //view mostra tudo (só ativos)
                 break;
             }
-            case 6: { //novo caso 6: restaurar cliente (reativar)
-                id_busca = ler_id_para_operacao("restaurar"); 
+            case 6: { //novo caso 6: restaurar cliente (reativar) - LÓGICA CORRIGIDA!
+                id_busca = ler_id_para_operacao("restaurar"); //pede o id pra 'reativar'
                 
                 // Tentamos restaurar. Se o cliente existir e estiver inativo (status 0), ele será reativado (status 1).
                 restaurar_cliente_por_id(listaClientes, id_busca);
@@ -115,20 +114,28 @@ void iniciar_sistema() {
                     // Se achou E está ativo, a restauração funcionou!
                     exibir_mensagem("cliente restaurado para ativo");
                 } else {
-                    // Se não achou (ou não foi restaurado porque não existia ou já estava ativo)
+                    // Se não achou (porque o ID não existe ou já estava ativo antes)
                     exibir_mensagem("erro: nenhum cliente (inativo) encontrado com este id para restaurar");
                 }
                 
                 break;
             }
-            case 7: { //caso 7: lista todos (ativos e inativos)
-                exibir_todos_clientes_e_inativos(listaClientes); // <<-- NOVO: CHAMA A FUNÇÃO QUE LISTA TUDO
+            case 7: { //caso 7: listar SÓ inativos
+                // A função já foi corrigida para FILTRAR por status 0
+                exibir_todos_clientes_e_inativos(listaClientes); 
                 break;
             }
-            case 0: //
+            case 0:
                 exibir_mensagem("saindo");
                 break;
-            default: //
+            default:
                 exibir_mensagem("opção inválida");
         }
     } while (opcao != 0); //fica aqui até o cara cansar e digitar zero
+
+    // [futuro]: se for pra salvar em arquivo o código pra salvar os dados
+    // da lista ligada de volta pro arquivo entra aqui
+
+    //crítico: tem q desalocar a memória de todos os nós com free pra não dar memory leak 
+    desalocar_lista_clientes(listaClientes);
+}

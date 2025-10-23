@@ -107,5 +107,29 @@ void desalocar_lista_equipe(NoEquipe* lista) {
     }
 }
 
-//função pra mostrar geral (a view vai usar essa)
-//void exibir_todos_membros(NoEquipe* lista) { ... }
+//função pra mostrar todos (a view vai usar essa)
+void exibir_todos_membros(NoEquipe* lista) {
+    NoEquipe *atual = lista;
+    int contador = 0; //pra saber se a lista tá vazia
+
+    printf("\n==== LISTA DE MEMBROS DA EQUIPE ====\n");
+    while (atual != NULL) {
+        //a gente ainda n criou a view pra exibir bonitinho, mas vai com printf simples por enquanto:
+        printf("--------------------------------------\n");
+        printf("Codigo: %d\n", atual->dados.codigo);
+        printf("Nome: %s\n", atual->dados.nome);
+        printf("Funcao: %s\n", atual->dados.funcao);
+        printf("Valor Diaria/Hora: %.2f\n", atual->dados.valor_diaria_hora);
+        printf("--------------------------------------\n");
+
+        contador++;
+        atual = atual->proximo;
+    }
+
+    if (contador == 0) {
+        printf("+------------------------------+\n");
+        printf("| nenhum membro cadastrado!    |\n");
+        printf("+------------------------------+\n");
+    }
+    printf("======================================\n");
+}

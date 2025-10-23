@@ -45,6 +45,8 @@ int exibir_menu() {
     printf("3 - Exibir cliente\n");
     printf("4 - Deletar cliente\n");
     printf("5 - Listar todos\n"); 
+    printf("6 - Reativar cliente");
+    printf("7 - Menu clientes inativos");
     printf("0 - Sair\n");
     printf("Escolha: ");
     scanf("%d", &opcao); // Pega a escolha

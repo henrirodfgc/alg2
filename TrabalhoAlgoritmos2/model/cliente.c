@@ -167,23 +167,25 @@ void exibir_todos_clientes(NoCliente* lista) {
     }
     printf("=======================================\n");
 }
-//novo: função pra mostrar TODOS os clientes (ativos e inativos)
+//novo: função pra mostrar SÓ os clientes inativos (status 0)
 void exibir_todos_clientes_e_inativos(NoCliente* lista) {
     NoCliente *atual = lista;
-    int contador_total = 0; //mudei o nome da variável pra ficar mais claro
+    int contador_inativos = 0; //pra contar quantos clientes achou
 
-    printf("\n==== lista de TODOS os clientes (ativos e inativos) ====\n");
+    printf("\n==== lista de clientes INATIVOS (deletados) ====\n");
     while (atual != NULL) {
-        //agora exibe TUDO, sem perguntar o status!
-        exibir_cliente(&(atual->dados)); //chama a view pra mostrar cada cliente
-        contador_total++;
+        // AGORA O FILTRO SÓ MOSTRA SE O STATUS FOR 0 (INATIVO)
+        if (atual->dados.status == 0) { 
+            exibir_cliente(&(atual->dados)); //chama a view pra mostrar cada cliente
+            contador_inativos++;
+        }
         
         atual = atual->proximo;
     }
 
-    if (contador_total == 0) {
+    if (contador_inativos == 0) {
         printf("+--------------------------+\n");
-        printf("| nenhum cliente cadastrado! |\n");
+        printf("| nenhum cliente inativo encontrado! |\n"); // Mensagem mais específica
         printf("+--------------------------+\n");
     }
     printf("=======================================\n");
