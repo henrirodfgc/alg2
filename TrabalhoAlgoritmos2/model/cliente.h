@@ -53,4 +53,7 @@ void desalocar_lista_clientes(NoCliente* lista);
 //função pra mostrar todos os clientes
 void exibir_todos_clientes(NoCliente* lista); 
 
+//função pra mostrar os clientes inativos também
+void exibir_todos_clientes_e_inativos(NoCliente* lista);
+
 #endif

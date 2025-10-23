@@ -167,3 +167,24 @@ void exibir_todos_clientes(NoCliente* lista) {
     }
     printf("=======================================\n");
 }
+//novo: função pra mostrar TODOS os clientes (ativos e inativos)
+void exibir_todos_clientes_e_inativos(NoCliente* lista) {
+    NoCliente *atual = lista;
+    int contador_total = 0; //mudei o nome da variável pra ficar mais claro
+
+    printf("\n==== lista de TODOS os clientes (ativos e inativos) ====\n");
+    while (atual != NULL) {
+        //agora exibe TUDO, sem perguntar o status!
+        exibir_cliente(&(atual->dados)); //chama a view pra mostrar cada cliente
+        contador_total++;
+        
+        atual = atual->proximo;
+    }
+
+    if (contador_total == 0) {
+        printf("+--------------------------+\n");
+        printf("| nenhum cliente cadastrado! |\n");
+        printf("+--------------------------+\n");
+    }
+    printf("=======================================\n");
+}
