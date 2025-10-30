@@ -9,11 +9,14 @@ CC	=	gcc
 CFLAGS	=	-Wall	-Wextra	-Wunused	-I./model	-I./view	-I./controller	-g 
 
 TARGET	=	projeto_final.exe # O nome do arquivo final
-OBJ  = main.o	\
-			model/cliente.o\
-			controller/cliente_controller.o\
-			view/cliente_view.o\
-			controller/saida_controller.o
+OBJ	= main.o	\
+	model/cliente.o\
+	model/equipe.o\
+	controller/cliente_controller.o\
+	controller/equipe_controller.o\
+	view/cliente_view.o\
+	view/equipe_view.o\
+	controller/saida_controller.o
 	
 # Regra principal: compilar tudo
 $(TARGET):	$(OBJ)	
@@ -27,8 +30,12 @@ pre_clean:
 	if	exist	$(TARGET)	del	$(TARGET)
 	if	exist	main.o	del	main.o
 	if	exist model/cliente.o	del	model/cliente.o
-	if	exist	view/cliente_view.o	del	view.o # Esse view.o aqui parece estranho mas deixa quieto se ta funcionando
+	if	exist model/equipe.o	del	model/equipe.o
+	if	exist	view/cliente_view.o	del	view/cliente_view.o
+	if	exist	view/equipe_view.o	del	view/equipe_view.o
 	if	exist	controller/cliente_controller.o	del	controller/cliente_controller.o
+	if	exist	controller/equipe_controller.o	del	controller/equipe_controller.o
+	if	exist	controller/saida_controller.o	del	controller/saida_controller.o
 
 # Regra pra limpar tudo geral (vc roda make clean)
 clean:
