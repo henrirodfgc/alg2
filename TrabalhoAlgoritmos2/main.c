@@ -12,41 +12,81 @@
 int main() {
     system("chcp 65001");
     setlocale(LC_ALL, "pt-BR");
-    
-    // Funcao em saida_controller (bloco de escolha de persistência)
+    char selec;
+    char troca;
+    //Funcao em saida_controller
     if (verificar_tipo_saida() == 0) {
     
-        char escolha;
-        printf("Escolha o tipo de armazenamento: \n");
-        printf("[t] para Txt\n");
-        printf("[b] para BIN\n");
-        printf("[m] para Memória\n");
-        printf("Escolha a opção: ");
-        scanf(" %c", &escolha);
+    char escolha;
+    printf("Escolha o tipo de armazenamento: \n");
+    printf("[t] para Txt\n");
+    printf("[b] para BIN\n");
+    printf("[m] para Memória\n");
+    printf("Escolha a opção: ");
+    scanf(" %c", &escolha);
 
-        FILE *file = fopen("../b_output/tipo_file.txt", "w");
-        // salva a escolha no arquivo
-        if (escolha == 't') {
-            fprintf(file, "txt");
-        } else if (escolha == 'b') {
-            fprintf(file, "bin");
-        } else if (escolha == 'm') {
-            fprintf(file, "mem");
-        } else {
-            printf("Opção inválida!\n");
-            fecharArquivos(file);
-            return 1;
-        }
-        fecharArquivos(file);
+    FILE *file = fopen("../b_output/tipo_file.txt", "w");
+    // salva a escolha no arquivo
+    if (escolha == 't') {
+        fprintf(file, "txt");
+    } else if (escolha == 'b') {
+        fprintf(file, "bin");
+    } else if (escolha == 'm') {
+        fprintf(file, "mem");
     } else {
-        if(verificar_tipo_saida() == 1) {
-            printf("Armazenamento tipo: TXT\n");
-        } else if(verificar_tipo_saida() == 2) {
-            printf("Armazenamento tipo: BIN\n");
-        } else if(verificar_tipo_saida() == 3) {
-            printf("Armazenamento tipo: Memória\n");
-        }
+        printf("Opção inválida!\n");
+        fecharArquivos(file);
+        return 1;
     }
+    fecharArquivos(file);
+}else
+        {
+            if(verificar_tipo_saida() == 1)
+            {
+                printf("Armazenamento tipo: TXT\n");
+            }else if(verificar_tipo_saida() == 2)
+            {
+                printf("Armazenamento tipo: BIN\n");
+            }else if(verificar_tipo_saida() == 3)
+            {
+                printf("Armazenamento tipo: Memória\n");
+            }
+
+            do
+            {
+                printf("Deseja mudar o tipo armazenado ?\n");
+                printf("[s] para sim\n");
+                printf("[n] para nao\n");
+                scanf(" %c", &selec);
+                if (selec !='s' && selec != 'n')
+                {
+                    printf("opção inválida\n");
+                }
+                
+            } while (selec !='s' && selec != 'n');
+            
+
+            if (selec=='s')
+            {
+                
+                printf("Escolha o tipo de armazenamento: \n");
+                printf("[t] para Txt\n");
+                printf("[b] para BIN\n");
+                printf("[m] para Memória\n");
+                printf("Escolha a opção: ");
+                scanf(" %c", &troca);
+                
+                int trocou = troca_txt_bin(troca);
+            }
+            else
+            {
+                 printf("tipo mantido!\n");
+            }
+            
+
+           
+
+        }
 
     // =============================
     // MENU PRINCIPAL (NOVO)
