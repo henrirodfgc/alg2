@@ -39,7 +39,8 @@ int main() {
         return 1;
     }
     fecharArquivos(file);
-}else
+    }
+    else
         {
             if(verificar_tipo_saida() == 1)
             {
@@ -77,15 +78,13 @@ int main() {
                 scanf(" %c", &troca);
                 
                 int trocou = troca_txt_bin(troca);
+
+                
             }
             else
             {
                  printf("tipo mantido!\n");
             }
-            
-
-           
-
         }
 
     // =============================

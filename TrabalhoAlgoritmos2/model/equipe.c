@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "equipe.h"
+#include "../controller/saida.h"
 // #include "../view/equipe_view.h" //a view a gente faz dps
 
 //--- funções auxiliares ---
@@ -36,6 +37,54 @@ NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro) {
 
     //o novo nó sempre vira a cabeça da lista (a lista fica invertida)
     novo_no->proximo = lista;
+
+    if (verificar_tipo_saida() == 1)
+    {
+        FILE *file = fopen("../b_output/membro/membros.txt", "a");
+        if (file == NULL)
+        {
+            printf("Erro ao abrir arquivo de membros!\n");
+            free(novo_no);
+            return lista;
+        }
+        
+        novo_membro.status = 1;
+
+        fprintf(file,
+            "codigo:%d,nome:%s,cpf:%s,funcao:%s,valor:%.2f,status:%d\n",
+            novo_membro.codigo,
+            novo_membro.nome,
+            novo_membro.cpf,
+            novo_membro.funcao,
+            novo_membro.valor_diaria_hora,
+            novo_membro.status);
+
+        fclose(file);
+        printf("Membro salvo com sucesso!!\n");
+    }
+
+    else if (verificar_tipo_saida() == 2)
+    {
+        FILE *file = fopen("../b_output/membro/membros.bin", "ab");
+        
+        if (file == NULL) {
+            printf("Erro ao abrir o arquivo binário de membros!\n");
+            free(novo_no);
+            return lista;
+        }
+
+        novo_membro.status = 1;
+
+        if (fwrite(&novo_membro, sizeof(MembroEquipe), 1, file) != 1)
+            printf("Erro ao escrever struct no arquivo binário!\n");
+        else
+            printf("Struct de membro salva com sucesso em membros.bin!\n");
+
+        fclose(file);
+
+    }
+    
+    
 
     return novo_no; //devolve a nova cabeça da lista
 }

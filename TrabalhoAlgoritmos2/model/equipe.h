@@ -12,6 +12,7 @@ typedef struct {
     char cpf [12];
     char funcao [50];
     float valor_diaria_hora;
+    int status; //campo do soft delete
 } MembroEquipe;
 
 

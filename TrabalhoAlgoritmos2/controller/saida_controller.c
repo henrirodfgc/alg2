@@ -22,7 +22,7 @@ int verificar_tipo_saida (){
     
 
      //retonra 1 para txt, 2 para BIN, 3 para memoria
-     if (strncmp(tipo, "txt", 3) == 0) {
+    if (strncmp(tipo, "txt", 3) == 0) {
         fclose(file);
         int retorna = 1;
         return retorna;
@@ -88,14 +88,8 @@ int troca_txt_bin(char troca){
     fclose(temp_file);
 
     printf("sua troca foi realizada com sucesso!!");
-    
+    return -1;
 }
-
-
-
-
-
-
 
 void fecharArquivos(FILE *file) {
     if (file != NULL)

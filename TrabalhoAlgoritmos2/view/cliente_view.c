@@ -6,11 +6,14 @@
 int ler_id_para_operacao(const char* operacao) {
     int id;
     printf("Digite o ID do cliente para %s: ", operacao);
-    if (scanf("%d", &id) != 1) {
+    id = scanf("%d", &id);
+    /*
+    if (scanf("%d", &id) != 0) {
         // Limpa o buffer se o cara digitar letra no lugar de numero
         while (getchar() != '\n'); 
         return -1; // Retorna -1 pra indicar erro
     }
+    */
     return id;
 }
 

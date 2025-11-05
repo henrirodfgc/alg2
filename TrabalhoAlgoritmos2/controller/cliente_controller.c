@@ -7,7 +7,7 @@
 
 //lista ligada q guarda todos os clients tá ligado
 //no começo e nulo tipo lista vazia
-NoCliente *listaClientes = NULL; 
+NoCliente * listaClientes = NULL; 
 
 //a função q lê o id tá na view ent tô só dando um aviso aqui pro compilador
 int ler_id_para_operacao(const char* operacao); 
@@ -85,16 +85,21 @@ void iniciar_sistema() {
             }
             case 4: { //caso 4: deletar um cliente (soft delete)
                 id_busca = ler_id_para_operacao("deletar"); //pede o id pra 'apagar'
-
+                
+                /*
                 //o buscar cliente so retorna se o status for 1 (ativo)
                 if (buscar_cliente_por_id(listaClientes, id_busca) == NULL) {
                      exibir_mensagem("nenhum cliente ativo para deletar com este id");
                      break;
                 }
+                */
                 
                 //model muda o status do cliente pra 0 (inativo) e pronto
-                deletar_cliente_por_id_logico(listaClientes, id_busca);
-                exibir_mensagem("cliente marcado como deletado/inativo");
+                if(deletar_cliente_por_id_logico(listaClientes, id_busca)){
+                    printf("Cliente Deletado com Sucesso!");
+                }else{
+                    printf("Erro ao deletar Cliente");
+                }
                 break;
             }
             case 5: { //caso 5: lista todos os clients

@@ -39,7 +39,7 @@ NoCliente* adicionar_cliente_na_lista(NoCliente* lista, Cliente novo_cliente);
 void atualizar_cliente_por_id(NoCliente* lista, int id_busca, const char* nome_cliente, int idade, const char* nome_razao, const char* cpf, const char* cnpj, const char* endereco, const char* email, const char* telefone, const char* nome_contato);
 
 //agora so muda o status pra 0 (soft delete)
-void deletar_cliente_por_id_logico(NoCliente* lista, int id_busca);
+int deletar_cliente_por_id_logico(NoCliente* lista, int id_busca);
 
 //novo: muda o status de 0 pra 1
 void restaurar_cliente_por_id(NoCliente* lista, int id_busca); 
