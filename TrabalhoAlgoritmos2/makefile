@@ -16,6 +16,9 @@ OBJ	= main.o	\
 	controller/equipe_controller.o\
 	view/cliente_view.o\
 	view/equipe_view.o\
+	model/produtora.o\
+	controller/produtora_controller.o\
+	view/produtora_view.o\
 	controller/saida_controller.o
 	
 # Regra principal: compilar tudo
@@ -36,6 +39,9 @@ pre_clean:
 	if	exist	controller/cliente_controller.o	del	controller/cliente_controller.o
 	if	exist	controller/equipe_controller.o	del	controller/equipe_controller.o
 	if	exist	controller/saida_controller.o	del	controller/saida_controller.o
+	if	exist	model/produtora.o	del	model/produtora.o
+	if	exist	view/produtora_view.o	del	view/produtora_view.o
+	if	exist	controller/produtora_controller.o	del	controller/produtora_controller.o
 
 # Regra pra limpar tudo geral (vc roda make clean)
 clean:

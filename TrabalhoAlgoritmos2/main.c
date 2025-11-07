@@ -1,5 +1,6 @@
 #include "controller/cliente_controller.h"
 #include "controller/equipe_controller.h" // <<-- NOVO: Include da Equipe (Para que a função 'iniciar_equipe' funcione)
+#include "controller/produtora_controller.h"
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -97,6 +98,7 @@ int main() {
         printf("================================\n");
         printf("1 - Módulo Clientes\n");
         printf("2 - Módulo Equipe\n"); // <<-- NOVO: Chama a nova funcionalidade
+        printf("3 - Módulo Produtora\n");
         printf("0 - Fechar Sistema\n");
         printf("Escolha o módulo: ");
         scanf("%d", &opcao_principal);
@@ -108,6 +110,9 @@ int main() {
             case 2:
                 iniciar_equipe(); // <<-- CHAMA O NOVO CONTROLLER DA EQUIPE
                 break;
+            case 3:
+                iniciar_produtora();
+                break; 
             case 0:
                 printf("Encerrando o sistema. Tchau!\n");
                 break;
