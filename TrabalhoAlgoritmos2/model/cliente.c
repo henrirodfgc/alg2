@@ -148,15 +148,15 @@ int deletar_cliente_por_id_logico(NoCliente *lista, int id_busca)
         if (file == NULL)
         {
             printf("Erro ao abrir o arquivo original!\n");
-            fclose(file);
+            
             return 0;
         }
 
-        FILE *temp = fopen("../b_output/clientes/temp.txt", "w");
+        FILE *temp = fopen("../b_output/clientes/temp.txt", "w+");
         if (temp == NULL)
         {
             printf("Erro ao criar arquivo temporário!\n");
-            fclose(temp);
+            fclose(file);
             return 0;
         }
 
@@ -195,7 +195,7 @@ int deletar_cliente_por_id_logico(NoCliente *lista, int id_busca)
 
         fclose(file);
         fclose(temp);
-        Sleep(10);
+       
 
         // Substitui o original pelo temporário
         if (remove("../b_output/clientes/cliente.txt") != 0)

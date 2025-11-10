@@ -3,6 +3,7 @@
 #include <string.h>
 #include "fornece_e_parce.h"
 #include "../view/fornece_e_parce_view.h"
+#include "../controller/saida.h"
 
 // =============================================
 // FUNÇÃO: copiar_dados
@@ -55,6 +56,61 @@ NoFornecedores_e_parceiros* adicionar_fornecedor_na_lista(NoFornecedores_e_parce
     // Configura o próximo ponteiro (insere no início)
     novo_no->proximo = lista;
 
+    if (verificar_tipo_saida() == 1)
+    {
+        FILE *file = fopen("../b_output/forne_parce/fornecedor.txt", "a");
+        if (file == NULL)
+        {
+            printf("Erro ao abrir o arquivo de fornecedor!\n");
+            // free(novo_no); //
+            return lista;
+        }
+
+        novo_fornecedor.status = 1;
+
+        fprintf(file, 
+            "id:%d,nome_fantasia:%s,nome_razao:%s,endereco:%s,tipo:%d,cpf:%s,cnpj:%s,telefone:%s,servico:%d,status:%d\n",
+            novo_fornecedor.id,
+            novo_fornecedor.nome_fantasia,
+            novo_fornecedor.nome_razao,
+            novo_fornecedor.endereco,
+            novo_fornecedor.tipo,
+            novo_fornecedor.cpf,
+            novo_fornecedor.cnpj,
+            novo_fornecedor.telefone,
+            novo_fornecedor.servico,
+            novo_fornecedor.status);
+        fclose(file);
+        printf("Fornecedor salvo com sucesso!!\n");
+        
+    }
+
+    else if (verificar_tipo_saida() == 2)
+    {
+        FILE *file = fopen("../b_output/forne_parce/fornecedores.bin", "ab");
+        if (file == NULL) {
+            printf("Erro ao abrir o arquivo binário de fornecedores!\n");
+            // free(novo_no); // Descomente se 'novo_no' foi alocado antes
+            return lista;
+        }
+
+        novo_fornecedor.status = 1;
+
+        if (fwrite(&novo_fornecedor,sizeof(Fornecedores_e_parceiros),1,file) != 1)
+        {
+            printf("Erro ao escrever strcut em binario\n");
+        } 
+        else
+        {
+            printf("Strucut de fornecedor salva com sucesso em fornecedores.bin!\n");
+            fclose(file);
+        }
+
+        
+    }
+    
+    
+
     // Retorna o novo nó como início da lista
     return novo_no;
 }
@@ -75,6 +131,59 @@ NoFornecedores_e_parceiros* adicionar_parceiros_na_lista(NoFornecedores_e_parcei
 
     // Configura o próximo ponteiro (insere no início)
     novo_no->proximo = lista;
+
+    if (verificar_tipo_saida() == 1)
+    {
+        FILE *file = fopen("../b_output/forne_parce/parceiro.txt", "a");
+        if (file == NULL)
+        {
+            printf("Erro ao abrir o arquivo de parceiros!\n");
+            // free(novo_no); //
+            return lista;
+        }
+
+        novo_parceiro.status = 1;
+
+        fprintf(file, 
+            "id:%d,nome_fantasia:%s,nome_razao:%s,endereco:%s,tipo:%d,cpf:%s,cnpj:%s,telefone:%s,servico:%d,status:%d\n",
+            novo_parceiro.id,
+            novo_parceiro.nome_fantasia,
+            novo_parceiro.nome_razao,
+            novo_parceiro.endereco,
+            novo_parceiro.tipo,
+            novo_parceiro.cpf,
+            novo_parceiro.cnpj,
+            novo_parceiro.telefone,
+            novo_parceiro.servico,
+            novo_parceiro.status);
+        fclose(file);
+        printf("Parceiro salvo com sucesso!!\n");
+        
+    }
+
+    else if (verificar_tipo_saida() == 2)
+    {
+        FILE *file = fopen("../b_output/forne_parce/parceiros.bin", "ab");
+        if (file == NULL) {
+            printf("Erro ao abrir o arquivo binário de fornecedores!\n");
+            // free(novo_no); // Descomente se 'novo_no' foi alocado antes
+            return lista;
+        }
+
+        novo_parceiro.status = 1;
+
+        if (fwrite(&novo_parceiro,sizeof(Fornecedores_e_parceiros),1,file) != 1)
+        {
+            printf("Erro ao escrever strcut em binario\n");
+        } 
+        else
+        {
+            printf("Strucut de parceiros salva com sucesso em fornecedores.bin!\n");
+            fclose(file);
+        }
+
+        
+    }
 
     // Retorna o novo nó como início da lista
     return novo_no;
