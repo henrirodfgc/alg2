@@ -1,0 +1,3 @@
+id:43534534,nome_cliente:Bruno,nome_razao:Nits,idade:20,endereco:fgdfgdfgfg,cpf:122333211,cnpj:123231212223,email:asdasdadsagbfgfb,telefone:232412312334324,nome_contato:cu,status:1
+id:0,nome_cliente:b,nome_razao:b,idade:0,endereco:b,cpf:b,cnpj:b,email:b,telefone:b,nome_contato:b,status:1
+id:99,nome_cliente:99,nome_razao:99,idade:99,endereco:99,cpf:99,cnpj:99,email:99,telefone:99,nome_contato:99,status:1

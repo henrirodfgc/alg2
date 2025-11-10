@@ -17,6 +17,7 @@ int main() {
     char selec;
     char troca;
     //Funcao em saida_controller
+   printf("bem-vindo\n");
     if (verificar_tipo_saida() == 0) {
     
     char escolha;

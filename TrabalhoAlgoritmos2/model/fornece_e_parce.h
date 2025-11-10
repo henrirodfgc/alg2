@@ -27,7 +27,8 @@ typedef struct {
     char cpf[12]; 
     char cnpj[15]; 
     char telefone[20];
-    TipoServico servico;  // ALTERADO: agora é enum
+    TipoServico servico;
+    int status;  // ALTERADO: agora é enum
 } Fornecedores_e_parceiros;
 
 //o nó da lista ligada pra dar pra ter vários clients ao mesmo tempo

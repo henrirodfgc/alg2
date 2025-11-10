@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "../model/cliente.h"
 #include "cliente_view.h"
 
