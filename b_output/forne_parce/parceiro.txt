@@ -1,0 +1,1 @@
+id:8,nome_fantasia:8,nome_razao:8,endereco:8,tipo:0,cpf:8,cnpj:,telefone:8,servico:1,status:1
