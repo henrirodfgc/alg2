@@ -1,7 +1,8 @@
 #include "controller/cliente_controller.h"
-#include "controller/equipe_controller.h" // <<-- NOVO: Include da Equipe (Para que a função 'iniciar_equipe' funcione)
+#include "controller/equipe_controller.h" 
 #include "controller/produtora_controller.h"
 #include "controller/fornece_e_parce_controller.h"
+#include "controller/recursos_controller.h" // <<-- NOVO: INCLUDE PARA RECURSOS
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -91,7 +92,7 @@ int main() {
         }
 
     // =============================
-    // MENU PRINCIPAL (NOVO)
+    // MENU PRINCIPAL (COMPLETO)
     // =============================
     int opcao_principal;
     do {
@@ -99,25 +100,30 @@ int main() {
         printf("       MENU PRINCIPAL\n");
         printf("================================\n");
         printf("1 - Módulo Clientes\n");
-        printf("2 - Módulo Equipe\n"); // <<-- NOVO: Chama a nova funcionalidade
+        printf("2 - Módulo Equipe\n"); 
         printf("3 - Módulo Produtora\n");
         printf("4 - Módulo Fornecedores e Parceiros\n");
+        printf("5 - Módulo Recursos e Equipamentos\n"); // <<-- NOVO AQUI!
         printf("0 - Fechar Sistema\n");
         printf("Escolha o módulo: ");
         scanf("%d", &opcao_principal);
 
         switch (opcao_principal) {
             case 1:
-                iniciar_sistema(); // Chama o controlador de Clientes
+                iniciar_sistema(); 
                 break;
             case 2:
-                iniciar_equipe(); // <<-- CHAMA O NOVO CONTROLLER DA EQUIPE
+                iniciar_equipe(); 
                 break;
             case 3:
                 iniciar_produtora();
                 break;
             case 4:
                 iniciar_fornecedor_e_parceiro();
+                break; // <-- BREAK MANTIDO AQUI
+            case 5: // <<-- NOVO CASE!
+                iniciar_recursos(); 
+                break; 
             case 0:
                 printf("Encerrando o sistema. Tchau!\n");
                 break;
@@ -125,8 +131,6 @@ int main() {
                 printf("Opção inválida. Tente novamente.\n");
         }
     } while (opcao_principal != 0);
-
-    // Linha original 'iniciar_sistema();' é substituída pelo novo loop do menu.
 
     return 0;
 }

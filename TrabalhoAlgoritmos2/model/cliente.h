@@ -6,25 +6,29 @@
 // onde fica o molde dos dados
 // =============================================
 
+// DECLARAÇÃO INCOMPLETA: Força o reconhecimento do tipo struct NoCliente antes de usá-lo
+typedef struct NoCliente NoCliente; 
+
 typedef struct {
-    int id;
-    char nome_cliente[50];
-    char nome_razao[100];
-    int idade;
-    char endereco[256];
-    char cpf[12]; 
-    char cnpj[15]; 
-    char email[50];
-    char telefone[20];
-    char nome_contato[50];
-    int status; //campo do soft delete
+int id;
+char nome_cliente[50];
+char nome_razao[100];
+int idade;
+char endereco[256];
+char cpf[12]; 
+char cnpj[15]; 
+char email[50];
+char telefone[20];
+char nome_contato[50];
+int status; //campo do soft delete
 } Cliente;
 
 //o nó da lista ligada pra dar pra ter vários clients ao mesmo tempo
-typedef struct NoCliente {
-    Cliente dados;              //guarda os dados do client mesmo
-    struct NoCliente *proximo;  //ponteiro pro proximo registro da lista
-} NoCliente;
+// Sem espaços invisíveis
+struct NoCliente {
+Cliente dados; //guarda os dados do client mesmo
+NoCliente *proximo; //ponteiro pro proximo registro da lista
+};
 
 
 // =============================================
@@ -55,5 +59,8 @@ void exibir_todos_clientes(NoCliente* lista);
 
 //função pra mostrar os clientes inativos também
 void exibir_todos_clientes_e_inativos(NoCliente* lista);
+
+//novo: carrega os dados do arquivo para a lista (critico pra iniciar!)
+NoCliente* carregar_clientes(NoCliente* lista); 
 
 #endif

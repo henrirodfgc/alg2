@@ -22,7 +22,10 @@ OBJ	= main.o	\
 	model/fornece_e_parce.o\
 	view/fornece_e_parce_view.o\
 	controller/fornece_e_parce_controller.o\
-	controller/saida_controller.o
+	controller/saida_controller.o\
+	model/recursos.o\
+	controller/recursos_controller.o\
+	view/recursos_view.o
 	
 # Regra principal: compilar tudo
 $(TARGET):	$(OBJ)	
@@ -46,8 +49,11 @@ pre_clean:
 	if	exist	view/produtora_view.o	del	view/produtora_view.o
 	if	exist	controller/produtora_controller.o	del	controller/produtora_controller.o
 	if	exist	model/fornece_e_parce.o	del	model/fornece_e_parce.o
-	if	exist	view/fornece_e_parce.o	del	view/fornece_e_parce_view.o
+	if	exist	view/fornece_e_parce_view.o	del	view/fornece_e_parce_view.o
 	if	exist	controller/fornece_e_parce_controller.o	del	controller/fornece_e_parce_controller.o
+	if	exist	model/recursos.o	del	model/recursos.o
+	if	exist	view/recursos_view.o	del	view/recursos_view.o
+	if	exist	controller/recursos_controller.o	del	controller/recursos_controller.o
 
 # Regra pra limpar tudo geral (vc roda make clean)
 clean:
