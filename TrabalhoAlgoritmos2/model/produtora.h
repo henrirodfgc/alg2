@@ -15,8 +15,10 @@ typedef struct Produtora{
     char email[50];                   // E-mail de contato
     char nome_do_responsavel[50];     // Nome do responsável legal
     char telefone_do_responsavel[11]; // Telefone do responsável
-    char margem_de_lucro_padrao[6];  // Margem de lucro padrão em formato string
+    char margem_de_lucro_padrao[6];// Margem de lucro padrão em formato string
+    int status;  
 } Produtora;
+
 
 // =============================================
 // ESTRUTURA: NoProdutora

@@ -38,21 +38,67 @@ MembroEquipe *buscar_membro_qualquer_status(NoEquipe *lista, int codigo_busca) {
 //--- funcoes de manipulacao de lista ligada (crud) ---
 //cria um novo no e poe ele no comeco da lista (create)
 NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro) {
-    //se nao for modo memoria a responsa nao eh sua
-    if (verificar_tipo_saida() != 3) {
-        exibir_mensagem_equipe("");
-        return lista; 
-    }
+    
     
     NoEquipe *novo_no = (NoEquipe*) malloc(sizeof(NoEquipe)); //pede memoria pra esse no novo
+    
     if (novo_no == NULL) {
         return lista; //se n der pra alocar a gente so retorna a lista antiga
     }
 
-    novo_membro.status = 1; //define como ativo
+    
     copiar_dados_equipe(&(novo_no->dados), &novo_membro);
 
     novo_no->proximo = lista;
+
+     if (verificar_tipo_saida() == 1)
+    {
+        FILE *file = fopen("../b_output/membro/membros.txt", "a");
+        if (file == NULL)
+        {
+            printf("Erro ao abrir o arquivo de membros!\n");
+            // free(novo_no); //
+            return lista;
+        }
+
+        novo_membro.status == 1;
+
+        fprintf(file,
+            "id:%d,nome:%s,cpf:%s,funcao:%s,valor_diaria_hora:%.2f,status:%d\n",
+            novo_membro.codigo,
+            novo_membro.nome,
+            novo_membro.cpf,
+            novo_membro.funcao,
+            novo_membro.valor_diaria_hora,
+            novo_membro.status);
+        fclose(file);
+        printf("Membro salvo com sucesso!!\n");
+    }
+
+    else if (verificar_tipo_saida() == 2)
+    {
+        FILE *file = fopen("../b_output/membro/membros.bin", "ab");
+        if (file == NULL) {
+            printf("Erro ao abrir o arquivo binário de membros!\n");
+            // free(novo_no); // Descomente se 'novo_no' foi alocado antes
+            return lista;
+        }
+
+        novo_membro.status = 1;
+
+        if (fwrite(&novo_membro,sizeof(MembroEquipe),1,file) != 1)
+        {
+            printf("Erro ao escrever strcut em binario\n");
+        } 
+        else
+        {
+            printf("Strucut de fornecedor salva com sucesso em membros.bin!\n");
+            fclose(file);
+        }
+
+        
+    }
+
     return novo_no; //devolve a nova cabeca da lista
 }
 

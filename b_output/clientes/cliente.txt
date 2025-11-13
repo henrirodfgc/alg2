@@ -3,3 +3,4 @@ id:0,nome_cliente:b,nome_razao:b,idade:0,endereco:b,cpf:b,cnpj:b,email:b,telefon
 id:99,nome_cliente:99,nome_razao:99,idade:99,endereco:99,cpf:99,cnpj:99,email:99,telefone:99,nome_contato:99,status:1
 id:1,nome_cliente:1,nome_razao:1,idade:1,endereco:1,cpf:1,cnpj:1,email:1,telefone:1,nome_contato:1,status:0
 id:1,nome_cliente:1,nome_razao:1,idade:1,endereco:1,cpf:1,cnpj:1,email:1,telefone:1,nome_contato:1,status:0
+id:454,nome_cliente:4545,nome_razao:454,idade:454,endereco:4545,cpf:4545,cnpj:4545,email:454,telefone:4545,nome_contato:454,status:1

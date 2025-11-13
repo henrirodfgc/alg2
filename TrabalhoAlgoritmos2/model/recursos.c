@@ -29,26 +29,69 @@ void copiar_dados_recurso(Equipamento *destino, const Equipamento *origem) {
 //cria um novo no e poe ele no comeco da lista (c)
 NoRecurso* adicionar_recurso_na_lista(NoRecurso* lista, Equipamento novo_recurso) {
     //avisa se nao for modo memoria, a responsabilidade nao eh sua
-    if (verificar_tipo_saida() != 3) {
-        exibir_mensagem_recursos("");
-        return lista; 
-    }
-    
+   
     NoRecurso *novo_no = (NoRecurso*) malloc(sizeof(NoRecurso)); //pede memoria pro no novo
+    
     if (novo_no == NULL) {
         //se n deu pra alocar a gente so retorna a lista antiga
         exibir_mensagem_recursos("erro:falha ao alocar no de recurso na memoria.");
         return lista; 
     }
     
-    //seta o status (ativo)
-    novo_recurso.status = 1;
+   
 
     //copia os dados pro no q a gente criou
     copiar_dados_recurso(&(novo_no->dados), &novo_recurso);
 
     //o no novo sempre vira a cabeca da lista
     novo_no->proximo = lista;
+
+    if (verificar_tipo_saida() == 1)
+    {
+        FILE *file = fopen("../b_output/recursos/recursos.txt", "a");
+        if (file == NULL)
+        {
+            printf("Erro ao abrir o arquivo de recursos!\n");
+            // free(novo_no); //
+            return lista;
+        }
+
+        fprintf(file,
+            "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%d,custo:%.2f,locacao:%.2f\n",
+            novo_recurso.codigo,
+            novo_recurso.descricao,
+            novo_recurso.categoria,
+            novo_recurso.quantidade_estoque,
+            novo_recurso.preco_custo,
+            novo_recurso.valor_locacao);
+        fclose(file);
+        printf("Recursos salvos com sucesso!!\n");
+    }
+    else if (verificar_tipo_saida() == 2)
+    {
+         FILE *file = fopen("../b_output/recursos/recursos.bin", "ab");
+        if (file == NULL) {
+            printf("Erro ao abrir o arquivo binário de recursos!\n");
+            // free(novo_no); // Descomente se 'novo_no' foi alocado antes
+            return lista;
+        }
+
+      
+
+        if (fwrite(&novo_recurso,sizeof(Equipamento),1,file) != 1)
+        {
+            printf("Erro ao escrever strcut em binario\n");
+        } 
+        else
+        {
+            printf("Strucut de recursos salva com sucesso em recursos.bin!\n");
+            fclose(file);
+        }
+
+        
+    }
+    
+
 
     return novo_no; //devolve a nova cabeca
 }
