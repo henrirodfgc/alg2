@@ -7,11 +7,10 @@
 // Função pra ler o CÓDIGO
 int ler_codigo_para_operacao(const char* operacao) {
     int codigo;
-    printf("Digite o CÓDIGO do membro para %s: ", operacao);
+    printf("digite o codigo do membro para %s: ", operacao);
     if (scanf("%d", &codigo) != 1) {
-        // Limpa o buffer se o cara digitar letra no lugar de numero
-        while (getchar() != '\n'); 
-        return -1; // Retorna -1 pra indicar erro
+        while (getchar() != '\n'); //limpa o buffer se o cara digitar letra no lugar de numero
+        return -1; //retorna -1 pra indicar erro
     }
     return codigo;
 }
@@ -20,51 +19,55 @@ int ler_codigo_para_operacao(const char* operacao) {
 void exibir_membro(const MembroEquipe* membro) {
     if (!membro) {
         printf("+--------------------------+\n");
-        printf("| Membro inexistente!      |\n");
+        printf("| membro inexistente!      |\n");
         printf("+--------------------------+\n");
         return;
     }
     printf("\n+---------------------------------+\n");
-    printf("| Código          : %d\n", membro->codigo);
-    printf("| Nome            : %s\n", membro->nome);
-    printf("| CPF             : %s\n", membro->cpf);
-    printf("| Função          : %s\n", membro->funcao);
-    printf("| Valor Diária/Hora: R$ %.2f\n", membro->valor_diaria_hora);
+    printf("| codigo          :%d\n", membro->codigo);
+    printf("| nome            :%s\n", membro->nome);
+    printf("| cpf             :%s\n", membro->cpf);
+    printf("| funcao          :%s\n", membro->funcao);
+    printf("| valor diaria/hora:r$ %.2f\n", membro->valor_diaria_hora);
+    printf("| status (ativo)  :%d\n", membro->status);
     printf("+---------------------------------+\n");
 }
 
 // Desenha o menu e pega a escolha
 int exibir_menu_equipe() {
     int opcao;
-    printf("\n==== MENU EQUIPE ====\n");
-    printf("1 - Criar membro\n");
-    printf("2 - Atualizar membro\n");
-    printf("3 - Exibir membro\n");
-    printf("4 - Deletar membro (físico)\n");
-    printf("5 - Listar todos\n"); 
-    printf("0 - Voltar ao Menu Principal\n");
-    printf("Escolha: ");
-    scanf("%d", &opcao); // Pega a escolha
+    printf("\n==== menu equipe ====\n");
+    printf("1 - criar membro\n");
+    printf("2 - atualizar membro\n");
+    printf("3 - exibir membro\n");
+    printf("4 - inativar membro (soft delete)\n"); // <--- MUDANCA AQUI!
+    printf("5 - listar todos (ativos)\n"); 
+    printf("6 - restaurar membro (reativar)\n"); // <--- NOVO!
+    printf("7 - listar so inativos\n"); // <--- NOVO!
+    printf("0 - voltar ao menu principal\n");
+    printf("escolha: ");
+    scanf("%d", &opcao); //pega a escolha
     return opcao;
 }
 
 // Lê TODOS os dados de um membro pra criar um novo
 MembroEquipe ler_dados_membro() {
     MembroEquipe m;
-    printf("CÓDIGO: "); scanf("%d", &m.codigo);
-    printf("Nome: "); scanf(" %[^\n]", m.nome); // %[] pra ler strings com espaço
-    printf("CPF (11 digitos): "); scanf(" %11[^\n]", m.cpf); 
-    printf("Função: "); scanf(" %[^\n]", m.funcao);
-    printf("Valor Diária/Hora (R$): "); scanf("%f", &m.valor_diaria_hora);
-    return m; // Devolve a struct cheia
+    printf("codigo: "); scanf("%d", &m.codigo);
+    printf("nome: "); scanf(" %[^\n]", m.nome); //%[] pra ler strings com espaco
+    printf("cpf (11 digitos): "); scanf(" %11[^\n]", m.cpf); 
+    printf("funcao: "); scanf(" %[^\n]", m.funcao);
+    printf("valor diaria/hora (r$): "); scanf("%f", &m.valor_diaria_hora);
+    m.status = 1; //define o status aqui
+    return m; //devolve a struct cheia
 }
 
 // Lê os dados novos pra atualização
 void ler_dados_atualizacao_membro(char* nome, char* cpf, char* funcao, float* valor_diaria_hora) {
-    printf("Novo Nome: "); scanf(" %[^\n]", nome);
-    printf("Novo CPF (11 digitos): "); scanf(" %11[^\n]", cpf);
-    printf("Nova Função: "); scanf(" %[^\n]", funcao);
-    printf("Novo Valor Diária/Hora (R$): "); scanf("%f", valor_diaria_hora);
+    printf("novo nome: "); scanf(" %[^\n]", nome);
+    printf("novo cpf (11 digitos): "); scanf(" %11[^\n]", cpf);
+    printf("nova funcao: "); scanf(" %[^\n]", funcao);
+    printf("novo valor diaria/hora (r$): "); scanf("%f", valor_diaria_hora);
 }
 
 // Função simples pra mostrar mensagem

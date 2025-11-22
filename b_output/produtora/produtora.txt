@@ -1,0 +1,2 @@
+nome_fantasia:8,razao_social:8,inscricao_estadual:8,cnpj:8,endereco_completo:8,telefone:8,enail:8,responsavel:8,telefone_responsavel:8,margem_lucro:8,status:1
+nome_fantasia:45454545454,razao_social:45454545454,inscricao_estadual:454545454,cnpj:,endereco_completo:4545454545,telefone:45454545454454545454,enail:454545454,responsavel:54545454,telefone_responsavel:545454545,margem_lucro:454545,status:1

@@ -3,15 +3,16 @@
 #include <string.h>
 #include "equipe.h"
 #include "../controller/saida.h"
-// #include "../view/equipe_view.h" //a view a gente faz dps
+#include "../view/equipe_view.h" //pra exibir mensagem de erro
 
-//--- funções auxiliares ---
+//--- funcoes auxiliares ---
 //copia tudo de um membro pro outro
 void copiar_dados_equipe(MembroEquipe *destino, const MembroEquipe *origem) {
     if (!origem || !destino) return; //se for null sai fora pra n dar bo
     
     destino->codigo = origem->codigo;
     destino->valor_diaria_hora = origem->valor_diaria_hora; //copia o valor da diaria/hora
+    destino->status = origem->status; //copia o status tbm
     
     //cópia segura de todas as strings
     strncpy(destino->nome, origem->nome, sizeof(destino->nome) - 1);
@@ -22,43 +23,54 @@ void copiar_dados_equipe(MembroEquipe *destino, const MembroEquipe *origem) {
     destino->funcao[sizeof(destino->funcao) - 1] = '\0';
 }
 
+//procura um membro pelo código independente do status (auxiliar pra inativar/restaurar)
+MembroEquipe *buscar_membro_qualquer_status(NoEquipe *lista, int codigo_busca) {
+    NoEquipe *atual = lista;
+    while (atual != NULL) {
+        if (atual->dados.codigo == codigo_busca) {
+            return &(atual->dados); //achou, nao importa o status
+        }
+        atual = atual->proximo;
+    }
+    return NULL; //nao achou
+}
 
-//--- funções de manipulação de lista ligada (crud) ---
-//cria um novo nó e põe ele no começo da lista (create)
+//--- funcoes de manipulacao de lista ligada (crud) ---
+//cria um novo no e poe ele no comeco da lista (create)
 NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro) {
-    NoEquipe *novo_no = (NoEquipe*) malloc(sizeof(NoEquipe)); //pede memoria pra esse nó novo
+    
+    
+    NoEquipe *novo_no = (NoEquipe*) malloc(sizeof(NoEquipe)); //pede memoria pra esse no novo
+    
     if (novo_no == NULL) {
-        //se n der pra alocar, a gente só retorna a lista antiga
-        return lista; 
+        return lista; //se n der pra alocar a gente so retorna a lista antiga
     }
 
-    //copia os dados pro nó que a gente acabou de criar
+    
     copiar_dados_equipe(&(novo_no->dados), &novo_membro);
 
-    //o novo nó sempre vira a cabeça da lista (a lista fica invertida)
     novo_no->proximo = lista;
 
-    if (verificar_tipo_saida() == 1)
+     if (verificar_tipo_saida() == 1)
     {
         FILE *file = fopen("../b_output/membro/membros.txt", "a");
         if (file == NULL)
         {
-            printf("Erro ao abrir arquivo de membros!\n");
-            free(novo_no);
+            printf("Erro ao abrir o arquivo de membros!\n");
+            // free(novo_no); //
             return lista;
         }
-        
-        novo_membro.status = 1;
+
+        novo_membro.status == 1;
 
         fprintf(file,
-            "codigo:%d,nome:%s,cpf:%s,funcao:%s,valor:%.2f,status:%d\n",
+            "id:%d,nome:%s,cpf:%s,funcao:%s,valor_diaria_hora:%.2f,status:%d\n",
             novo_membro.codigo,
             novo_membro.nome,
             novo_membro.cpf,
             novo_membro.funcao,
             novo_membro.valor_diaria_hora,
             novo_membro.status);
-
         fclose(file);
         printf("Membro salvo com sucesso!!\n");
     }
@@ -66,36 +78,39 @@ NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro) {
     else if (verificar_tipo_saida() == 2)
     {
         FILE *file = fopen("../b_output/membro/membros.bin", "ab");
-        
         if (file == NULL) {
             printf("Erro ao abrir o arquivo binário de membros!\n");
-            free(novo_no);
+            // free(novo_no); // Descomente se 'novo_no' foi alocado antes
             return lista;
         }
 
         novo_membro.status = 1;
 
-        if (fwrite(&novo_membro, sizeof(MembroEquipe), 1, file) != 1)
-            printf("Erro ao escrever struct no arquivo binário!\n");
+        if (fwrite(&novo_membro,sizeof(MembroEquipe),1,file) != 1)
+        {
+            printf("Erro ao escrever strcut em binario\n");
+        } 
         else
-            printf("Struct de membro salva com sucesso em membros.bin!\n");
+        {
+            printf("Strucut de fornecedor salva com sucesso em membros.bin!\n");
+            fclose(file);
+        }
 
-        fclose(file);
-
+        
     }
-    
-    
 
-    return novo_no; //devolve a nova cabeça da lista
+    return novo_no; //devolve a nova cabeca da lista
 }
 
 //procura o membro pelo código (read)
+//agora so retorna se o status for 1 (ativo)
 MembroEquipe* buscar_membro_por_codigo(NoEquipe* lista, int codigo_busca) {
     NoEquipe *atual = lista;
-    //percorre a lista até achar o código ou a lista acabar
+    //percorre a lista ate achar o código ou a lista acabar
     while (atual != NULL) {
-        if (atual->dados.codigo == codigo_busca) {
-            return &(atual->dados); //achou! devolve o ponteiro pros dados
+        //achou e ta ativo? devolve os dados
+        if (atual->dados.codigo == codigo_busca && atual->dados.status == 1) { 
+            return &(atual->dados); 
         }
         atual = atual->proximo;
     }
@@ -110,42 +125,60 @@ void atualizar_membro_por_codigo(NoEquipe* lista, int codigo_busca, const char* 
         //atualiza o float (valor)
         membro_existente->valor_diaria_hora = valor_diaria_hora;
         
-        //atualiza as strings com cópia segura (strncpy)
+        //atualiza as strings com cópia segura
         strncpy(membro_existente->nome, nome, sizeof(membro_existente->nome) - 1);
         membro_existente->nome[sizeof(membro_existente->nome) - 1] = '\0';
         strncpy(membro_existente->cpf, cpf, sizeof(membro_existente->cpf) - 1);
         membro_existente->cpf[sizeof(membro_existente->cpf) - 1] = '\0';
         strncpy(membro_existente->funcao, funcao, sizeof(membro_existente->funcao) - 1);
         membro_existente->funcao[sizeof(membro_existente->funcao) - 1] = '\0';
+        
+        //avisa se nao for modo memoria
+        if (verificar_tipo_saida() != 3) {
+            exibir_mensagem_equipe("");
+        }
     }
 }
 
-
-//deleta o nó da lista (delete)
-NoEquipe* deletar_membro_por_codigo(NoEquipe* lista, int codigo_busca) {
-    NoEquipe *atual = lista;
-    NoEquipe *anterior = NULL;
-
-    //procura o nó pra apagar
-    while (atual != NULL && atual->dados.codigo != codigo_busca) {
-        anterior = atual;
-        atual = atual->proximo;
-    }
-
-    if (atual == NULL) return lista; //se n achou volta a lista como ta
-
-    if (anterior == NULL) {
-        lista = atual->proximo; //se era a cabeça, o próximo vira a cabeça
-    } else {
-        anterior->proximo = atual->proximo; //pula o nó do meio
+//deleta o nó da lista vira INATIVAR (soft delete)
+//agora so muda o status pra 0 (soft delete)
+int deletar_membro_por_codigo_logico(NoEquipe* lista, int codigo_busca) {
+    //se nao for modo memoria a responsa nao eh sua
+    if (verificar_tipo_saida() != 3) {
+        exibir_mensagem_equipe("");
+        return 0;
     }
     
-    free(atual); //libera a memoria dele (sem memory leak!)
-    return lista;
+    //busca o membro pra mudar o status (qualquer status)
+    MembroEquipe *membro_existente = buscar_membro_qualquer_status(lista, codigo_busca);
+    
+    //se a busca encontrar o cliente, muda o status
+    if (membro_existente) {
+        membro_existente->status = 0; //seta pra inativo/deletado
+        return 1; //sucesso!
+    }
+    return 0; //falha
+}
+
+//novo: muda o status de 0 pra 1 (restauração)
+void restaurar_membro_por_codigo(NoEquipe* lista, int codigo_busca) {
+    //so faz se estiver em modo memoria
+    if (verificar_tipo_saida() != 3) return;
+    
+    //busca o no independente do status
+    MembroEquipe *membro_existente = buscar_membro_qualquer_status(lista, codigo_busca); 
+
+    //se encontrou e ele estava inativo, reativa
+    if (membro_existente && membro_existente->status == 0) {
+        membro_existente->status = 1; //seta pra ativo
+    }
 }
 
 //função essencial: libera a memória de geral
 void desalocar_lista_equipe(NoEquipe* lista) {
+    //so faz se estiver em modo memoria
+    if (verificar_tipo_saida() != 3) return;
+    
     NoEquipe *atual = lista;
     NoEquipe *proximo_no;
     //roda a lista toda dando free em cada nó
@@ -156,29 +189,54 @@ void desalocar_lista_equipe(NoEquipe* lista) {
     }
 }
 
-//função pra mostrar todos (a view vai usar essa)
+//função pra mostrar todos (so os ativos)
 void exibir_todos_membros(NoEquipe* lista) {
+    //so exibe se estiver em modo memoria
+    if (verificar_tipo_saida() != 3) {
+        exibir_mensagem_equipe("");
+        return;
+    }
+    
     NoEquipe *atual = lista;
-    int contador = 0; //pra saber se a lista tá vazia
+    int contador = 0;
 
-    printf("\n==== LISTA DE MEMBROS DA EQUIPE ====\n");
+    printf("\n==== lista de membros da equipe (ativos) ====\n");
     while (atual != NULL) {
-        //a gente ainda n criou a view pra exibir bonitinho, mas vai com printf simples por enquanto:
-        printf("--------------------------------------\n");
-        printf("Codigo: %d\n", atual->dados.codigo);
-        printf("Nome: %s\n", atual->dados.nome);
-        printf("Funcao: %s\n", atual->dados.funcao);
-        printf("Valor Diaria/Hora: %.2f\n", atual->dados.valor_diaria_hora);
-        printf("--------------------------------------\n");
-
-        contador++;
+        if (atual->dados.status == 1) { //filtro por status ativo
+            exibir_membro(&(atual->dados)); 
+            contador++;
+        }
         atual = atual->proximo;
     }
 
     if (contador == 0) {
-        printf("+------------------------------+\n");
-        printf("| nenhum membro cadastrado!    |\n");
-        printf("+------------------------------+\n");
+        exibir_mensagem_equipe("nenhum membro ativo cadastrado!");
+    }
+    printf("======================================\n");
+}
+
+//função pra mostrar só os inativos
+void exibir_membros_inativos(NoEquipe* lista) {
+    //so exibe se estiver em modo memoria
+    if (verificar_tipo_saida() != 3) {
+        exibir_mensagem_equipe("");
+        return;
+    }
+    
+    NoEquipe *atual = lista;
+    int contador = 0;
+
+    printf("\n==== lista de membros inativos ====\n");
+    while (atual != NULL) {
+        if (atual->dados.status == 0) { //filtro por status inativo
+            exibir_membro(&(atual->dados)); 
+            contador++;
+        }
+        atual = atual->proximo;
+    }
+
+    if (contador == 0) {
+        exibir_mensagem_equipe("nenhum membro inativo encontrado!");
     }
     printf("======================================\n");
 }

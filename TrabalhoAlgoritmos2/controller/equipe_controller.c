@@ -1,20 +1,22 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h> // Se for usar strncpy futuramente para segurança
+#include <string.h>
 #include "../model/equipe.h"
-#include "../view/equipe_view.h" // Precisa estar funcional!
+#include "../view/equipe_view.h"
 #include "equipe_controller.h"
+#include "../controller/saida.h"
 
 //lista ligada p guardar a equipe
 NoEquipe *listaEquipe = NULL; 
 
-//função q vai ter o menu e a lógica principal da Equipe
+//funcao q vai ter o menu e a logica principal da Equipe
 void iniciar_equipe() {
     int opcao; //p guardar o que o user escolher
     int codigo_busca; //p achar o membro
     MembroEquipe temp; //membro temporário p leitura
 
-    // [FUTURO]: Código de CARREGAMENTO de persistência (TXT/BIN) entra aqui
+    //o carregar recursos vai ser implementado pelo seu colega
+    //listaEquipe = carregar_equipe(listaEquipe); 
     
     //loop principal da Equipe
     do {
@@ -27,7 +29,7 @@ void iniciar_equipe() {
 
                 //confere se o código já existe (precisa ser único)
                 if (buscar_membro_por_codigo(listaEquipe, temp.codigo) != NULL) {
-                    exibir_mensagem_equipe("erro: ja existe um membro da equipe com este codigo.");
+                    exibir_mensagem_equipe("erro:ja existe um membro da equipe com este codigo.");
                     break;
                 }
                 
@@ -36,14 +38,14 @@ void iniciar_equipe() {
                 exibir_mensagem_equipe("membro da equipe criado com sucesso!");
                 break;
             }
-            case 2: { //u: Atualizar membro
+            case 2: { //u: atualizar membro
                 codigo_busca = ler_codigo_para_operacao("atualizar"); //pede o código
                 MembroEquipe *membro_encontrado = buscar_membro_por_codigo(listaEquipe, codigo_busca); //busca (Model)
 
                 if (membro_encontrado == NULL) {
-                    exibir_mensagem_equipe("erro: membro nao encontrado ou codigo invalido.");
+                    exibir_mensagem_equipe("erro:membro nao encontrado ou codigo invalido.");
                 } else {
-                    //variáveis temporárias p pegar os dados novos
+                    //variaveis temporárias p pegar os dados novos
                     char nome[50], cpf[12], funcao[50];
                     float valor_diaria_hora;
 
@@ -57,7 +59,7 @@ void iniciar_equipe() {
                 }
                 break;
             }
-            case 3: { //r: Exibir Um membro
+            case 3: { //r: exibir um membro
                 codigo_busca = ler_codigo_para_operacao("exibir"); //pede o código
                 MembroEquipe *membro_encontrado = buscar_membro_por_codigo(listaEquipe, codigo_busca); //busca (Model)
                 
@@ -65,32 +67,44 @@ void iniciar_equipe() {
                 exibir_membro(membro_encontrado); //
                 break;
             }
-            case 4: { //d: deletar membro 
-                codigo_busca = ler_codigo_para_operacao("deletar"); //pede o código
+            case 4: { //d: inativar membro (soft delete) <--- MUDANCA AQUI!
+                codigo_busca = ler_codigo_para_operacao("inativar"); //pede o código
 
-                if (buscar_membro_por_codigo(listaEquipe, codigo_busca) == NULL) {
-                    exibir_mensagem_equipe("erro: membro nao encontrado para deletar.");
-                    break;
+                if (deletar_membro_por_codigo_logico(listaEquipe, codigo_busca)) {
+                    exibir_mensagem_equipe("membro inativado com sucesso.");
+                } else {
+                    exibir_mensagem_equipe("erro:membro nao encontrado ou ja estava inativo.");
                 }
-                
-                //model remove o nó e libera a memória
-                listaEquipe = deletar_membro_por_codigo(listaEquipe, codigo_busca);
-                exibir_mensagem_equipe("membro da equipe deletado (removido fisicamente).");
                 break;
             }
-            case 5: { //r: listar Todos
-                exibir_todos_membros(listaEquipe); // model faz a iteração, mas usa o printf simples (ou a View se for implementada)
+            case 5: { //r: listar todos (ativos)
+                exibir_todos_membros(listaEquipe);
+                break;
+            }
+            case 6: { //restaurar membro (reativar) <--- NOVO CASE!
+                codigo_busca = ler_codigo_para_operacao("restaurar");
+                
+                restaurar_membro_por_codigo(listaEquipe, codigo_busca);
+                
+                //checa se deu certo buscando (agora como ativo)
+                if (buscar_membro_por_codigo(listaEquipe, codigo_busca) != NULL) {
+                    exibir_mensagem_equipe("membro restaurado para ativo.");
+                } else {
+                    exibir_mensagem_equipe("erro:membro nao encontrado ou ja estava ativo.");
+                }
+                break;
+            }
+            case 7: { //listar so inativos <--- NOVO CASE!
+                exibir_membros_inativos(listaEquipe);
                 break;
             }
             case 0:
-                exibir_mensagem_equipe("saindo do modulo equipe. Tchau!");
+                exibir_mensagem_equipe("saindo do modulo equipe. tchau!");
                 break;
             default:
-                exibir_mensagem_equipe("opcao invalida. Tente novamente.");
+                exibir_mensagem_equipe("opcao invalida. tente novamente.");
         }
     } while (opcao != 0);
-
-    // [FUTURO]: Código de SALVAMENTO de persistência (TXT/BIN) entra aqui
 
     //libera a memória no final do uso
     desalocar_lista_equipe(listaEquipe); 

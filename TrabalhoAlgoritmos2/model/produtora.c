@@ -3,6 +3,7 @@
 #include <string.h>
 #include "produtora.h"
 #include "../view/produtora_view.h"
+#include "../controller/saida.h"
 
 // =============================================
 // FUNÇÃO: copiar_dados_produtora
@@ -82,6 +83,64 @@ NoProdutora* adicionar_produtora_na_lista(NoProdutora* lista, Produtora nova_pro
 
     // Configura o próximo ponteiro (insere no início)
     novo_no->proximo = lista;
+
+    if (verificar_tipo_saida() == 1)
+    {
+        FILE *file = fopen("../b_output/produtora/produtora.txt", "a");
+        if (file == NULL)
+        {
+            printf("Erro ao abrir o arquivo de produtora!\n");
+            // free(novo_no); //
+            return lista;
+        }
+
+        nova_produtora.status = 1;
+
+        fprintf(file,
+            "nome_fantasia:%s,razao_social:%s,inscricao_estadual:%s,cnpj:%s,endereco_completo:%s,telefone:%s,enail:%s,responsavel:%s,telefone_responsavel:%s,margem_lucro:%s,status:%d\n",
+            nova_produtora.nome_fantasia,
+            nova_produtora.razao_social,
+            nova_produtora.inscricao_estadual,
+            nova_produtora.cnpj,
+            nova_produtora.endereco_completo,
+            nova_produtora.telefone,
+            nova_produtora.email,
+            nova_produtora.nome_do_responsavel,
+            nova_produtora.telefone_do_responsavel,
+            nova_produtora.margem_de_lucro_padrao,
+            nova_produtora.status);
+        fclose(file);
+        printf("Fornecedor salvo com sucesso!!\n");
+    } 
+    
+    else if (verificar_tipo_saida() == 2)
+    {
+         FILE *file = fopen("../b_output/produtora/produtora.bin", "ab");
+        if (file == NULL)
+        {
+            printf("Erro ao abrir o arquivo binario de produtora!\n");
+            // free(novo_no); //
+            return lista;
+        }
+
+        nova_produtora.status == 1;
+
+        if (fwrite(&nova_produtora,sizeof(Produtora),1,file) != 1)
+        {
+            printf("Erro ao escrever strcut em binario\n");
+        } 
+        else
+        {
+            printf("Strucut de produtora salva com sucesso em produtora.bin!\n");
+            fclose(file);
+        }
+
+
+    }
+    
+    
+    
+    
 
     // Retorna o novo nó como início da lista
     return novo_no;
