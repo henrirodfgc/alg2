@@ -22,6 +22,9 @@ OBJ	= main.o	\
 	model/fornece_e_parce.o\
 	view/fornece_e_parce_view.o\
 	controller/fornece_e_parce_controller.o\
+	model/operador.o\
+	view/operador_view.o\
+	controller/operador_controller.o\
 	controller/saida_controller.o
 	
 # Regra principal: compilar tudo
@@ -48,27 +51,31 @@ pre_clean:
 	if	exist	model/fornece_e_parce.o	del	model/fornece_e_parce.o
 	if	exist	view/fornece_e_parce.o	del	view/fornece_e_parce_view.o
 	if	exist	controller/fornece_e_parce_controller.o	del	controller/fornece_e_parce_controller.o
+	if	exist	model/operador.o	del	model/operador.o
+	if	exist	view/operador_view.o	del	view/operador_view.o
+	if	exist	controller/operador_controller.o	del	controller/operador_controller.o
+
 
 # Regra pra limpar tudo geral (vc roda make clean)
 clean:
 ifeq ($(OS),Windows_NT)
-	@echo "[Windows] Verificando seguranca"
-	@if not exist "main.c" (echo [ERRO] Nao esta no diretorio do projeto & exit 1)
-	@echo "[Windows] Limpando arquivos"
-	@del *.o 2>nul
-	@del model\*.o 2>nul
-	@del view\*.o 2>nul
-	@del controller\*.o 2>nul
-	@del *.exe 2>nul
+	echo "[Windows] Verificando seguranca"
+	if not exist "main.c" (echo [ERRO] Nao esta no diretorio do projeto & exit 1)
+	echo "[Windows] Limpando arquivos"
+	del *.o 2>nul
+	del model\*.o 2>nul
+	del view\*.o 2>nul
+	del controller\*.o 2>nul
+	del *.exe 2>nul
 else
 	@echo "[Unix] Verificando seguranca"
-	@if [ ! -f "main.c" ]; then echo "[ERRO] Nao esta no diretorio do projeto"; exit 1; fi
+	if [ ! -f "main.c" ]; then echo "[ERRO] Nao esta no diretorio do projeto"; exit 1; fi
 	@echo "[Unix] Limpando arquivos"
-	@rm -f *.o
-	@rm -f model/*.o
-	@rm -f view/*.o
-	@rm -f controller/*.o
-	@rm -f *.exe
+	rm -f *.o
+	rm -f model/*.o
+	rm -f view/*.o
+	rm -f controller/*.o
+	rm -f *.exe
 endif
 	@echo "Limpeza concluida"
 
