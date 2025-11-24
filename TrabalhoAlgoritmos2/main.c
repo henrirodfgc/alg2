@@ -1,9 +1,9 @@
-#include "controller/cliente_controller.h"
-#include "controller/equipe_controller.h" 
-#include "controller/produtora_controller.h"
-#include "controller/fornece_e_parce_controller.h"
-#include "controller/operador_controller.h"
-#include "controller/recursos_controller.h" // <<-- NOVO: INCLUDE PARA RECURSOS
+#include "controller/cadastro/cliente_controller.h"
+#include "controller/cadastro/equipe_controller.h" 
+#include "controller/cadastro/produtora_controller.h"
+#include "controller/cadastro/fornece_e_parce_controller.h"
+#include "controller/cadastro/recursos_controller.h" // <<-- NOVO: INCLUDE PARA RECURSOS
+#include "controller/cadastro/operador_controller.h"
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -104,8 +104,8 @@ int main() {
         printf("2 - Módulo Equipe\n"); 
         printf("3 - Módulo Produtora\n");
         printf("4 - Módulo Fornecedores e Parceiros\n");
-        printf("5 - Módulo Operador\n");
-        printf("6 - Módulo Recursos e Equipamentos\n"); // <<-- NOVO AQUI!
+        printf("5 - Módulo Recursos e Equipamentos\n"); // <<-- NOVO AQUI!
+        printf("6 - Módulo operador\n");
         printf("0 - Fechar Sistema\n");
         printf("Escolha o módulo: ");
         scanf("%d", &opcao_principal);
@@ -122,13 +122,13 @@ int main() {
                 break;
             case 4:
                 iniciar_fornecedor_e_parceiro();
-                break;
-            case 5:
-                iniciar_operador();
                 break; // <-- BREAK MANTIDO AQUI
-            case 6: // <<-- NOVO CASE!
+            case 5: // <<-- NOVO CASE!
                 iniciar_recursos(); 
                 break; 
+            case 6:
+                iniciar_operador();
+                break;    
             case 0:
                 printf("Encerrando o sistema. Tchau!\n");
                 break;

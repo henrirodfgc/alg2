@@ -10,26 +10,25 @@ CFLAGS	=	-Wall	-Wextra	-Wunused	-I./model	-I./view	-I./controller	-g
 
 TARGET	=	projeto_final.exe # O nome do arquivo final
 OBJ	= main.o	\
-	model/cliente.o\
-	model/equipe.o\
-	controller/cliente_controller.o\
-	controller/equipe_controller.o\
-	view/cliente_view.o\
-	view/equipe_view.o\
-	model/produtora.o\
-	controller/produtora_controller.o\
-	view/produtora_view.o\
-	model/fornece_e_parce.o\
-	view/fornece_e_parce_view.o\
-	controller/fornece_e_parce_controller.o\
-	model/operador.o\
-	view/operador_view.o\
-	controller/operador_controller.o\
-	controller/saida_controller.o
+	model/cadastro/cliente.o\
+	model/cadastro/equipe.o\
+	controller/cadastro/cliente_controller.o\
+	controller/cadastro/equipe_controller.o\
+	view/cadastro/cliente_view.o\
+	view/cadastro/equipe_view.o\
+	model/cadastro/produtora.o\
+	controller/cadastro/produtora_controller.o\
+	view/cadastro/produtora_view.o\
+	model/cadastro/fornece_e_parce.o\
+	view/cadastro/fornece_e_parce_view.o\
+	controller/cadastro/fornece_e_parce_controller.o\
+	model/cadastro/operador.o\
+	view/cadastro/operador_view.o\
+	controller/cadastro/operador_controller.o\
 	controller/saida_controller.o\
-	model/recursos.o\
-	controller/recursos_controller.o\
-	view/recursos_view.o
+	model/cadastro/recursos.o\
+	controller/cadastro/recursos_controller.o\
+	view/cadastro/recursos_view.o
 	
 # Regra principal: compilar tudo
 $(TARGET):	$(OBJ)	
@@ -42,26 +41,30 @@ all:	pre_clean $(TARGET)
 pre_clean:
 	if	exist	$(TARGET)	del	$(TARGET)
 	if	exist	main.o	del	main.o
-	if	exist model/cliente.o	del	model/cliente.o
-	if	exist model/equipe.o	del	model/equipe.o
-	if	exist	view/cliente_view.o	del	view/cliente_view.o
-	if	exist	view/equipe_view.o	del	view/equipe_view.o
-	if	exist	controller/cliente_controller.o	del	controller/cliente_controller.o
-	if	exist	controller/equipe_controller.o	del	controller/equipe_controller.o
+	if	exist	model/cadastro/cliente.o	del	model/cadastro/cliente.o
+	if	exist	model/cadastro/equipe.o	del	model/cadastro/equipe.o
+	if	exist	view/cadastro/cliente_view.o	del	view/cadastro/cliente_view.o
+	if	exist	view/cadastro/equipe_view.o	del	view/cadastro/equipe_view.o
+	if	exist	controller/cadastro/cliente_controller.o	del	controller/cadastro/cliente_controller.o
+	if	exist	controller/cadastro/equipe_controller.o	del	controller/cadastro/equipe_controller.o
+	
 	if	exist	controller/saida_controller.o	del	controller/saida_controller.o
-	if	exist	model/produtora.o	del	model/produtora.o
-	if	exist	view/produtora_view.o	del	view/produtora_view.o
-	if	exist	controller/produtora_controller.o	del	controller/produtora_controller.o
-	if	exist	model/fornece_e_parce.o	del	model/fornece_e_parce.o
-	if	exist	view/fornece_e_parce_view.o	del	view/fornece_e_parce_view.o
-	if	exist	controller/fornece_e_parce_controller.o	del	controller/fornece_e_parce_controller.o
-	if	exist	model/operador.o	del	model/operador.o
-	if	exist	view/operador_view.o	del	view/operador_view.o
-	if	exist	controller/operador_controller.o	del	controller/operador_controller.o
-
-	if	exist	model/recursos.o	del	model/recursos.o
-	if	exist	view/recursos_view.o	del	view/recursos_view.o
-	if	exist	controller/recursos_controller.o	del	controller/recursos_controller.o
+	
+	if	exist	model/cadastro/produtora.o	del	model/cadastro/produtora.o
+	if	exist	view/cadastro/produtora_view.o	del	view/cadastro/produtora_view.o
+	if	exist	controller/cadastro/produtora_controller.o	del	controller/cadastro/produtora_controller.o
+	
+	if	exist	model/cadastro/fornece_e_parce.o	del	model/cadastro/fornece_e_parce.o
+	if	exist	view/cadastro/fornece_e_parce_view.o	del	view/cadastro/fornece_e_parce_view.o
+	if	exist	controller/cadastro/fornece_e_parce_controller.o	del	controller/cadastro/fornece_e_parce_controller.o
+	
+	if	exist	model/cadastro/operador.o	del	model/cadastro/operador.o
+	if	exist	view/cadastro/operador_view.o	del	view/cadastro/operador_view.o
+	if	exist	controller/cadastro/operador_controller.o	del	controller/cadastro/operador_controller.o
+	
+	if	exist	model/cadastro/recursos.o	del	model/cadastro/recursos.o
+	if	exist	view/cadastro/recursos_view.o	del	view/cadastro/recursos_view.o
+	if	exist	controller/cadastro/recursos_controller.o	del	controller/cadastro/recursos_controller.o
 
 # Regra pra limpar tudo geral (vc roda make clean)
 clean:
@@ -70,10 +73,13 @@ ifeq ($(OS),Windows_NT)
 	if not exist "main.c" (echo [ERRO] Nao esta no diretorio do projeto & exit 1)
 	echo "[Windows] Limpando arquivos"
 	del *.o 2>nul
-	del model\*.o 2>nul
-	del view\*.o 2>nul
-	del controller\*.o 2>nul
 	del *.exe 2>nul
+	if exist "model\cadastro" del "model\cadastro\*.o" 2>nul
+	if exist "view\cadastro" del "view\cadastro\*.o" 2>nul
+	if exist "controller\cadastro" del "controller\cadastro\*.o" 2>nul
+	if exist "model" del "model\*.o" 2>nul
+	if exist "view" del "view\*.o" 2>nul
+	if exist "controller" del "controller\*.o" 2>nul
 else
 	@echo "[Unix] Verificando seguranca"
 	if [ ! -f "main.c" ]; then echo "[ERRO] Nao esta no diretorio do projeto"; exit 1; fi
@@ -82,8 +88,10 @@ else
 	rm -f model/*.o
 	rm -f view/*.o
 	rm -f controller/*.o
+	rm -f model/cadastro/*.o
+	rm -f view/cadastro/*.o
+	rm -f controller/cadastro/*.o
 	rm -f *.exe
 endif
 	@echo "Limpeza concluida"
-
 .PHONY: clean # Avisa q 'clean' nao é um arquivo pra n dar erro
