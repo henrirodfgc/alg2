@@ -6,6 +6,7 @@ typedef struct Operador{
     char nome[50];
     char usuario[60];
     char senha[20];
+    int status;
 }Operador;
 
 typedef struct NoOperador
@@ -19,7 +20,7 @@ NoOperador* adicionar_operador_na_lista(NoOperador* lista, Operador novo_operado
 
 void atualizar_operador_por_codigo(NoOperador* lista, int codigo_busca, const char* nome, const char* usuario, const char* senha);
 
-NoOperador* deletar_operador_por_codigo(NoOperador* lista, int codigo_busca);
+int deletar_operador_por_codigo(NoOperador* lista, int codigo_busca);
 
 void restaurar_operador_por_codigo(NoOperador* lista, int codigo_busca);
 

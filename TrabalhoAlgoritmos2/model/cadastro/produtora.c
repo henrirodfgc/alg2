@@ -236,32 +236,118 @@ void atualizar_produtora_por_cnpj(NoProdutora* lista, const char* cnpj_busca,
 //   - cnpj_busca: CNPJ da produtora a ser removida
 // RETORNO: Ponteiro para o novo início da lista
 // =============================================
-NoProdutora* deletar_produtora_por_cnpj(NoProdutora* lista, const char* cnpj_busca) {
-    NoProdutora *atual = lista;
-    NoProdutora *anterior = NULL;
+int deletar_produtora_por_cnpj(NoProdutora *lista, const char* cnpj_busca) {
+    if (verificar_tipo_saida() == 1) 
+    {
+        FILE *file = fopen("../b_output/produtora/produtora.txt", "r+");
+        if (file == NULL)
+        {
+            printf("erro ao abrir o arquivo original!\n");
+            
+            return 0;
+        }
 
-    // Percorre a lista procurando pelo CNPJ
-    // CORREÇÃO: usar strcmp para comparar strings
-    while (atual != NULL && strcmp(atual->dados.cnpj, cnpj_busca) != 0) {
-        anterior = atual;
-        atual = atual->proximo;
+        FILE *temp = fopen("../b_output/produtora/temp.txt", "w+");
+        if (temp == NULL)
+        {
+            printf("erro ao criar arquivo temporario!\n");
+            fclose(file);
+            return 0;
+        }
+
+        Produtora c;
+        char linha[2048];
+        int encontrado = 0;
+
+        while (fgets(linha, sizeof(linha), file))
+        {
+            //lê os campos
+            sscanf(linha,
+                   "nome_fantasia:%49[^,],razao_social:%99[^,],inscricao_estadual:%8[^,],cnpj:%13[^,],endereco:%255[^,],telefone:%10[^,],email:%49[^,],responsavel:%49[^,],telefone_responsavel:%10[^,],margem_lucro:%5[^,],status:%d",
+                    c.nome_fantasia,
+                    c.razao_social,
+                    c.inscricao_estadual,
+                    c.cnpj,
+                    c.endereco_completo,
+                    c.telefone,
+                    c.email,
+                    c.nome_do_responsavel,
+                    c.telefone_do_responsavel,
+                    c.margem_de_lucro_padrao,
+                    &c.status);
+                
+                   
+
+            if (c.cnpj == cnpj_busca)
+            {
+                c.status = 0; //marca como inativo
+                encontrado = 1;
+            }
+            //reescreve a linha (atualizada ou não)
+            fprintf(temp,
+                    "nome_fantasia:%s,razao_social:%s,inscricao_estadual:%s,cnpj:%s,endereco:%s,telefone:%s,email:%s,responsavel:%s,telefone_responsavel:%s,margem_lucro:%s,status:%d",
+                    c.nome_fantasia,
+                    c.razao_social,
+                    c.inscricao_estadual,
+                    c.cnpj,
+                    c.endereco_completo,
+                    c.telefone,
+                    c.email,
+                    c.nome_do_responsavel,
+                    c.telefone_do_responsavel,
+                    c.margem_de_lucro_padrao,
+                    c.status);
+        }
+
+        fclose(file);
+        fclose(temp);
+       
+        //substitui o original pelo temporário
+        if (remove("../b_output/produtora/produtora.txt") != 0)
+        {
+            perror("erro ao remover o arquivo original");
+            return 0;
+        }
+
+        if (rename("../b_output/produtora/temp.txt", "../b_output/produtora/produtora.txt") != 0)
+        {
+            perror("erro ao renomear o arquivo temporario");
+            return 0;
+        }
+
+        if (encontrado)
+        {
+            printf("produtora com cnpj %s marcado como inativo (status = 0).\n", cnpj_busca);
+            return 1;
+        }
+        else
+        {
+            printf("produtora com cnpj %s nao encontrado.\n", cnpj_busca);
+            return 0;
+        }
     }
-
-    // Se não encontrou, retorna lista original
-    if (atual == NULL) return lista;
-
-    // Remove o nó encontrado
-    if (anterior == NULL) {
-        // Caso especial: remover o primeiro nó
-        lista = atual->proximo;
-    } else {
-        // Caso geral: remover nó do meio ou final
-        anterior->proximo = atual->proximo;
+    //implementação do colega para BIN
+    else if (verificar_tipo_saida() == 2)
+    {
+        exibir_mensagem_produtora("aviso:delecao binaria. responsa do colega.");
+        return 0; //aqui deveria ter a implementacao dele
     }
-    
-    // Libera a memória do nó removido
-    free(atual);
-    return lista;
+    //sua versão para memoria (modo 3)
+    else if (verificar_tipo_saida() == 3)
+    {
+        //busca ele com qualquer status para checar se existe
+        Produtora *produtora_existente = buscar_produtora_por_cnpj(lista, cnpj_busca);
+        
+        //se a busca encontrar e ele estiver ativo (status 1), muda o status
+        if (produtora_existente && produtora_existente->status == 1)
+        {
+            produtora_existente->status = 0; //seta pra inativo/deletado
+            return 1; //sucesso
+        }
+        //se nao achou ou ja estava inativo, retorna falha
+        return 0;
+    }
+    return 0;
 }
 
 // =============================================

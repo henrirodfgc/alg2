@@ -37,6 +37,56 @@ NoOperador* adicionar_operador_na_lista(NoOperador* lista, Operador novo_operado
 
     novo_no->proximo = lista;
 
+    if (verificar_tipo_saida() == 1)
+    {
+        FILE *file = fopen("../b_output/operador/operadores.txt", "a");
+        if (file == NULL)
+        {
+            printf("Erro ao abrir o arquivo de operador!\n");
+            // free(novo_no); //
+            return lista;
+        }
+
+        novo_operador.status == 1;
+
+        fprintf(file,
+            "id:%d,nome:%s,usuario:%s,senha:%s,status:%d\n",
+            novo_operador.codigo,
+            novo_operador.nome,
+            novo_operador.usuario,
+            novo_operador.senha,
+            novo_operador.status);
+            
+        fclose(file);
+        printf("Operadpr salvo com sucesso!!\n");
+    }
+
+    else if (verificar_tipo_saida() == 2)
+    {
+        FILE *file = fopen("../b_output/operador/operadores.bin", "ab");
+        if (file == NULL) {
+            printf("Erro ao abrir o arquivo binário de operador!\n");
+            // free(novo_no); // Descomente se 'novo_no' foi alocado antes
+            return lista;
+        }
+
+        novo_operador.status = 1;
+
+        if (fwrite(&novo_operador,sizeof(Operador),1,file) != 1)
+        {
+            printf("Erro ao escrever strcut em binario\n");
+        } 
+        else
+        {
+            printf("Strucut de operador salva com sucesso em operadores.bin!\n");
+            fclose(file);
+        }
+
+        
+    }
+
+    
+
     return novo_no;
 }
 
@@ -74,27 +124,107 @@ void atualizar_operador_por_codigo(NoOperador* lista, int codigo_busca, const ch
     
 }
 
-NoOperador* deletar_operador_por_codigo(NoOperador* lista, int codigo_busca){
-    NoOperador *atual = lista;
-    NoOperador *anterior = NULL;
-
-    while (atual != NULL && atual->dados.codigo != codigo_busca)
+int deletar_operador_por_codigo(NoOperador* lista, int codigo_busca){
+   if (verificar_tipo_saida() == 1) 
     {
-        anterior = atual;
-        atual = atual->proximo;
-    }
-    
-    if (atual == NULL) return lista;
+        FILE *file = fopen("../b_output/operador/operadores.txt", "r+");
+        if (file == NULL)
+        {
+            printf("erro ao abrir o arquivo original!\n");
+            
+            return 0;
+        }
 
-    if (anterior == NULL)
-    {
-        lista = atual->proximo;
-    }else{
-        anterior->proximo = atual-> proximo;
+        FILE *temp = fopen("../b_output/operador/operadores.txt", "w+");
+        if (temp == NULL)
+        {
+            printf("erro ao criar arquivo temporario!\n");
+            fclose(file);
+            return 0;
+        }
+
+        Operador c;
+        char linha[2048];
+        int encontrado = 0;
+
+        while (fgets(linha, sizeof(linha), file))
+        {
+            //lê os campos
+            sscanf(linha,
+                   "codigo:%d,nome:%49[^,],usuario:%59[^,],senha:%19[^,],status:%d",
+                   &c.codigo,
+                   c.nome,
+                   c.usuario,
+                   c.senha,
+                   &c.status);
+                   
+                
+                   
+
+            if (c.codigo == codigo_busca)
+            {
+                c.status = 0; //marca como inativo
+                encontrado = 1;
+            }
+            //reescreve a linha (atualizada ou não)
+            fprintf(temp,
+                   "codigo:%d,nome:%s,usuario:%s,senha:%s,status:%d",
+                   c.codigo,
+                   c.nome,
+                   c.usuario,
+                   c.senha,
+                   c.status);
+        }
+
+        fclose(file);
+        fclose(temp);
+       
+        //substitui o original pelo temporário
+        if (remove("../b_output/operador/operadores.txt") != 0)
+        {
+            perror("erro ao remover o arquivo original");
+            return 0;
+        }
+
+        if (rename("../b_output/operador/temp.txt", "../b_output/operador/operadores.txt") != 0)
+        {
+            perror("erro ao renomear o arquivo temporario");
+            return 0;
+        }
+
+        if (encontrado)
+        {
+            printf("operador com id %d marcado como inativo (status = 0).\n", codigo_busca);
+            return 1;
+        }
+        else
+        {
+            printf("operador com id %d nao encontrado.\n", codigo_busca);
+            return 0;
+        }
     }
-    
-    free(atual);
-    return lista;
+    //implementação do colega para BIN
+    else if (verificar_tipo_saida() == 2)
+    {
+        exibir_mensagem_operador("aviso:delecao binaria. responsa do colega.");
+        return 0; //aqui deveria ter a implementacao dele
+    }
+    //sua versão para memoria (modo 3)
+    else if (verificar_tipo_saida() == 3)
+    {
+        //busca ele com qualquer status para checar se existe
+        Operador *operador_existente = buscar_operador_por_codigo(lista, codigo_busca);
+        
+        //se a busca encontrar e ele estiver ativo (status 1), muda o status
+        if (operador_existente && operador_existente->status == 1)
+        {
+            operador_existente->status = 0; //seta pra inativo/deletado
+            return 1; //sucesso
+        }
+        //se nao achou ou ja estava inativo, retorna falha
+        return 0;
+    }
+    return 0;
 }
     
 void deslocar_lista_operador(NoOperador* lista){

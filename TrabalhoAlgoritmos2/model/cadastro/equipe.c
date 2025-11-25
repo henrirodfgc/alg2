@@ -144,20 +144,108 @@ void atualizar_membro_por_codigo(NoEquipe* lista, int codigo_busca, const char* 
 //agora so muda o status pra 0 (soft delete)
 int deletar_membro_por_codigo_logico(NoEquipe* lista, int codigo_busca) {
     //se nao for modo memoria a responsa nao eh sua
-    if (verificar_tipo_saida() != 3) {
-        exibir_mensagem_equipe("");
+    if (verificar_tipo_saida() == 1) //lógica de deleção txt complexa do colega
+    {
+        FILE *file = fopen("../b_output/membro/membros.txt", "r+");
+        if (file == NULL)
+        {
+            printf("erro ao abrir o arquivo original!\n");
+            
+            return 0;
+        }
+
+        FILE *temp = fopen("../b_output/membro/temp.txt", "w+");
+        if (temp == NULL)
+        {
+            printf("erro ao criar arquivo temporario!\n");
+            fclose(file);
+            return 0;
+        }
+
+        MembroEquipe c;
+        char linha[2048];
+        int encontrado = 0;
+
+        while (fgets(linha, sizeof(linha), file))
+        {
+            //lê os campos
+            sscanf(linha,
+                   "codigo:%d,nome:%49[^,],cpf:%11[^,],funcao:%49[^,],valor_diaria_hora:%.2f,status:%d",
+                   &c.codigo,
+                   c.nome,
+                   c.cpf,
+                   c.funcao,
+                   c.valor_diaria_hora,
+                   &c.status);
+                   
+                
+                   
+
+            if (c.codigo == codigo_busca)
+            {
+                c.status = 0; //marca como inativo
+                encontrado = 1;
+            }
+            //reescreve a linha (atualizada ou não)
+            fprintf(temp,
+                     "codigo:%d,nome:%s,cpf:%s,funcao:%s,valor_diaria_hora:%.2f,status:%d",
+                     c.codigo,
+                     c.nome,
+                     c.cpf,
+                     c.funcao,
+                     c.valor_diaria_hora,
+                     c.status);
+        }
+
+        fclose(file);
+        fclose(temp);
+       
+        //substitui o original pelo temporário
+        if (remove("../b_output/membro/membros.txt") != 0)
+        {
+            perror("erro ao remover o arquivo original");
+            return 0;
+        }
+
+        if (rename("../b_output/membro/temp.txt", "../b_output/membro/membros.txt") != 0)
+        {
+            perror("erro ao renomear o arquivo temporario");
+            return 0;
+        }
+
+        if (encontrado)
+        {
+            printf("membro com id %d marcado como inativo (status = 0).\n", codigo_busca);
+            return 1;
+        }
+        else
+        {
+            printf("membro com id %d nao encontrado.\n", codigo_busca);
+            return 0;
+        }
+    }
+    //implementação do colega para BIN
+    else if (verificar_tipo_saida() == 2)
+    {
+        exibir_mensagem_equipe("aviso:delecao binaria. responsa do colega.");
+        return 0; //aqui deveria ter a implementacao dele
+    }
+    //sua versão para memoria (modo 3)
+    else if (verificar_tipo_saida() == 3)
+    {
+        //busca ele com qualquer status para checar se existe
+        MembroEquipe *membro_existente = buscar_membro_por_codigo(lista, codigo_busca);
+        
+        //se a busca encontrar e ele estiver ativo (status 1), muda o status
+        if (membro_existente && membro_existente->status == 1)
+        {
+            membro_existente->status = 0; //seta pra inativo/deletado
+            return 1; //sucesso
+        }
+        //se nao achou ou ja estava inativo, retorna falha
         return 0;
     }
-    
-    //busca o membro pra mudar o status (qualquer status)
-    MembroEquipe *membro_existente = buscar_membro_qualquer_status(lista, codigo_busca);
-    
-    //se a busca encontrar o cliente, muda o status
-    if (membro_existente) {
-        membro_existente->status = 0; //seta pra inativo/deletado
-        return 1; //sucesso!
-    }
-    return 0; //falha
+    return 0;
 }
 
 //novo: muda o status de 0 pra 1 (restauração)

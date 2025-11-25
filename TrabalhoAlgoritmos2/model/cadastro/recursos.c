@@ -136,32 +136,111 @@ void atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char
 
 
 //deleta o no da lista (d) - so funciona em modo memoria
-NoRecurso* deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
+int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
     //avisa se nao for modo memoria, a responsa nao eh sua
-    if (verificar_tipo_saida() != 3) {
-        exibir_mensagem_recursos("");
-        return lista;
-    }
-    
-    NoRecurso *atual = lista;
-    NoRecurso *anterior = NULL;
+    if (verificar_tipo_saida() == 1) //lógica de deleção txt complexa do colega
+    {
+        FILE *file = fopen("../b_output/recursos/recursos.txt", "r+");
+        if (file == NULL)
+        {
+            printf("erro ao abrir o arquivo original!\n");
+            
+            return 0;
+        }
 
-    //procura o no pra apagar (ignora o status pq vai sumir msm)
-    while (atual != NULL && atual->dados.codigo != codigo_busca) {
-        anterior = atual;
-        atual = atual->proximo;
-    }
+        FILE *temp = fopen("../b_output/recursos/temp.txt", "w+");
+        if (temp == NULL)
+        {
+            printf("erro ao criar arquivo temporario!\n");
+            fclose(file);
+            return 0;
+        }
 
-    if (atual == NULL) return lista; //se n achou volta a lista como ta
+        Equipamento c;
+        char linha[2048];
+        int encontrado = 0;
 
-    if (anterior == NULL) {
-        lista = atual->proximo; //se era a cabeca o proximo vira a cabeca
-    } else {
-        anterior->proximo = atual->proximo; //pula o no do meio
+        while (fgets(linha, sizeof(linha), file))
+        {
+            //lê os campos
+            sscanf(linha,
+                   "codigo:%d,descricaco:%99[^,],categoria:%49[^,],estoque:%d,preco_custo:%.2f,valor_locacao:%.2f,status:%d",
+                   &c.codigo,
+                   c.descricao,
+                   c.categoria,
+                   c.quantidade_estoque,
+                   c.preco_custo,
+                   c.valor_locacao,
+                   &c.status);
+                
+                   
+
+            if (c.codigo == codigo_busca)
+            {
+                c.status = 0; //marca como inativo
+                encontrado = 1;
+            }
+            //reescreve a linha (atualizada ou não)
+            fprintf(temp,
+                    "codigo:%d,descricaco:%s,categoria:%s,estoque:%d,preco_custo:%.2f,valor_locacao:%.2f,status:%d",
+                   c.codigo,
+                   c.descricao,
+                   c.categoria,
+                   c.quantidade_estoque,
+                   c.preco_custo,
+                   c.valor_locacao,
+                   c.status);
+        }
+
+        fclose(file);
+        fclose(temp);
+       
+        //substitui o original pelo temporário
+        if (remove("../b_output/recursos/recursos.txt") != 0)
+        {
+            perror("erro ao remover o arquivo original");
+            return 0;
+        }
+
+        if (rename("../b_output/recursos/temp.txt", "../b_output/recursos/recursos.txt") != 0)
+        {
+            perror("erro ao renomear o arquivo temporario");
+            return 0;
+        }
+
+        if (encontrado)
+        {
+            printf("recurso com id %d marcado como inativo (status = 0).\n", codigo_busca);
+            return 1;
+        }
+        else
+        {
+            printf("recurso com id %d nao encontrado.\n", codigo_busca);
+            return 0;
+        }
     }
-    
-    free(atual); //libera a memoria dele
-    return lista;
+    //implementação do colega para BIN
+    else if (verificar_tipo_saida() == 2)
+    {
+        exibir_mensagem_recursos("aviso:delecao binaria. responsa do colega.");
+        return 0; //aqui deveria ter a implementacao dele
+    }
+    //sua versão para memoria (modo 3)
+    else if (verificar_tipo_saida() == 3)
+    {
+        //busca ele com qualquer status para checar se existe
+        Equipamento *equipamento_existente = buscar_recurso_por_codigo(lista, codigo_busca);
+        
+        //se a busca encontrar e ele estiver ativo (status 1), muda o status
+        if (equipamento_existente && equipamento_existente->status == 1)
+        {
+            equipamento_existente->status = 0; //seta pra inativo/deletado
+            return 1; //sucesso
+        }
+        //se nao achou ou ja estava inativo, retorna falha
+        return 0;
+    }
+    return 0;
 }
 
 //mt critica: libera a memoria p n dar memory leak (so em memoria)

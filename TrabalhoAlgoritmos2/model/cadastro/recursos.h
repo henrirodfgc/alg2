@@ -37,7 +37,7 @@ Equipamento* buscar_recurso_por_codigo(NoRecurso* lista, int codigo_busca);
 void atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char* descricao, const char* categoria, int quantidade_estoque, float preco_custo, float valor_locacao);
 
 //d: deleta o no (fisicamente msm, so em memoria)
-NoRecurso* deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca);
+int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca);
 
 //mt critica: libera a memoria p n dar memory leak (so em memoria)
 void desalocar_lista_recursos(NoRecurso* lista); 

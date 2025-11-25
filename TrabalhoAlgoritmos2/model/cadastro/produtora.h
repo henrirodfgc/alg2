@@ -72,7 +72,7 @@ void atualizar_produtora_por_cnpj(NoProdutora* lista, const char* cnpj_busca,
 //   - cnpj_busca: CNPJ da produtora a ser removida
 // RETORNO: Ponteiro para o novo início da lista
 // =============================================
-NoProdutora* deletar_produtora_por_cnpj(NoProdutora* lista, const char* cnpj_busca);
+int deletar_produtora_por_cnpj(NoProdutora* lista, const char* cnpj_busca);
 
 // =============================================
 // FUNÇÃO: buscar_produtora_por_cnpj

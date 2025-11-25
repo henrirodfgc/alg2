@@ -66,16 +66,20 @@ void iniciar_recursos() {
                 break;
             }
             case 4: { //caso 4:deletar um equipamento (fisico)
-                codigo_busca = ler_codigo_para_operacao_recursos("deletar"); //pede o codigo pra 'apagar'
+                codigo_busca = ler_codigo_para_operacao_recursos("deletar");
+                if (codigo_busca == -1)
+                {
+                    exibir_mensagem_recursos("erro:id invalido ou entrada mal formatada");
+                    break;
+                }
+                 
                 
                 //tenta deletar o no e atualiza a cabeca da lista (so deleta em memoria)
-                NoRecurso *antiga_lista = listaRecursos;
-                listaRecursos = deletar_recurso_por_codigo(listaRecursos, codigo_busca);
-                
-                if (antiga_lista == listaRecursos) {
-                    exibir_mensagem_recursos("erro:nenhum equipamento encontrado para deletar.");
-                } else {
-                    exibir_mensagem_recursos("equipamento deletado com sucesso.");
+                 //model muda o status do cliente pra 0 (inativar) e pronto
+                if(deletar_recurso_por_codigo(listaRecursos, codigo_busca)){
+                    printf("recurso deletado com sucesso!");
+                }else{
+                    printf("erro ao deletar recurso, talvez ja esteja inativo ou nao exista.");
                 }
                 break;
             }

@@ -90,9 +90,13 @@ void iniciar_operador(){
                 break;
             }
 
-            listaOperador = deletar_operador_por_codigo(listaOperador, codigo_busca);
-            exibir_mensagem_operador("Operador deletado com sucesso");
-            break;
+            int sucesso = deletar_operador_por_codigo(listaOperador, codigo_busca);
+                if (sucesso) {
+                exibir_mensagem_operador("operador deletado com sucesso");
+                } else {
+                    exibir_mensagem_operador("Erro ao deletar ou Operador não encontrado");
+                }
+                break;
         }
         
         case 5: {

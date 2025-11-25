@@ -120,8 +120,12 @@ void iniciar_produtora() {
                 }
                 
                 // Remove produtora da lista
-                listaProdutora = deletar_produtora_por_cnpj(listaProdutora, cnpj_busca);
+                int sucesso = deletar_produtora_por_cnpj(listaProdutora, cnpj_busca);
+                if (sucesso) {
                 exibir_mensagem_produtora("Produtora deletada com sucesso");
+                } else {
+                    exibir_mensagem_produtora("Erro ao deletar ou Produtora não encontrada");
+                }
                 break;
             }
 
