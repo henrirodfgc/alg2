@@ -1,1 +1,1 @@
-id:2147483647,nome:565656565,cpf:656565656,funcao:5656565656,valor_diaria_hora:5656565760.00,status:1
+codigo:0,nome:,cpf:,funcao:,valor_diaria_hora:0.00,status:0

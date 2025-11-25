@@ -264,7 +264,7 @@ void restaurar_cliente_por_id(NoCliente *lista, int id_busca)
 }
 
 //atualiza os dados de um client q já existe pelo id
-void atualizar_cliente_por_id(NoCliente *lista, int id_busca, const char *nome_cliente, int idade, const char *nome_razao, const char *cpf, const char *cnpj, const char *endereco, const char *email, const char *telefone, const char *nome_contato)
+int atualizar_cliente_por_id(NoCliente *lista, int id_busca, const char *nome_cliente, int idade, const char *nome_razao, const char *cpf, const char *cnpj, const char *endereco, const char *email, const char *telefone, const char *nome_contato)
 {
     Cliente *cliente_existente = buscar_cliente_por_id(lista, id_busca);
 
@@ -292,11 +292,101 @@ void atualizar_cliente_por_id(NoCliente *lista, int id_busca, const char *nome_c
         cliente_existente->nome_contato[sizeof(cliente_existente->nome_contato) - 1] = '\0';
 
         //avisa se nao for modo memoria
-        if (verificar_tipo_saida() != 3)
+        if (verificar_tipo_saida() == 1)
         {
-            exibir_mensagem("aviso:atualizacao em arquivo");
+            FILE *file = fopen("../b_output/clientes/cliente.txt", "r+");
+            if (file==NULL)
+            {
+                printf("erro ao abrir o arquivo original!\n");
+            
+                return 0;
+            }
+
+            FILE *temp = fopen("../b_output/clientes/temp.txt", "w+");
+            if (temp == NULL)
+            {
+                printf("erro ao criar arquivo temporario!\n");
+                fclose(file);
+                return 0;
+            }
+
+            Cliente c;
+            char linha[2048];
+            int encontrado = 0;
+
+            while (fgets(linha, sizeof(linha), file))
+         {
+            //lê os campos
+            sscanf(linha,
+                   "id:%d,nome_cliente:%49[^,],nome_razao:%99[^,],idade:%d,endereco:%255[^,],cpf:%11[^,],cnpj:%14[^,],email:%49[^,],telefone:%19[^,],nome_contato:%49[^,],status:%d",
+                   &c.id,
+                   c.nome_cliente,
+                   c.nome_razao,
+                   &c.idade,
+                   c.endereco,
+                   c.cpf,
+                   c.cnpj,
+                   c.email,
+                   c.telefone,
+                   c.nome_contato,
+                   &c.status);
+
+            if (c.id == cliente_existente->id)
+            {
+                fprintf(temp,
+                    "id:%d,nome_cliente:%s,nome_razao:%s,idade:%d,endereco:%s,cpf:%s,cnpj:%s,email:%s,telefone:%s,nome_contato:%s,status:%d\n",
+                    cliente_existente->id,
+                    cliente_existente->nome_cliente,
+                    cliente_existente->nome_razao,
+                    cliente_existente->idade,
+                    cliente_existente->endereco,
+                    cliente_existente->cpf,
+                    cliente_existente->cnpj,
+                    cliente_existente->email,
+                    cliente_existente->telefone,
+                    cliente_existente->nome_contato,
+                    cliente_existente->status);
+
+                    encontrado = 1;
+            
+            } else {
+                fprintf(temp, "%s", linha);
+             }
+            
+            
+         }
+
+            fclose(file);
+            fclose(temp);
+             //substitui o original pelo temporário
+            if (remove("../b_output/clientes/cliente.txt") != 0)
+            {
+                perror("erro ao remover o arquivo original");
+                return 0;
+            }
+
+            if (rename("../b_output/clientes/temp.txt", "../b_output/clientes/cliente.txt") != 0)
+            {
+                perror("erro ao renomear o arquivo temporario");
+                return 0;
+            }
+
+            if (encontrado)
+            {
+                printf("cliente com id %d atualizado.\n", id_busca);
+                return 1;
+            }
+            else
+            {
+                printf("cliente com id %d nao encontrado.\n", id_busca);
+                return 0;
+            }
+
+
+            
         }
     }
+    return 1;
 }
 
 void desalocar_lista_clientes(NoCliente *lista)

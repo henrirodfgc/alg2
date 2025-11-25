@@ -110,7 +110,7 @@ NoProdutora* adicionar_produtora_na_lista(NoProdutora* lista, Produtora nova_pro
             nova_produtora.margem_de_lucro_padrao,
             nova_produtora.status);
         fclose(file);
-        printf("Fornecedor salvo com sucesso!!\n");
+        printf("Produtora salvo com sucesso!!\n");
     } 
     
     else if (verificar_tipo_saida() == 2)

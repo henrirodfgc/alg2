@@ -47,7 +47,9 @@ NoOperador* adicionar_operador_na_lista(NoOperador* lista, Operador novo_operado
             return lista;
         }
 
+        
         novo_operador.status == 1;
+        printf ("statua ativado");
 
         fprintf(file,
             "id:%d,nome:%s,usuario:%s,senha:%s,status:%d\n",
@@ -58,7 +60,7 @@ NoOperador* adicionar_operador_na_lista(NoOperador* lista, Operador novo_operado
             novo_operador.status);
             
         fclose(file);
-        printf("Operadpr salvo com sucesso!!\n");
+        printf("Operador salvo com sucesso!!\n");
     }
 
     else if (verificar_tipo_saida() == 2)
