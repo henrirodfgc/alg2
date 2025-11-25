@@ -15,7 +15,7 @@ int ler_codigo_para_operacao(const char* operacao) {
     return codigo;
 }
 
-// Mostra um membro com todos os campos bonitinho
+// Mostra um membro com todos os campos
 void exibir_membro(const MembroEquipe* membro) {
     if (!membro) {
         printf("+--------------------------+\n");

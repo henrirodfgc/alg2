@@ -3,12 +3,11 @@
 #include <string.h>
 #include "equipe.h"
 #include "../../controller/saida.h"
-#include "../../view/cadastro/equipe_view.h" //pra exibir mensagem de erro
+#include "../../view/cadastro/equipe_view.h" 
 
-//--- funcoes auxiliares ---
 //copia tudo de um membro pro outro
 void copiar_dados_equipe(MembroEquipe *destino, const MembroEquipe *origem) {
-    if (!origem || !destino) return; //se for null sai fora pra n dar bo
+    if (!origem || !destino) return; //se for n funciona
     
     destino->codigo = origem->codigo;
     destino->valor_diaria_hora = origem->valor_diaria_hora; //copia o valor da diaria/hora
@@ -35,7 +34,7 @@ MembroEquipe *buscar_membro_qualquer_status(NoEquipe *lista, int codigo_busca) {
     return NULL; //nao achou
 }
 
-//--- funcoes de manipulacao de lista ligada (crud) ---
+//crud
 //cria um novo no e poe ele no comeco da lista (create)
 NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro) {
     
@@ -46,7 +45,6 @@ NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro) {
         return lista; //se n der pra alocar a gente so retorna a lista antiga
     }
 
-    
     copiar_dados_equipe(&(novo_no->dados), &novo_membro);
 
     novo_no->proximo = lista;
@@ -57,7 +55,6 @@ NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro) {
         if (file == NULL)
         {
             printf("Erro ao abrir o arquivo de membros!\n");
-            // free(novo_no); //
             return lista;
         }
 
@@ -80,7 +77,6 @@ NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro) {
         FILE *file = fopen("../b_output/membro/membros.bin", "ab");
         if (file == NULL) {
             printf("Erro ao abrir o arquivo binário de membros!\n");
-            // free(novo_no); // Descomente se 'novo_no' foi alocado antes
             return lista;
         }
 
@@ -143,7 +139,7 @@ void atualizar_membro_por_codigo(NoEquipe* lista, int codigo_busca, const char* 
 //deleta o nó da lista vira INATIVAR (soft delete)
 //agora so muda o status pra 0 (soft delete)
 int deletar_membro_por_codigo_logico(NoEquipe* lista, int codigo_busca) {
-    //se nao for modo memoria a responsa nao eh sua
+    
     if (verificar_tipo_saida() != 3) {
         exibir_mensagem_equipe("");
         return 0;
@@ -174,14 +170,13 @@ void restaurar_membro_por_codigo(NoEquipe* lista, int codigo_busca) {
     }
 }
 
-//função essencial: libera a memória de geral
+//libera a memória
 void desalocar_lista_equipe(NoEquipe* lista) {
-    //so faz se estiver em modo memoria
     if (verificar_tipo_saida() != 3) return;
     
     NoEquipe *atual = lista;
     NoEquipe *proximo_no;
-    //roda a lista toda dando free em cada nó
+    //
     while (atual != NULL) {
         proximo_no = atual->proximo; 
         free(atual);

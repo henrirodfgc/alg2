@@ -2,33 +2,31 @@
 #include <stdlib.h>
 #include <string.h>
 #include "recursos.h"
-#include "../../controller/saida.h" //pra saber se ta em modo memoria (critico!)
-#include "../../view/cadastro/recursos_view.h" //p exibir mensagem de erro
+#include "../../controller/saida.h" 
+#include "../../view/cadastro/recursos_view.h" 
 
-//--- funcoes auxiliares ---
-//copia tudo de um recurso pro outro na moral
+//copia tudo de um recurso pro outro 
 void copiar_dados_recurso(Equipamento *destino, const Equipamento *origem) {
-    //verifica se eh nulo se for vaza
+    //verifica se eh nulo se for n funciona
     if (!origem || !destino) return; 
 
-    //copia os int e float direto
+    //copia os int e float
     destino->codigo = origem->codigo;
     destino->quantidade_estoque = origem->quantidade_estoque;
     destino->preco_custo = origem->preco_custo;
     destino->valor_locacao = origem->valor_locacao;
-    destino->status = origem->status; //copia o status tbm
+    destino->status = origem->status; 
     
-    //copia segura das strings (strncpy pra n dar errado)
+    //copia das strings
     strncpy(destino->descricao, origem->descricao, sizeof(destino->descricao) - 1);
-    destino->descricao[sizeof(destino->descricao) - 1] = '\0'; //garante o fim da string
+    destino->descricao[sizeof(destino->descricao) - 1] = '\0'; 
     strncpy(destino->categoria, origem->categoria, sizeof(destino->categoria) - 1);
-    destino->categoria[sizeof(destino->categoria) - 1] = '\0'; //garante o fim da string
+    destino->categoria[sizeof(destino->categoria) - 1] = '\0'; 
 }
 
-//funcoes de manipulacao de lista ligada (crud)
+//crud
 //cria um novo no e poe ele no comeco da lista (c)
 NoRecurso* adicionar_recurso_na_lista(NoRecurso* lista, Equipamento novo_recurso) {
-    //avisa se nao for modo memoria, a responsabilidade nao eh sua
    
     NoRecurso *novo_no = (NoRecurso*) malloc(sizeof(NoRecurso)); //pede memoria pro no novo
     
@@ -127,7 +125,6 @@ void atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char
         strncpy(recurso_existente->categoria, categoria, sizeof(recurso_existente->categoria) - 1);
         recurso_existente->categoria[sizeof(recurso_existente->categoria) - 1] = '\0';
         
-        //avisa se nao for memoria (a responsa do arquivo nao eh sua)
         if (verificar_tipo_saida() != 3) {
             exibir_mensagem_recursos("");
         }
@@ -135,9 +132,8 @@ void atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char
 }
 
 
-//deleta o no da lista (d) - so funciona em modo memoria
+//deleta o no da lista (d)
 NoRecurso* deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
-    //avisa se nao for modo memoria, a responsa nao eh sua
     if (verificar_tipo_saida() != 3) {
         exibir_mensagem_recursos("");
         return lista;
@@ -146,7 +142,7 @@ NoRecurso* deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
     NoRecurso *atual = lista;
     NoRecurso *anterior = NULL;
 
-    //procura o no pra apagar (ignora o status pq vai sumir msm)
+    //procura o no pra apagar
     while (atual != NULL && atual->dados.codigo != codigo_busca) {
         anterior = atual;
         atual = atual->proximo;
@@ -164,11 +160,10 @@ NoRecurso* deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
     return lista;
 }
 
-//mt critica: libera a memoria p n dar memory leak (so em memoria)
+//libera a memoria p n dar memory leak 
 void desalocar_lista_recursos(NoRecurso* lista) {
-    //so faz se tiver em modo memoria
     if (verificar_tipo_saida() != 3) {
-        return; //nao desaloca se nao eh modo memoria
+        return; 
     }
     
     NoRecurso *atual = lista;
@@ -183,7 +178,6 @@ void desalocar_lista_recursos(NoRecurso* lista) {
 
 //pra mostrar geral (so os ativos em memoria)
 void exibir_todos_recursos(NoRecurso* lista) {
-    //so exibe se estiver em modo memoria
     if (verificar_tipo_saida() != 3) {
         exibir_mensagem_recursos("");
         return;
@@ -209,7 +203,7 @@ void exibir_todos_recursos(NoRecurso* lista) {
     exibir_rodape_lista_recursos(); //chama a view pra mostrar o rodape
 }
 
-//funcao auxiliar que so retorna a lista no modo memoria
+//funcao auxiliar que so retorna a lista
 NoRecurso* carregar_recursos(NoRecurso* lista) {
     return lista; //a lista ja ta no escopo global ent so retorna ela
 }

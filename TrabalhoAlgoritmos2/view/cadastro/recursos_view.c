@@ -40,9 +40,9 @@ void ler_dados_atualizacao_recurso(char* descricao, char* categoria, int* quanti
     printf("novo valor de locacao diaria (r$):"); scanf("%f", valor_locacao);
 }
 
-//mostra um equipamento com todos os campos bonitinho
+//mostra um equipamento com todos os campos
 void exibir_recurso(const Equipamento* recurso) {
-    //se o ponteiro for nulo vaza
+    //se o ponteiro for nulo n funciona
     if (!recurso) {
         printf("+--------------------------+\n");
         printf("| recurso inexistente!     |\n");
