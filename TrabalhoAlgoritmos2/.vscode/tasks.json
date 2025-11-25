@@ -4,7 +4,6 @@
         {
             "label": "make build (Compilar)",
             "type": "shell",
-            // Use as barras INVERTIDAS DUPLAS para o JSON aceitar:
             "command": "C:\\msys64\\mingw64\\bin\\mingw32-make.exe", 
             "args": [],
             "group": {
@@ -30,7 +29,6 @@
         {
             "label": "make clean (Limpar)",
             "type": "shell",
-            // Use as barras INVERTIDAS DUPLAS aqui também:
             "command": "C:\\MinGW\\bin\\mingw32-make.exe",
             "args": ["clean"],
             "group": "clean"

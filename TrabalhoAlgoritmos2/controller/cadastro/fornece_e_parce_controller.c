@@ -5,7 +5,7 @@
 #include "../../view/cadastro/fornece_e_parce_view.h"
 #include "fornece_e_parce_controller.h"
 
-// VARIÁVEL ESTÁTICA - mantém os dados entre chamadas sem precisar do main
+//mantém os dados entre chamadas sem precisar do main
 static NoFornecedores_e_parceiros *listaFornecedores_e_parceiros = NULL;
 
 void iniciar_fornecedor_e_parceiro() {
@@ -97,7 +97,6 @@ void iniciar_fornecedor_e_parceiro() {
                     fgets(telefone, sizeof(telefone), stdin);
                     telefone[strcspn(telefone, "\n")] = 0;
 
-                    // CORREÇÃO: Menu para seleção de serviço
                     int opcao_servico;
                     printf("\nNovo Serviço:\n");
                     printf("1 - Buffet\n");

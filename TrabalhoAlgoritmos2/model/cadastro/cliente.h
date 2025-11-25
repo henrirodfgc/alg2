@@ -24,18 +24,13 @@ int status; //campo do soft delete
 } Cliente;
 
 //o nó da lista ligada pra dar pra ter vários clients ao mesmo tempo
-// Sem espaços invisíveis
 struct NoCliente {
 Cliente dados; //guarda os dados do client mesmo
 NoCliente *proximo; //ponteiro pro proximo registro da lista
 };
 
 
-// =============================================
-// funções de manipulação (crud)
 // operações do model
-// =============================================
-
 //cria o nó copia os dados e retorna a nova cabeça da lista
 NoCliente* adicionar_cliente_na_lista(NoCliente* lista, Cliente novo_cliente);
 
@@ -45,13 +40,13 @@ void atualizar_cliente_por_id(NoCliente* lista, int id_busca, const char* nome_c
 //agora so muda o status pra 0 (soft delete)
 int deletar_cliente_por_id_logico(NoCliente* lista, int id_busca);
 
-//novo: muda o status de 0 pra 1
+//muda o status de 0 pra 1
 void restaurar_cliente_por_id(NoCliente* lista, int id_busca); 
 
 //procura um client pelo id e retorna o ponteiro pra struct Cliente
 Cliente* buscar_cliente_por_id(NoCliente* lista, int id_busca);
 
-//mt crítica: libera a memória de todos os nós da lista pra n dar memory leak
+//libera a memória de todos os nós da lista pra n dar memory leak
 void desalocar_lista_clientes(NoCliente* lista); 
 
 //função pra mostrar todos os clientes
@@ -60,7 +55,7 @@ void exibir_todos_clientes(NoCliente* lista);
 //função pra mostrar os clientes inativos também
 void exibir_todos_clientes_e_inativos(NoCliente* lista);
 
-//novo: carrega os dados do arquivo para a lista (critico pra iniciar!)
+//carrega os dados do arquivo para a lista (critico pra iniciar!)
 NoCliente* carregar_clientes(NoCliente* lista); 
 
 #endif

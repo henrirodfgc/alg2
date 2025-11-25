@@ -22,10 +22,7 @@ MembroEquipe dados;  //guarda os dados do funcionario
 struct NoEquipe *proximo; //aponta para o proximo registro da lista
 } NoEquipe;
 
-//=============================================
-//FUNÇÕES DE MANIPULAÇÃO (CRUD)
 //operações do Model
-//=============================================
 
 //cria o nó copia os dados e retorna a nova cabeça da lista
 NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro);
@@ -34,19 +31,15 @@ NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro);
 void atualizar_membro_por_codigo(NoEquipe* lista, int codigo_busca, const char* nome, const char* cpf, const char* funcao, float valor_diaria_hora);
 
 //remove o nó libera a memoria e retorna a nova cabeça da lista
-// (mantendo o nome original do seu código, mesmo que não seja usado para soft delete)
 NoEquipe* deletar_membro_por_codigo(NoEquipe* lista, int codigo_busca);
-
-// <--- NOVOS PROTÓTIPOS PARA SOFT DELETE!
 int deletar_membro_por_codigo_logico(NoEquipe* lista, int codigo_busca);
 void restaurar_membro_por_codigo(NoEquipe* lista, int codigo_busca);
 void exibir_membros_inativos(NoEquipe* lista);
-// ------------------------------------------
 
 //procura um membro pelo código e retorna o ponteiro pra struct MembroEquipe
 MembroEquipe* buscar_membro_por_codigo(NoEquipe* lista, int codigo_busca);
 
-//mt crítica: libera a memória de todos os nós da lista pra n dar memory leak
+//libera a memória de todos os nós da lista pra n dar memory leak
 void desalocar_lista_equipe(NoEquipe* lista); 
 
 //função pra mostrar todos os membros (pra view usar)

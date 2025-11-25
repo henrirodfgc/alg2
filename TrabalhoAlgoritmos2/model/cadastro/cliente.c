@@ -1,24 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <direct.h> //pra criar pasta
-#include <errno.h> //pra checar erro de pasta
-#include <windows.h> //pra windows.h
+#include <direct.h> 
+#include <errno.h> 
+#include <windows.h> 
 #include "cliente.h"
 #include "../../view/cadastro/cliente_view.h"
-#include "../../controller/saida.h" //pra checar o modo de saida
+#include "../../controller/saida.h" 
 
-//--- funcoes auxiliares ---
 //copia tudo de uma struct cliente pra outra de forma segura
 void copiar_dados(Cliente *destino, const Cliente *origem)
 {
-    if (!origem || !destino) return; //se for null sai fora pra n dar bo
+    if (!origem || !destino) return; //se for null n funciona
 
     destino->id = origem->id;
     destino->idade = origem->idade;
-    destino->status = origem->status; //agora copia o status tbm!
+    destino->status = origem->status; 
 
-    //cópia segura de todas as strings (strncpy é vida)
+    //cópia segura de todas as strings
+    //o -1 serve pra reservar um espaço pro terminador nulo (\0)
+    //\0 serve pra indicar q a string acabou
     strncpy(destino->nome_cliente, origem->nome_cliente, sizeof(destino->nome_cliente) - 1);
     destino->nome_cliente[sizeof(destino->nome_cliente) - 1] = '\0';
     strncpy(destino->nome_razao, origem->nome_razao, sizeof(destino->nome_razao) - 1);
@@ -53,17 +54,17 @@ Cliente *buscar_cliente_qualquer_status(NoCliente *lista, int id_busca)
     return NULL; //não achou
 }
 
-//--- funcoes de manipulacao de lista ligada (crud) ---
+//crud
 //cria um novo nó e põe ele no começo da lista (create)
 NoCliente *adicionar_cliente_na_lista(NoCliente *lista, Cliente novo_cliente)
 {
-    //verifica se existe a pasta, se não existir ele cria (logica do colega)
+    //verifica se existe a pasta, se não existir ele cria
     if (_mkdir("../b_output/clientes") == -1 && errno != EEXIST)
     {
         printf("erro ao criar pasta clientes!\n");
     }
 
-    //salva no arquivo txt se o tipo saida for txt (logica do colega)
+    //salva no arquivo txt se o tipo saida for txt
     if (verificar_tipo_saida() == 1)
     {
         //cria o arquivo
@@ -86,7 +87,7 @@ NoCliente *adicionar_cliente_na_lista(NoCliente *lista, Cliente novo_cliente)
         fclose(file);
         printf("arquivo salvo com sucesso!\n");
     }
-    //salva no arquivo bin se o tipo saida for bin (logica do colega)
+    //salva no arquivo bin se o tipo saida for bin 
     else if (verificar_tipo_saida() == 2)
     {
         FILE *file = fopen("../b_output/clientes/cliente.bin", "ab");
@@ -102,7 +103,7 @@ NoCliente *adicionar_cliente_na_lista(NoCliente *lista, Cliente novo_cliente)
             printf("struct adicionada com sucesso ao final do arquivo.\n");
         fclose(file);
     }
-    //salva no arquivo txt se o tipo saida for mem (sua parte)
+    //salva no arquivo txt se o tipo saida for mem
     else if (verificar_tipo_saida() == 3)
     {
         NoCliente *novo_no = (NoCliente *)malloc(sizeof(NoCliente));
@@ -141,8 +142,7 @@ Cliente *buscar_cliente_por_id(NoCliente *lista, int id_busca)
 //muda o status pra 0 (soft delete)
 int deletar_cliente_por_id_logico(NoCliente *lista, int id_busca)
 {
-    //implementação do colega para TXT
-    if (verificar_tipo_saida() == 1) //lógica de deleção txt complexa do colega
+    if (verificar_tipo_saida() == 1) 
     {
         FILE *file = fopen("../b_output/clientes/cliente.txt", "r+");
         if (file == NULL)
@@ -220,13 +220,12 @@ int deletar_cliente_por_id_logico(NoCliente *lista, int id_busca)
             return 0;
         }
     }
-    //implementação do colega para BIN
+    //implementação BIN
     else if (verificar_tipo_saida() == 2)
     {
-        exibir_mensagem("aviso:delecao binaria. responsa do colega.");
-        return 0; //aqui deveria ter a implementacao dele
+        exibir_mensagem("aviso:delecao binaria.");
+        return 0; 
     }
-    //sua versão para memoria (modo 3)
     else if (verificar_tipo_saida() == 3)
     {
         //busca ele com qualquer status para checar se existe
@@ -244,17 +243,17 @@ int deletar_cliente_por_id_logico(NoCliente *lista, int id_busca)
     return 0;
 }
 
-//novo: muda o status de 0 pra 1 (restauração)
+//muda o status de 0 pra 1 (restauração)
 void restaurar_cliente_por_id(NoCliente *lista, int id_busca)
 {
-    //implementação do colega para TXT/BIN
+    //implementação TXT/BIN
     if (verificar_tipo_saida() == 1 || verificar_tipo_saida() == 2)
     {
-        exibir_mensagem("aviso:restauracao em arquivo. responsa do colega.");
-        return; //aqui deveria ter a implementacao dele
+        exibir_mensagem("aviso:restauracao em arquivo.");
+        return; 
     }
     
-    //sua versão para memoria (modo 3)
+    //memoria
     Cliente *cliente_existente = buscar_cliente_qualquer_status(lista, id_busca);
 
     //se encontrou e ele estava inativo (status 0), reativa
@@ -274,7 +273,7 @@ void atualizar_cliente_por_id(NoCliente *lista, int id_busca, const char *nome_c
         //o status continua 1, a gente só atualiza os outros campos
         cliente_existente->idade = idade;
 
-        //atualiza os campos string com cópia segura (strncpy)
+        //atualiza os campos string
         strncpy(cliente_existente->nome_cliente, nome_cliente, sizeof(cliente_existente->nome_cliente) - 1);
         cliente_existente->nome_cliente[sizeof(cliente_existente->nome_cliente) - 1] = '\0';
         strncpy(cliente_existente->nome_razao, nome_razao, sizeof(cliente_existente->nome_razao) - 1);
@@ -295,12 +294,11 @@ void atualizar_cliente_por_id(NoCliente *lista, int id_busca, const char *nome_c
         //avisa se nao for modo memoria
         if (verificar_tipo_saida() != 3)
         {
-            exibir_mensagem("aviso:atualizacao em arquivo. responsa do colega.");
+            exibir_mensagem("aviso:atualizacao em arquivo");
         }
     }
 }
 
-//função essencial: libera a memória
 void desalocar_lista_clientes(NoCliente *lista)
 {
     if (verificar_tipo_saida() != 3) return; //so desaloca se for modo memoria
@@ -320,7 +318,7 @@ void desalocar_lista_clientes(NoCliente *lista)
 //so mostra quem tem status 1
 void exibir_todos_clientes(NoCliente *lista)
 {
-    //Logica para TXT (do colega)
+    //Logica para TXT
     if (verificar_tipo_saida() == 1)
     {
         printf("\n==== lista de clientes cadastrados ====\n");
@@ -359,7 +357,7 @@ void exibir_todos_clientes(NoCliente *lista)
         fclose(file);
         printf("=======================================\n");
     }
-    //Logica para BIN (do colega)
+    //Logica para BIN
     else if (verificar_tipo_saida() == 2)
     {
         printf("\n==== lista de clientes cadastrados ====\n");
@@ -381,7 +379,7 @@ void exibir_todos_clientes(NoCliente *lista)
         fclose(file);
         printf("=======================================\n");
     }
-    //sua logica para MEMORIA
+    //MEMORIA
     else if (verificar_tipo_saida() == 3)
     {
         NoCliente *atual = lista;
@@ -409,10 +407,10 @@ void exibir_todos_clientes(NoCliente *lista)
     }
 }
 
-//novo: função pra mostrar só os clientes inativos (status 0)
+//função pra mostrar só os clientes inativos (status 0)
 void exibir_todos_clientes_e_inativos(NoCliente *lista)
 {
-    //Logica para TXT (do colega)
+    //Logica para TXT
     if (verificar_tipo_saida() == 1)
     {
         printf("\n==== lista de clientes inativos (deletados) ====\n");
@@ -449,7 +447,7 @@ void exibir_todos_clientes_e_inativos(NoCliente *lista)
         fclose(file);
         printf("=======================================\n");
     }
-    //Logica para BIN (do colega)
+    //Logica para BIN
     else if (verificar_tipo_saida() == 2)
     {
         printf("\n==== lista de clientes inativos (deletados) ====\n");
@@ -507,7 +505,7 @@ NoCliente* carregar_clientes(NoCliente* lista) {
     
     int tipo_saida = verificar_tipo_saida();
     
-    //logica do colega para carregar TXT
+    //logica TXT
     if (tipo_saida == 1) { 
         FILE *file = fopen("../b_output/clientes/cliente.txt", "r");
         if (file == NULL) return lista; //se o arquivo nao existe, retorna lista vazia
@@ -542,7 +540,7 @@ NoCliente* carregar_clientes(NoCliente* lista) {
         }
         fclose(file);
     } 
-    //logica do colega para carregar BIN
+    //logica BIN
     else if (tipo_saida == 2) { 
         FILE *file = fopen("../b_output/clientes/cliente.bin", "rb");
         if (file == NULL) return lista; //se o arquivo nao existe, retorna lista vazia

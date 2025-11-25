@@ -13,7 +13,8 @@ int verificar_tipo_saida (){
     }
     
     char tipo[10]; //ler linha do ficheiro
-    if (fgets(tipo, sizeof(tipo),file)==NULL)  //vai ler ate  sizeof(tipo) caracteres. Se falhar, retorna NULL, imprime o erro, fecha arquivo, retorna 0.
+    if (fgets(tipo, sizeof(tipo),file)==NULL)  //vai ler ate  sizeof(tipo) caracteres. se falhar retorna null e imprime o erro 
+                                               //fecha arquivo, retorna 0.
     {
         printf("Erro ao ler o arquivo tipo_file.txt.\n");
         fclose(file);

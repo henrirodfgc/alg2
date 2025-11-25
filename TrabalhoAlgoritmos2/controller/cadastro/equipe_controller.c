@@ -9,22 +9,19 @@
 //lista ligada p guardar a equipe
 NoEquipe *listaEquipe = NULL; 
 
-//funcao q vai ter o menu e a logica principal da Equipe
+//funcao q vai ter o menu e a logica principal da equipe
 void iniciar_equipe() {
-    int opcao; //p guardar o que o user escolher
+    int opcao; //p guardar o que o usuario escolher
     int codigo_busca; //p achar o membro
     MembroEquipe temp; //membro temporário p leitura
-
-    //o carregar recursos vai ser implementado pelo seu colega
-    //listaEquipe = carregar_equipe(listaEquipe); 
     
     //loop principal da Equipe
     do {
-        //chamam a função da View p exibir o menu
+        //chamam a função da view p exibir o menu
         opcao = exibir_menu_equipe(); //
 
         switch (opcao) {
-            case 1: { //c: criar membro
+            case 1: { //criar membro
                 temp = ler_dados_membro(); //view lê todos os dados
 
                 //confere se o código já existe (precisa ser único)
@@ -38,9 +35,9 @@ void iniciar_equipe() {
                 exibir_mensagem_equipe("membro da equipe criado com sucesso!");
                 break;
             }
-            case 2: { //u: atualizar membro
+            case 2: { //atualizar membro
                 codigo_busca = ler_codigo_para_operacao("atualizar"); //pede o código
-                MembroEquipe *membro_encontrado = buscar_membro_por_codigo(listaEquipe, codigo_busca); //busca (Model)
+                MembroEquipe *membro_encontrado = buscar_membro_por_codigo(listaEquipe, codigo_busca); //busca 
 
                 if (membro_encontrado == NULL) {
                     exibir_mensagem_equipe("erro:membro nao encontrado ou codigo invalido.");
@@ -50,7 +47,7 @@ void iniciar_equipe() {
                     float valor_diaria_hora;
 
                     //view preenche essas variáveis
-                    ler_dados_atualizacao_membro(nome, cpf, funcao, &valor_diaria_hora); //
+                    ler_dados_atualizacao_membro(nome, cpf, funcao, &valor_diaria_hora); 
 
                     //model atualiza a parada lá
                     atualizar_membro_por_codigo(listaEquipe, codigo_busca, nome, cpf, funcao, valor_diaria_hora);
@@ -59,15 +56,15 @@ void iniciar_equipe() {
                 }
                 break;
             }
-            case 3: { //r: exibir um membro
+            case 3: { //exibir um membro
                 codigo_busca = ler_codigo_para_operacao("exibir"); //pede o código
-                MembroEquipe *membro_encontrado = buscar_membro_por_codigo(listaEquipe, codigo_busca); //busca (Model)
+                MembroEquipe *membro_encontrado = buscar_membro_por_codigo(listaEquipe, codigo_busca); //busca 
                 
                 //view exibe ou avisa que não achou
                 exibir_membro(membro_encontrado); //
                 break;
             }
-            case 4: { //d: inativar membro (soft delete) <--- MUDANCA AQUI!
+            case 4: { //inativar membro
                 codigo_busca = ler_codigo_para_operacao("inativar"); //pede o código
 
                 if (deletar_membro_por_codigo_logico(listaEquipe, codigo_busca)) {
@@ -77,35 +74,32 @@ void iniciar_equipe() {
                 }
                 break;
             }
-            case 5: { //r: listar todos (ativos)
+            case 5: { //listar todos (ativos)
                 exibir_todos_membros(listaEquipe);
                 break;
             }
-            case 6: { //restaurar membro (reativar) <--- NOVO CASE!
+            case 6: { //restaurar membro
                 codigo_busca = ler_codigo_para_operacao("restaurar");
-                
                 restaurar_membro_por_codigo(listaEquipe, codigo_busca);
-                
-                //checa se deu certo buscando (agora como ativo)
-                if (buscar_membro_por_codigo(listaEquipe, codigo_busca) != NULL) {
+                if (buscar_membro_por_codigo(listaEquipe, codigo_busca) != NULL) { //checa se deu certo
                     exibir_mensagem_equipe("membro restaurado para ativo.");
                 } else {
                     exibir_mensagem_equipe("erro:membro nao encontrado ou ja estava ativo.");
                 }
                 break;
             }
-            case 7: { //listar so inativos <--- NOVO CASE!
+            case 7: { //listar so inativos
                 exibir_membros_inativos(listaEquipe);
                 break;
             }
             case 0:
-                exibir_mensagem_equipe("saindo do modulo equipe. tchau!");
+                exibir_mensagem_equipe("saindo do modulo equipe.");
                 break;
             default:
                 exibir_mensagem_equipe("opcao invalida. tente novamente.");
         }
     } while (opcao != 0);
 
-    //libera a memória no final do uso
+    //libera a memória depois q terminar de usar
     desalocar_lista_equipe(listaEquipe); 
 }

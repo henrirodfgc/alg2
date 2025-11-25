@@ -16,14 +16,12 @@ int ler_id_para_operacao(const char* operacao);
 void iniciar_sistema() {
     int opcao; //pra ver o q o user escolheu no menu
     int id_busca; //pra guardar o id q a gente vai usar
-    Cliente temp; //client temporário pra ler os dados rapidão
+    Cliente temp; //client temporário pra ler os dados
 
-    //CHAMADA CRITICA: carrega os dados do arquivo/binario/memoria logo no inicio!
+    //carrega os dados do arquivo/binario/memoria logo no inicio
     listaClientes = carregar_clientes(listaClientes); 
     
-    //loop infinito até o cara digitar zero pra sair
     do {
-        //mudei o menu (tem que mudar no cliente_view.c tambem!)
         printf("\n==== menu cliente ====\n");
         printf("1 - criar cliente\n");
         printf("2 - atualizar cliente\n");
@@ -31,23 +29,23 @@ void iniciar_sistema() {
         printf("4 - deletar cliente (inativar)\n");
         printf("5 - listar todos (ativos)\n"); 
         printf("6 - restaurar cliente (reativar)\n"); 
-        printf("7 - listar so clientes inativos (deletados)\n"); //<<-- menu corrigido!
+        printf("7 - listar so clientes inativos (deletados)\n"); 
         printf("0 - sair\n");
         printf("escolha: ");
-        scanf("%d", &opcao); //pega a escolha
+        scanf("%d", &opcao); 
         
         //limpa o buffer depois de ler a opção de menu
         while (getchar() != '\n');
         
         switch (opcao) {
-            case 1: { //caso 1: criar um cliente
-                temp = ler_dados_cliente(); //view lê tudo pra mim
+            case 1: { //criar um cliente
+                temp = ler_dados_cliente(); //view lê
 
-                //confere se o id já existe pq tem q ser unico né
+                //confere se o id já existe pq tem q ser unico
                 //o buscar cliente so retorna se o cliente ja esta ativo (status 1)
                 if (buscar_cliente_por_id(listaClientes, temp.id) != NULL) {
                     exibir_mensagem("erro:ja existe um cliente ativo com este id tente novamente");
-                    break; //vaza e volta pro menu
+                    break;
                 }
                 
                 //model cria o nó novo e eu atualizo a listaClientes
@@ -55,7 +53,7 @@ void iniciar_sistema() {
                 exibir_mensagem("cliente criado com sucesso");
                 break;
             }
-            case 2: { //caso 2: atualizar um cliente
+            case 2: { //atualizar um cliente
                 id_busca = ler_id_para_operacao("atualizar"); //pergunta qual id mudar
                 if (id_busca == -1) { // -1 é o valor de erro da view
                      exibir_mensagem("erro:id invalido ou entrada mal formatada");
@@ -81,7 +79,7 @@ void iniciar_sistema() {
                 }
                 break;
             }
-            case 3: { //caso 3: exibir só um cliente
+            case 3: { //exibir só um cliente
                 id_busca = ler_id_para_operacao("exibir"); //pede o id
                 if (id_busca == -1) {
                      exibir_mensagem("erro:id invalido ou entrada mal formatada");
@@ -108,10 +106,10 @@ void iniciar_sistema() {
                 break;
             }
             case 5: { //caso 5: lista todos os clients
-                exibir_todos_clientes(listaClientes); //view mostra tudo (só ativos)
+                exibir_todos_clientes(listaClientes); //view mostra tudo
                 break;
             }
-            case 6: { //novo caso 6: restaurar cliente (reativar) - logica corrigida!
+            case 6: { //novo caso 6: restaurar cliente (reativar)
                 id_busca = ler_id_para_operacao("restaurar"); //pede o id pra 'reativar'
                 if (id_busca == -1) {
                      exibir_mensagem("erro:id invalido ou entrada mal formatada");
@@ -134,7 +132,7 @@ void iniciar_sistema() {
                 
                 break;
             }
-            case 7: { //caso 7: listar só inativos
+            case 7: { //listar só inativos
                 exibir_todos_clientes_e_inativos(listaClientes); 
                 break;
             }
@@ -144,8 +142,8 @@ void iniciar_sistema() {
             default:
                 exibir_mensagem("opcao invalida");
         }
-    } while (opcao != 0); //fica aqui até o cara cansar e digitar zero
+    } while (opcao != 0); 
 
-    //crítico: tem q desalocar a memória de todos os nós com free pra não dar memory leak 
+    //desaloca a memória 
     desalocar_lista_clientes(listaClientes);
 }

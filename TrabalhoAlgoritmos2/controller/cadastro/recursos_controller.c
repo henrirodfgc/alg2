@@ -5,67 +5,65 @@
 #include "../../view/cadastro/recursos_view.h"
 #include "recursos_controller.h"
 
-//lista ligada q guarda os equipamentos
+//lista dos recursos/equipamentos
 NoRecurso *listaRecursos = NULL; 
 
-//funcao principal q inicia o trampo dos recursos
 void iniciar_recursos() {
-    int opcao; //pra ver o q o user escolheu no menu
+    int opcao; //pra ver o q o usuario escolheu no menu
     int codigo_busca; //pra guardar o codigo q a gente vai usar
-    Equipamento temp; //equipamento temporario pra ler os dados rapidao
+    Equipamento temp; //variavel temporaria dos r/e 
     
-    //carrega os dados (so funciona se o outro implementar pra txt/bin)
+    //carrega os dados
     listaRecursos = carregar_recursos(listaRecursos); 
     
-    //loop infinito ate o cara digitar zero pra sair
     do {
         //view exibe e pega a escolha
         opcao = exibir_menu_recursos(); 
         
         switch (opcao) {
-            case 1: { //caso 1:criar um equipamento
-                temp = ler_dados_recurso(); //view le tudo pra mim
+            case 1: { //criar um equipamento
+                temp = ler_dados_recurso();
 
-                //confere se o codigo ja existe (so busca ativos)
+                //confere se o codigo ja existe
                 if (buscar_recurso_por_codigo(listaRecursos, temp.codigo) != NULL) {
                     exibir_mensagem_recursos("erro:ja existe um equipamento ativo com este codigo.");
-                    break; //vaza e volta pro menu
+                    break; 
                 }
                 
-                //model cria o no novo e eu atualizo a lista (so em memoria)
+                //model cria o nó novo e atualiza a lista
                 listaRecursos = adicionar_recurso_na_lista(listaRecursos, temp);
                 exibir_mensagem_recursos("equipamento criado com sucesso.");
                 break;
             }
-            case 2: { //caso 2:atualizar um equipamento
+            case 2: { //atualizar um equipamento
                 codigo_busca = ler_codigo_para_operacao_recursos("atualizar"); //pergunta qual codigo mudar
                 Equipamento *recurso_encontrado = buscar_recurso_por_codigo(listaRecursos, codigo_busca); //ve se ele existe
                 
                 if (recurso_encontrado == NULL) {
                     exibir_mensagem_recursos("nenhum equipamento ativo cadastrado com este codigo.");
                 } else {
-                    //crio as variaveis rapidao pra pegar os dados novos da view
+                    //cria variaveis temporarias 
                     char descricao[100], categoria[50];
                     int quantidade_estoque;
                     float preco_custo, valor_locacao;
 
-                    //view preenche essas var ai com o q o user digitar
+                    //view preenche essas var com os dados digitados
                     ler_dados_atualizacao_recurso(descricao, categoria, &quantidade_estoque, &preco_custo, &valor_locacao); 
 
-                    //mando o model atualizar a parada la (so atualiza em memoria)
+                    //atualiza
                     atualizar_recurso_por_codigo(listaRecursos, codigo_busca, descricao, categoria, quantidade_estoque, preco_custo, valor_locacao);
                     
                     exibir_mensagem_recursos("equipamento atualizado.");
                 }
                 break;
             }
-            case 3: { //caso 3:exibir so um equipamento
+            case 3: { //exibir so um equipamento
                 codigo_busca = ler_codigo_para_operacao_recursos("exibir"); //pede o codigo
-                Equipamento *recurso_encontrado = buscar_recurso_por_codigo(listaRecursos, codigo_busca); //procura (so ativos)
+                Equipamento *recurso_encontrado = buscar_recurso_por_codigo(listaRecursos, codigo_busca); //procura
                 exibir_recurso(recurso_encontrado); //view q mostra ou avisa q n achou
                 break;
             }
-            case 4: { //caso 4:deletar um equipamento (fisico)
+            case 4: { //caso 4:deletar um equipamento
                 codigo_busca = ler_codigo_para_operacao_recursos("deletar");
                 if (codigo_busca == -1)
                 {
@@ -83,8 +81,8 @@ void iniciar_recursos() {
                 }
                 break;
             }
-            case 5: { //caso 5:lista todos os equipamentos
-                exibir_todos_recursos(listaRecursos); //model mostra tudo (so ativos em memoria)
+            case 5: { //lista todos os equipamentos
+                exibir_todos_recursos(listaRecursos); //model mostra ativos em memoria)
                 break;
             }
             case 0:
@@ -93,8 +91,8 @@ void iniciar_recursos() {
             default:
                 exibir_mensagem_recursos("opcao invalida. tente novamente.");
         }
-    } while (opcao != 0); //digitar 0 p sair 
+    } while (opcao != 0);
 
-    //critico:tem q desalocar a memoria se estiver em modo memoria
+    //tem q desalocar a memoria se estiver em modo memoria
     desalocar_lista_recursos(listaRecursos);
 }
