@@ -1,0 +1,1 @@
+codigo:2,descricao:2,categoria:2,quantidade_estoque:2,custo:2.00,locacao:2.00

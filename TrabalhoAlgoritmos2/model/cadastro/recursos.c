@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <direct.h> 
+#include <errno.h> 
+#include <windows.h> 
 #include "recursos.h"
 #include "../../controller/saida.h" 
 #include "../../view/cadastro/recursos_view.h" 

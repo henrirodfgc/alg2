@@ -1,3 +1,5 @@
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -5,59 +7,69 @@
 #include "../../view/cadastro/cliente_view.h"
 #include "cliente_controller.h"
 
-//lista ligada q guarda todos os clients tá ligado
-//no começo e nulo tipo lista vazia
+//lista ligada
 NoCliente * listaClientes = NULL; 
 
-//a função q lê o id tá na view ent tô só dando um aviso aqui pro compilador
+//função da view
 int ler_id_para_operacao(const char* operacao); 
+int verificar_tipo_saida(); // Declaração da função auxiliar
 
-//função principal q inicia roda aqui
+//RECARREGA A LISTA (PARA MODOS TXT/BIN)
+void recarregar_lista_se_necessario() {
+    if (verificar_tipo_saida() != 3) {
+        //libera a memória RAM
+        desalocar_lista_clientes(listaClientes);
+        //garante que a lista comece nula
+        listaClientes = NULL;
+        //recarrega a lista do arquivo (TXT ou BIN)
+        listaClientes = carregar_clientes(listaClientes); 
+    }
+}
+
+
+//função inicia módulo
 void iniciar_sistema() {
-    int opcao; //pra ver o q o user escolheu no menu
-    int id_busca; //pra guardar o id q a gente vai usar
-    Cliente temp; //client temporário pra ler os dados
+    int opcao; 
+    int id_busca; 
+    Cliente temp; 
 
-    //carrega os dados do arquivo/binario/memoria logo no inicio
+    //tentativa inicial de carregar (para preencher a lista na primeira vez)
+    //se for modo memória, carrega o que foi salvo pra RAM
+    //se for modo arquivo, carrega a versão do arquivo pra RAM
     listaClientes = carregar_clientes(listaClientes); 
     
     do {
-        printf("\n==== menu cliente ====\n");
-        printf("1 - criar cliente\n");
-        printf("2 - atualizar cliente\n");
-        printf("3 - exibir cliente\n");
-        printf("4 - deletar cliente (inativar)\n");
-        printf("5 - listar todos (ativos)\n"); 
-        printf("6 - restaurar cliente (reativar)\n"); 
-        printf("7 - listar so clientes inativos (deletados)\n"); 
-        printf("0 - sair\n");
-        printf("escolha: ");
-        scanf("%d", &opcao); 
+        //exibe o menu e pega a opção do usuario
+        opcao = exibir_menu(); 
         
-        //limpa o buffer depois de ler a opção de menu
-        while (getchar() != '\n');
+        //sempre recarrega pra garantir que a lista na RAM esteja atualizada com o disco
+        recarregar_lista_se_necessario();
         
         switch (opcao) {
             case 1: { //criar um cliente
-                temp = ler_dados_cliente(); //view lê
+                temp = ler_dados_cliente(); //view lê os dados
 
-                //confere se o id já existe pq tem q ser unico
-                //o buscar cliente so retorna se o cliente ja esta ativo (status 1)
+                //validação de unicidade
                 if (buscar_cliente_por_id(listaClientes, temp.id) != NULL) {
                     exibir_mensagem("erro:ja existe um cliente ativo com este id tente novamente");
                     break;
                 }
                 
                 //model cria o nó novo e eu atualizo a listaClientes
+                //no Modo Memória, o Model já insere na listaClientes
+                //no Modo Arquivo, o Model escreve no disco e retorna a listaClientes inalterada
                 listaClientes = adicionar_cliente_na_lista(listaClientes, temp);
                 exibir_mensagem("cliente criado com sucesso");
+
+                //se está no Modo Arquivo, precisamos atualizar a listaClientes na RAM
+                recarregar_lista_se_necessario();
                 break;
             }
             case 2: { //atualizar um cliente
                 id_busca = ler_id_para_operacao("atualizar"); //pergunta qual id mudar
-                if (id_busca == -1) { // -1 é o valor de erro da view
-                     exibir_mensagem("erro:id invalido ou entrada mal formatada");
-                     break;
+                if (id_busca == -1) { 
+                    exibir_mensagem("erro:id invalido ou entrada mal formatada");
+                    break;
                 }
                 
                 Cliente *cliente_encontrado = buscar_cliente_por_id(listaClientes, id_busca); //vê se ele existe (e está ativo)
@@ -65,55 +77,60 @@ void iniciar_sistema() {
                 if (cliente_encontrado == NULL) {
                     exibir_mensagem("nenhum cliente ativo cadastrado com este id");
                 } else {
-                    //crio as variáveis rapidão pra pegar os dados novos da view
+                    //crio as variáveis temporárias para pegar os dados novos da view
                     char nome[50], nome_razao[100], endereco[256], email[50], cpf[12], cnpj[15], telefone[20], nome_contato[50];
                     int idade;
 
-                    //view preenche essas var aí com o q o user digitar
+                    //view preenche essas var aí com o que o user digitar
                     ler_dados_atualizacao(nome, &idade, endereco, nome_razao, email, cpf, cnpj, telefone, nome_contato); 
 
                     //mando o model atualizar a parada lá
                     atualizar_cliente_por_id(listaClientes, id_busca, nome, idade, nome_razao, cpf, cnpj, endereco, email, telefone, nome_contato);
                     
                     exibir_mensagem("cliente atualizado");
+                    
+                    //se a atualização envolveu o arquivo, recarregamos a lista da RAM
+                    recarregar_lista_se_necessario();
                 }
                 break;
             }
             case 3: { //exibir só um cliente
                 id_busca = ler_id_para_operacao("exibir"); //pede o id
                 if (id_busca == -1) {
-                     exibir_mensagem("erro:id invalido ou entrada mal formatada");
-                     break;
+                    exibir_mensagem("erro:id invalido ou entrada mal formatada");
+                    break;
                 }
                 
                 Cliente *cliente_encontrado = buscar_cliente_por_id(listaClientes, id_busca); //procura (só ativos)
-                exibir_cliente(cliente_encontrado); //view q mostra ou avisa q n achou
+                exibir_cliente(cliente_encontrado); //view que mostra ou avisa que não achou
                 break;
             }
-            case 4: { //caso 4: deletar um cliente (soft delete)
-                id_busca = ler_id_para_operacao("deletar"); //pede o id pra 'apagar'
+            case 4: { //deletar um cliente (soft delete)
+                id_busca = ler_id_para_operacao("deletar"); //pede o id para 'apagar'
                 if (id_busca == -1) {
-                     exibir_mensagem("erro:id invalido ou entrada mal formatada");
-                     break;
+                    exibir_mensagem("erro:id invalido ou entrada mal formatada");
+                    break;
                 }
                 
-                //model muda o status do cliente pra 0 (inativar) e pronto
+                //model muda o status do cliente pra 0 (inativar)
                 if(deletar_cliente_por_id_logico(listaClientes, id_busca)){
-                    printf("cliente deletado com sucesso!");
+                    printf("cliente deletado com sucesso!\n");
                 }else{
-                    printf("erro ao deletar cliente, talvez ja esteja inativo ou nao exista.");
+                    printf("erro ao deletar cliente, talvez ja esteja inativo ou nao exista.\n");
                 }
+                
+                recarregar_lista_se_necessario();
                 break;
             }
-            case 5: { //caso 5: lista todos os clients
+            case 5: { //lista todos os clients ativos
                 exibir_todos_clientes(listaClientes); //view mostra tudo
                 break;
             }
-            case 6: { //novo caso 6: restaurar cliente (reativar)
-                id_busca = ler_id_para_operacao("restaurar"); //pede o id pra 'reativar'
+            case 6: { //restaurar cliente (reativar)
+                id_busca = ler_id_para_operacao("restaurar"); //pede o id para 'reativar'
                 if (id_busca == -1) {
-                     exibir_mensagem("erro:id invalido ou entrada mal formatada");
-                     break;
+                    exibir_mensagem("erro:id invalido ou entrada mal formatada");
+                    break;
                 }
                 
                 //tentamos restaurar.
@@ -130,6 +147,7 @@ void iniciar_sistema() {
                     exibir_mensagem("erro:nenhum cliente (inativo) encontrado com este id para restaurar");
                 }
                 
+                recarregar_lista_se_necessario();
                 break;
             }
             case 7: { //listar só inativos
@@ -144,6 +162,6 @@ void iniciar_sistema() {
         }
     } while (opcao != 0); 
 
-    //desaloca a memória 
+    //desaloca a memória da listaClientes se estiver no Modo Memória (ou se não foi desalocada antes)
     desalocar_lista_clientes(listaClientes);
 }

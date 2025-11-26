@@ -58,7 +58,7 @@ NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro) {
             return lista;
         }
 
-        novo_membro.status == 1;
+        novo_membro.status = 1;
 
         fprintf(file,
             "id:%d,nome:%s,cpf:%s,funcao:%s,valor_diaria_hora:%.2f,status:%d\n",

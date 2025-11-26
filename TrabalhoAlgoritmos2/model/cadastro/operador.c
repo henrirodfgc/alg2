@@ -48,8 +48,8 @@ NoOperador* adicionar_operador_na_lista(NoOperador* lista, Operador novo_operado
         }
 
         
-        novo_operador.status == 1;
-        printf ("statua ativado");
+        novo_operador.status = 1;
+        printf ("status ativado");
 
         fprintf(file,
             "id:%d,nome:%s,usuario:%s,senha:%s,status:%d\n",
@@ -137,7 +137,7 @@ int deletar_operador_por_codigo(NoOperador* lista, int codigo_busca){
             return 0;
         }
 
-        FILE *temp = fopen("../b_output/operador/operadores.txt", "w+");
+        FILE *temp = fopen("../b_output/operador/temp.txt", "w+");
         if (temp == NULL)
         {
             printf("erro ao criar arquivo temporario!\n");
