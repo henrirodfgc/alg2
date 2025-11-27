@@ -1,4 +1,2 @@
-id:44,nome_cliente:44,nome_razao:44,idade:44,endereco:44,cpf:44,cnpj:44,email:44,telefone:44,nome_contato:44,status:1
-id:33,nome_cliente:33,nome_razao:33,idade:333,endereco:33,cpf:33,cnpj:33,email:33,telefone:33,nome_contato:33,status:1
-id:1,nome_cliente:1,nome_razao:1,idade:1,endereco:1,cpf:11,cnpj:1,email:1,telefone:1,nome_contato:1,status:1
-id:333,nome_cliente:23,nome_razao:23,idade:23,endereco:23,cpf:23,cnpj:23,email:23,telefone:23,nome_contato:23,status:1
+id:1,nome_cliente:1,nome_razao:1,idade:1,endereco:1,cpf:1,cnpj:1,email:1,telefone:1,nome_contato:1,status:1
+id:2,nome_cliente:3,nome_razao:3,idade:3,endereco:3,cpf:3,cnpj:3,email:3,telefone:3,nome_contato:3,status:0

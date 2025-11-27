@@ -3,22 +3,20 @@
 #include "../../model/cadastro/operador.h"
 #include "operador_view.h"
 
-char ler_codigo_para_a_operacao(const char* operacao){
+int ler_codigo_para_a_operacao(const char* operacao){
     int codigo;
 
     printf("\nDigite o codigo do operador %s: \n", operacao);
 
-    if (scanf("%d", &codigo) != 1) {  // ← &codigo
+    if (scanf("%d", &codigo) != 1) {  
         // tratamento de erro
         printf("Erro: Código inválido!\n");
         while (getchar() != '\n'); // limpar buffer
         return -1; // valor inválido
-        
     }
 
     getchar();
     return codigo;
-    
 }
 
 void exibir_operador(const Operador* operador){
@@ -74,6 +72,7 @@ Operador ler_dados_operador(){
     scanf("%20[^\n]", c.senha);
     while ((ch = getchar()) != '\n' && ch !=EOF);
 
+    c.status = 1; // garante que cria ativo
     return c;
 
 }

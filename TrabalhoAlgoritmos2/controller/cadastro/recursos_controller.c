@@ -71,18 +71,12 @@ void iniciar_recursos() {
                     break;
                 }
                  
-                
-                //tenta deletar o no e atualiza a cabeca da lista (so deleta em memoria)
-                 //model muda o status do cliente pra 0 (inativar) e pronto
+                //tenta deletar o no e atualiza a cabeca da lista
                 if(deletar_recurso_por_codigo(listaRecursos, codigo_busca)){
-                    printf("recurso deletado com sucesso!");
+                    exibir_mensagem_recursos("recurso deletado com sucesso!");
                 }else{
-                    printf("erro ao deletar recurso, talvez ja esteja inativo ou nao exista.");
+                    exibir_mensagem_recursos("erro ao deletar recurso, talvez ja esteja inativo ou nao exista.");
                 }
-                break;
-            }
-            case 5: { //lista todos os equipamentos
-                exibir_todos_recursos(listaRecursos); //model mostra ativos em memoria)
                 break;
             }
             case 0:

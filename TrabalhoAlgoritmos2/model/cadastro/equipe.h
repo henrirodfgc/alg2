@@ -45,4 +45,7 @@ void desalocar_lista_equipe(NoEquipe* lista);
 //função pra mostrar todos os membros (pra view usar)
 void exibir_todos_membros(NoEquipe* lista); 
 
+//carregar os dados da lista
+NoEquipe* carregar_equipe(NoEquipe* lista);
+
 #endif

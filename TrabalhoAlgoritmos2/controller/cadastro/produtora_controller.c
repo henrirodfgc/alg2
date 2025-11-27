@@ -18,6 +18,8 @@ void iniciar_produtora() {
     char* cnpj_busca;                    // CNPJ para operações de busca/atualização/exclusão
     Produtora temp;                      // Estrutura temporária para novos dados
 
+    listaProdutora = carregar_produtoras(listaProdutora); //funçao p carregar a lista
+
     // =============================================
     // LOOP PRINCIPAL DA APLICAÇÃO
     // Mantém o sistema rodando até usuário escolher sair

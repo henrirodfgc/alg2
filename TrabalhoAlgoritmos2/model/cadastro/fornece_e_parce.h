@@ -137,4 +137,6 @@ void exibir_todas_fornece_e_parce(NoFornecedores_e_parceiros* lista);
 // =============================================
 void exibir_registro_por_id(NoFornecedores_e_parceiros* lista, int id);
 
+NoFornecedores_e_parceiros* carregar_fornecedores_e_parceiros(NoFornecedores_e_parceiros* lista);
+
 #endif

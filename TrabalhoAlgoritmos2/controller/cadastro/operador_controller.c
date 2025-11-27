@@ -12,6 +12,8 @@ void iniciar_operador(){
     int codigo_busca;
     Operador temp;
 
+    listaOperador = carregar_operadores(listaOperador);
+    
     do
     {
         exibir_menu_operador();

@@ -14,7 +14,7 @@ void iniciar_equipe() {
     int opcao; //p guardar o que o usuario escolher
     int codigo_busca; //p achar o membro
     MembroEquipe temp; //membro temporário p leitura
-    
+    listaEquipe = carregar_equipe(listaEquipe); //carrega a lista da equipe
     //loop principal da Equipe
     do {
         //chamam a função da view p exibir o menu

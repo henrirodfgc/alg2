@@ -10,17 +10,14 @@
 
 //copia tudo de um recurso pro outro 
 void copiar_dados_recurso(Equipamento *destino, const Equipamento *origem) {
-    //verifica se eh nulo se for n funciona
     if (!origem || !destino) return; 
 
-    //copia os int e float
     destino->codigo = origem->codigo;
     destino->quantidade_estoque = origem->quantidade_estoque;
     destino->preco_custo = origem->preco_custo;
     destino->valor_locacao = origem->valor_locacao;
     destino->status = origem->status; 
     
-    //copia das strings
     strncpy(destino->descricao, origem->descricao, sizeof(destino->descricao) - 1);
     destino->descricao[sizeof(destino->descricao) - 1] = '\0'; 
     strncpy(destino->categoria, origem->categoria, sizeof(destino->categoria) - 1);
@@ -31,120 +28,101 @@ void copiar_dados_recurso(Equipamento *destino, const Equipamento *origem) {
 //cria um novo no e poe ele no comeco da lista (c)
 NoRecurso* adicionar_recurso_na_lista(NoRecurso* lista, Equipamento novo_recurso) {
    
-    NoRecurso *novo_no = (NoRecurso*) malloc(sizeof(NoRecurso)); //pede memoria pro no novo
+    NoRecurso *novo_no = (NoRecurso*) malloc(sizeof(NoRecurso)); 
     
     if (novo_no == NULL) {
-        //se n deu pra alocar a gente so retorna a lista antiga
         exibir_mensagem_recursos("erro:falha ao alocar no de recurso na memoria.");
         return lista; 
     }
-    
-   
 
-    //copia os dados pro no q a gente criou
     copiar_dados_recurso(&(novo_no->dados), &novo_recurso);
 
-    //o no novo sempre vira a cabeca da lista
     novo_no->proximo = lista;
 
     if (verificar_tipo_saida() == 1)
     {
-        FILE *file = fopen("../b_output/recursos/recursos.txt", "a");
+        FILE *file = fopen("../b_output/recursos/recursos.txt", "a"); 
         if (file == NULL)
         {
-            printf("Erro ao abrir o arquivo de recursos!\n");
-            // free(novo_no); //
+            printf("erro ao abrir o arquivo de recursos!\n");
             return lista;
         }
-
+ 
         fprintf(file,
-            "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%d,custo:%.2f,locacao:%.2f\n",
+            "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%d,custo:%.2f,locacao:%.2f,status:%d\n",
             novo_recurso.codigo,
             novo_recurso.descricao,
             novo_recurso.categoria,
             novo_recurso.quantidade_estoque,
             novo_recurso.preco_custo,
-            novo_recurso.valor_locacao);
+            novo_recurso.valor_locacao,
+            novo_recurso.status); 
         fclose(file);
-        printf("Recursos salvos com sucesso!!\n");
+        printf("recursos salvos com sucesso!!\n");
     }
     else if (verificar_tipo_saida() == 2)
     {
          FILE *file = fopen("../b_output/recursos/recursos.bin", "ab");
         if (file == NULL) {
-            printf("Erro ao abrir o arquivo binário de recursos!\n");
-            // free(novo_no); // Descomente se 'novo_no' foi alocado antes
+            printf("erro ao abrir o arquivo binário de recursos!\n");
             return lista;
         }
 
-      
-
         if (fwrite(&novo_recurso,sizeof(Equipamento),1,file) != 1)
         {
-            printf("Erro ao escrever strcut em binario\n");
+            printf("erro ao escrever strcut em binario\n");
         } 
         else
         {
-            printf("Strucut de recursos salva com sucesso em recursos.bin!\n");
+            printf("strucut de recursos salva com sucesso em recursos.bin!\n");
             fclose(file);
         }
-
-        
     }
     
-
-
-    return novo_no; //devolve a nova cabeca
+    return novo_no; 
 }
 
 //procura o recurso pelo codigo (r)
 Equipamento* buscar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
     NoRecurso *atual = lista;
-    //percorre a lista ate achar o codigo ou a lista acabar
     while (atual != NULL) {
-        //so retorna se o status for 1 (ativo)
         if (atual->dados.codigo == codigo_busca && atual->dados.status == 1) {
-            return &(atual->dados); //achou! devolve o ponteiro pros dados do equip
+            return &(atual->dados); 
         }
         atual = atual->proximo;
     }
-    return NULL; //nao achou
+    return NULL; 
 }
 
 //atualiza os dados de quem ja existe na lista (u)
 void atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char* descricao, const char* categoria, int quantidade_estoque, float preco_custo, float valor_locacao) {
-    //busca o recurso ativo na lista em memoria
     Equipamento *recurso_existente = buscar_recurso_por_codigo(lista, codigo_busca);
     
     if (recurso_existente) {
-        //atualiza os floats e ints
         recurso_existente->quantidade_estoque = quantidade_estoque;
         recurso_existente->preco_custo = preco_custo;
         recurso_existente->valor_locacao = valor_locacao; 
         
-        //atualiza as strings com copia segura
         strncpy(recurso_existente->descricao, descricao, sizeof(recurso_existente->descricao) - 1);
         recurso_existente->descricao[sizeof(recurso_existente->descricao) - 1] = '\0';
         strncpy(recurso_existente->categoria, categoria, sizeof(recurso_existente->categoria) - 1);
         recurso_existente->categoria[sizeof(recurso_existente->categoria) - 1] = '\0';
         
         if (verificar_tipo_saida() != 3) {
-            exibir_mensagem_recursos("");
+            exibir_mensagem_recursos("recurso atualizado em memoria)");
         }
     }
 }
 
 
-//deleta o no da lista (d) - so funciona em modo memoria
+//deleta o no da lista (d) 
 int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
-    //avisa se nao for modo memoria, a responsa nao eh sua
     if (verificar_tipo_saida() == 1) 
     {
         FILE *file = fopen("../b_output/recursos/recursos.txt", "r+");
         if (file == NULL)
         {
             printf("erro ao abrir o arquivo original!\n");
-            
             return 0;
         }
 
@@ -162,27 +140,24 @@ int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
 
         while (fgets(linha, sizeof(linha), file))
         {
-            //lê os campos
             sscanf(linha,
-                   "codigo:%d,descricaco:%99[^,],categoria:%49[^,],estoque:%d,preco_custo:%.2f,valor_locacao:%.2f,status:%d",
+                   "codigo:%d,descricao:%99[^,],categoria:%49[^,],quantidade_estoque:%d,custo:%.2f,locacao:%.2f,status:%d",
                    &c.codigo,
                    c.descricao,
                    c.categoria,
-                   c.quantidade_estoque,
-                   c.preco_custo,
-                   c.valor_locacao,
+                   &c.quantidade_estoque,
+                   &c.preco_custo,
+                   &c.valor_locacao,
                    &c.status);
-                
-                   
 
             if (c.codigo == codigo_busca)
             {
-                c.status = 0; //marca como inativo
+                c.status = 0; 
                 encontrado = 1;
             }
-            //reescreve a linha (atualizada ou não)
+            
             fprintf(temp,
-                    "codigo:%d,descricaco:%s,categoria:%s,estoque:%d,preco_custo:%.2f,valor_locacao:%.2f,status:%d",
+                    "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%d,custo:%.2f,locacao:%.2f,status:%d\n",
                    c.codigo,
                    c.descricao,
                    c.categoria,
@@ -195,7 +170,6 @@ int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
         fclose(file);
         fclose(temp);
        
-        //substitui o original pelo temporário
         if (remove("../b_output/recursos/recursos.txt") != 0)
         {
             perror("erro ao remover o arquivo original");
@@ -219,31 +193,25 @@ int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
             return 0;
         }
     }
-    //implementação do colega para BIN
     else if (verificar_tipo_saida() == 2)
     {
-        exibir_mensagem_recursos("aviso:delecao binaria. responsa do colega.");
-        return 0; //aqui deveria ter a implementacao dele
+        exibir_mensagem_recursos("delecao binaria.");
+        return 0; 
     }
-    //sua versão para memoria (modo 3)
     else if (verificar_tipo_saida() == 3)
     {
-        //busca ele com qualquer status para checar se existe
         Equipamento *equipamento_existente = buscar_recurso_por_codigo(lista, codigo_busca);
         
-        //se a busca encontrar e ele estiver ativo (status 1), muda o status
         if (equipamento_existente && equipamento_existente->status == 1)
         {
-            equipamento_existente->status = 0; //seta pra inativo/deletado
-            return 1; //sucesso
+            equipamento_existente->status = 0; 
+            return 1; 
         }
-        //se nao achou ou ja estava inativo, retorna falha
         return 0;
     }
     return 0;
 }
 
-//libera a memoria p n dar memory leak 
 void desalocar_lista_recursos(NoRecurso* lista) {
     if (verificar_tipo_saida() != 3) {
         return; 
@@ -251,7 +219,6 @@ void desalocar_lista_recursos(NoRecurso* lista) {
     
     NoRecurso *atual = lista;
     NoRecurso *proximo_no;
-    //roda a lista toda dando free em cada no
     while (atual != NULL) {
         proximo_no = atual->proximo; 
         free(atual);
@@ -259,22 +226,16 @@ void desalocar_lista_recursos(NoRecurso* lista) {
     }
 }
 
-//pra mostrar geral (so os ativos em memoria)
 void exibir_todos_recursos(NoRecurso* lista) {
-    if (verificar_tipo_saida() != 3) {
-        exibir_mensagem_recursos("");
-        return;
-    }
     
     NoRecurso *atual = lista;
-    int contador = 0; //pra saber se a lista ta vazia
+    int contador = 0; 
 
-    exibir_cabecalho_lista_recursos(); //chama a view pra mostrar o cabecalho
+    exibir_cabecalho_lista_recursos(); 
     
     while (atual != NULL) {
-        //filtra por status ativo
         if (atual->dados.status == 1) { 
-            exibir_recurso(&(atual->dados)); //chama a view pra mostrar cada um
+            exibir_recurso(&(atual->dados)); 
             contador++;
         }
         atual = atual->proximo;
@@ -283,10 +244,55 @@ void exibir_todos_recursos(NoRecurso* lista) {
     if (contador == 0) {
         exibir_mensagem_recursos("nenhum recurso/equipamento cadastrado!");
     }
-    exibir_rodape_lista_recursos(); //chama a view pra mostrar o rodape
+    exibir_rodape_lista_recursos(); 
 }
 
-//funcao auxiliar que so retorna a lista
 NoRecurso* carregar_recursos(NoRecurso* lista) {
-    return lista; //a lista ja ta no escopo global ent so retorna ela
+    if (lista != NULL) return lista; 
+
+    int tipo = verificar_tipo_saida();
+
+    if (tipo == 1) { //txt
+        //*
+        FILE *file = fopen("../b_output/recursos/recursos.txt", "r");
+        if (file == NULL) return lista; 
+
+        Equipamento e;
+        char linha[2048];
+
+        while (fgets(linha, sizeof(linha), file)) {
+
+            if (sscanf(linha, 
+                "codigo:%d,descricao:%99[^,],categoria:%49[^,],quantidade_estoque:%d,custo:%.2f,locacao:%.2f,status:%d",
+                &e.codigo, e.descricao, e.categoria, &e.quantidade_estoque, 
+                &e.preco_custo, &e.valor_locacao, &e.status) == 7) {
+                
+                NoRecurso *novo_no = (NoRecurso*) malloc(sizeof(NoRecurso));
+                if (novo_no != NULL) {
+                    copiar_dados_recurso(&(novo_no->dados), &e);
+                    novo_no->proximo = lista;
+                    lista = novo_no;
+                }
+            }
+        }
+        fclose(file);
+    } 
+    else if (tipo == 2) { //bin
+        //*
+        FILE *file = fopen("../b_output/recursos/recursos.bin", "rb");
+        if (file == NULL) return lista;
+
+        Equipamento e;
+        while (fread(&e, sizeof(Equipamento), 1, file) == 1) {
+            NoRecurso *novo_no = (NoRecurso*) malloc(sizeof(NoRecurso));
+            if (novo_no != NULL) {
+                copiar_dados_recurso(&(novo_no->dados), &e);
+                novo_no->proximo = lista;
+                lista = novo_no;
+            }
+        }
+        fclose(file);
+    }
+
+    return lista; 
 }

@@ -1,1 +1,0 @@
-nome_fantasia:555,razao_social:555,inscricao_estadual:555,cnpj:555,endereco:,telefone:,email:,responsavel:,telefone_responsavel:,margem_lucro:,status:0

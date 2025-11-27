@@ -25,7 +25,7 @@ int status; //campo do soft delete
 
 //o nó da lista ligada pra dar pra ter vários clients ao mesmo tempo
 struct NoCliente {
-Cliente dados; //guarda os dados do client mesmo
+Cliente dados; //guarda os dados do client 
 NoCliente *proximo; //ponteiro pro proximo registro da lista
 };
 
@@ -55,7 +55,7 @@ void exibir_todos_clientes(NoCliente* lista);
 //função pra mostrar os clientes inativos também
 void exibir_todos_clientes_e_inativos(NoCliente* lista);
 
-//carrega os dados do arquivo para a lista (critico pra iniciar!)
+//carrega os dados do arquivo para a lista 
 NoCliente* carregar_clientes(NoCliente* lista); 
 
 #endif

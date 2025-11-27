@@ -106,17 +106,16 @@ void iniciar_sistema() {
                 break;
             }
             case 4: { //deletar um cliente (soft delete)
-                id_busca = ler_id_para_operacao("deletar"); //pede o id para 'apagar'
+                id_busca = ler_id_para_operacao("deletar"); 
                 if (id_busca == -1) {
                     exibir_mensagem("erro:id invalido ou entrada mal formatada");
                     break;
                 }
                 
-                //model muda o status do cliente pra 0 (inativar)
                 if(deletar_cliente_por_id_logico(listaClientes, id_busca)){
-                    printf("cliente deletado com sucesso!\n");
+                    exibir_mensagem("cliente deletado com sucesso!");
                 }else{
-                    printf("erro ao deletar cliente, talvez ja esteja inativo ou nao exista.\n");
+                    exibir_mensagem("erro ao deletar cliente, talvez ja esteja inativo ou nao exista.");
                 }
                 
                 recarregar_lista_se_necessario();

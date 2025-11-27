@@ -333,3 +333,92 @@ void exibir_registro_por_id(NoFornecedores_e_parceiros* lista, int id) {
         printf("Registro com ID %d não encontrado!\n", id);
     }
 }
+
+NoFornecedores_e_parceiros* carregar_fornecedores_e_parceiros(NoFornecedores_e_parceiros* lista) {
+    if (lista != NULL) return lista;
+
+    int tipo = verificar_tipo_saida();
+
+    if (tipo == 1) { //txt
+        
+        //le fornecedores
+        FILE *fileF = fopen("../b_output/forne_parce/fornecedor.txt", "r");
+        if (fileF != NULL) {
+            Fornecedores_e_parceiros f;
+            char linha[2048];
+            while (fgets(linha, sizeof(linha), fileF)) {
+                if (sscanf(linha, 
+                    "id:%d,nome_fantasia:%49[^,],nome_razao:%99[^,],endereco:%255[^,],tipo:%d,cpf:%11[^,],cnpj:%14[^,],telefone:%19[^,],servico:%d,status:%d",
+                    &f.id, f.nome_fantasia, f.nome_razao, f.endereco, 
+                    (int*)&f.tipo, f.cpf, f.cnpj, f.telefone, (int*)&f.servico, &f.status) == 10) {
+                    
+                    NoFornecedores_e_parceiros *novo_no = (NoFornecedores_e_parceiros*) malloc(sizeof(NoFornecedores_e_parceiros));
+                    if (novo_no != NULL) {
+                        copiar_dados_fornece_e_parce(&(novo_no->dados), &f);
+                        novo_no->dados.status = f.status;
+                        novo_no->proximo = lista;
+                        lista = novo_no;
+                    }
+                }
+            }
+            fclose(fileF);
+        }
+
+        //le parceiros
+        FILE *fileP = fopen("../b_output/forne_parce/parceiro.txt", "r");
+        if (fileP != NULL) {
+            Fornecedores_e_parceiros p;
+            char linha[2048];
+            while (fgets(linha, sizeof(linha), fileP)) {
+                if (sscanf(linha, 
+                    "id:%d,nome_fantasia:%49[^,],nome_razao:%99[^,],endereco:%255[^,],tipo:%d,cpf:%11[^,],cnpj:%14[^,],telefone:%19[^,],servico:%d,status:%d",
+                    &p.id, p.nome_fantasia, p.nome_razao, p.endereco, 
+                    (int*)&p.tipo, p.cpf, p.cnpj, p.telefone, (int*)&p.servico, &p.status) == 10) {
+                    
+                    NoFornecedores_e_parceiros *novo_no = (NoFornecedores_e_parceiros*) malloc(sizeof(NoFornecedores_e_parceiros));
+                    if (novo_no != NULL) {
+                        copiar_dados_fornece_e_parce(&(novo_no->dados), &p);
+                        novo_no->dados.status = p.status;
+                        novo_no->proximo = lista;
+                        lista = novo_no;
+                    }
+                }
+            }
+            fclose(fileP);
+        }
+    } 
+    else if (tipo == 2) { //bin
+        //le fornecedores
+        FILE *fileF = fopen("../b_output/forne_parce/fornecedores.bin", "rb");
+        if (fileF != NULL) {
+            Fornecedores_e_parceiros f;
+            while (fread(&f, sizeof(Fornecedores_e_parceiros), 1, fileF) == 1) {
+                NoFornecedores_e_parceiros *novo_no = (NoFornecedores_e_parceiros*) malloc(sizeof(NoFornecedores_e_parceiros));
+                if (novo_no != NULL) {
+                    copiar_dados_fornece_e_parce(&(novo_no->dados), &f);
+                    novo_no->dados.status = f.status;
+                    novo_no->proximo = lista;
+                    lista = novo_no;
+                }
+            }
+            fclose(fileF);
+        }
+        
+        //le parceiros 
+        FILE *fileP = fopen("../b_output/forne_parce/parceiros.bin", "rb");
+        if (fileP != NULL) {
+            Fornecedores_e_parceiros p;
+            while (fread(&p, sizeof(Fornecedores_e_parceiros), 1, fileP) == 1) {
+                NoFornecedores_e_parceiros *novo_no = (NoFornecedores_e_parceiros*) malloc(sizeof(NoFornecedores_e_parceiros));
+                if (novo_no != NULL) {
+                    copiar_dados_fornece_e_parce(&(novo_no->dados), &p);
+                    novo_no->dados.status = p.status;
+                    novo_no->proximo = lista;
+                    lista = novo_no;
+                }
+            }
+            fclose(fileP);
+        }
+    }
+    return lista;
+}

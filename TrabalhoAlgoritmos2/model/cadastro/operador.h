@@ -32,4 +32,6 @@ void exibir_todos_operadores(NoOperador* lista);
 
 void exibir_mensagem_operador(const char* msg);
 
+NoOperador* carregar_operadores(NoOperador* lista);
+
 #endif

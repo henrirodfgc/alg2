@@ -326,10 +326,10 @@ int deletar_produtora_por_cnpj(NoProdutora *lista, const char* cnpj_busca) {
             return 0;
         }
     }
-    //implementação do colega para BIN
+    //implementação BIN
     else if (verificar_tipo_saida() == 2)
     {
-        exibir_mensagem_produtora("aviso:delecao binaria. responsa do colega.");
+        exibir_mensagem_produtora("aviso:delecao binaria.");
         return 0; //aqui deveria ter a implementacao dele
     }
     //sua versão para memoria (modo 3)
@@ -396,4 +396,61 @@ void exibir_todas_produtoras(NoProdutora* lista) {
     
     // Rodapé da lista
     printf("=======================================\n");
+}
+//henrique: funçao pra carregar a lista sempre que o programa for aberto
+NoProdutora* carregar_produtoras(NoProdutora* lista) {
+    if (lista != NULL) return lista;
+
+    int tipo = verificar_tipo_saida();
+
+    if (tipo == 1) { //txt
+        FILE *file = fopen("../b_output/produtora/produtora.txt", "r");
+        if (file == NULL) return lista;
+
+        Produtora p;
+        char linha[2048];
+
+        while (fgets(linha, sizeof(linha), file)) {
+            if (sscanf(linha,
+                "nome_fantasia:%49[^,],razao_social:%99[^,],inscricao_estadual:%8[^,],cnpj:%13[^,],endereco_completo:%255[^,],telefone:%10[^,],enail:%49[^,],responsavel:%49[^,],telefone_responsavel:%10[^,],margem_lucro:%5[^,],status:%d",
+                p.nome_fantasia,
+                p.razao_social,
+                p.inscricao_estadual,
+                p.cnpj,
+                p.endereco_completo,
+                p.telefone,
+                p.email,
+                p.nome_do_responsavel,
+                p.telefone_do_responsavel,
+                p.margem_de_lucro_padrao,
+                &p.status) == 11) {
+                
+                NoProdutora *novo_no = (NoProdutora*) malloc(sizeof(NoProdutora));
+                if (novo_no != NULL) {
+                    copiar_dados_produtora(&(novo_no->dados), &p);
+                    novo_no->dados.status = p.status; 
+                    novo_no->proximo = lista;
+                    lista = novo_no;
+                }
+            }
+        }
+        fclose(file);
+    }
+    else if (tipo == 2) { //bin
+        FILE *file = fopen("../b_output/produtora/produtora.bin", "rb");
+        if (file == NULL) return lista;
+
+        Produtora p;
+        while (fread(&p, sizeof(Produtora), 1, file) == 1) {
+            NoProdutora *novo_no = (NoProdutora*) malloc(sizeof(NoProdutora));
+            if (novo_no != NULL) {
+                copiar_dados_produtora(&(novo_no->dados), &p);
+                novo_no->dados.status = p.status;
+                novo_no->proximo = lista;
+                lista = novo_no;
+            }
+        }
+        fclose(file);
+    }
+    return lista;
 }

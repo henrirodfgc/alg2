@@ -205,10 +205,10 @@ int deletar_operador_por_codigo(NoOperador* lista, int codigo_busca){
             return 0;
         }
     }
-    //implementação do colega para BIN
+    //implementação BIN
     else if (verificar_tipo_saida() == 2)
     {
-        exibir_mensagem_operador("aviso:delecao binaria. responsa do colega.");
+        exibir_mensagem_operador("ainda nao feito");
         return 0; //aqui deveria ter a implementacao dele
     }
     //sua versão para memoria (modo 3)
@@ -266,3 +266,53 @@ void exibir_todos_operadores(NoOperador* lista){
     printf("=============================================\n");
 }
 
+NoOperador* carregar_operadores(NoOperador* lista){
+    if (lista != NULL) return lista;
+
+    int tipo = verificar_tipo_saida();
+
+    if (tipo == 1) { //txt
+        FILE *file = fopen("../b_output/operador/operadores.txt", "r");
+        if (file == NULL) return lista;
+
+        Operador op;
+        char linha[2048];
+
+        while (fgets(linha, sizeof(linha), file)) {
+            if (sscanf(linha,
+                   "id:%d,nome:%49[^,],usuario:%59[^,],senha:%19[^,],status:%d",
+                   &op.codigo,
+                   op.nome,
+                   op.usuario,
+                   op.senha,
+                   &op.status) == 5) {
+                
+                NoOperador *novo_no = (NoOperador*) malloc(sizeof(NoOperador));
+                if (novo_no != NULL) {
+                    copiar_dados_operador(&(novo_no->dados), &op);
+                    novo_no->dados.status = op.status;
+                    novo_no->proximo = lista;
+                    lista = novo_no;
+                }
+            }
+        }
+        fclose(file);
+    }
+    else if (tipo == 2) { //bin
+        FILE *file = fopen("../b_output/operador/operadores.bin", "rb");
+        if (file == NULL) return lista;
+
+        Operador op;
+        while (fread(&op, sizeof(Operador), 1, file) == 1) {
+            NoOperador *novo_no = (NoOperador*) malloc(sizeof(NoOperador));
+            if (novo_no != NULL) {
+                copiar_dados_operador(&(novo_no->dados), &op);
+                novo_no->dados.status = op.status;
+                novo_no->proximo = lista;
+                lista = novo_no;
+            }
+        }
+        fclose(file);
+    }
+    return lista;
+}

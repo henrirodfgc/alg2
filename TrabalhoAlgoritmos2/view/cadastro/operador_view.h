@@ -13,7 +13,6 @@ void ler_dados_atualizacao_operador(int* codigo, char* nome, char* usuario, char
 
 void exibir_mensagem_operador(const char* msg);
 
-char ler_codigo_para_a_operacao(const char* operacao);
-
+int ler_codigo_para_a_operacao(const char* operacao);
 
 #endif

@@ -139,8 +139,7 @@ void atualizar_membro_por_codigo(NoEquipe* lista, int codigo_busca, const char* 
 //deleta o nó da lista vira INATIVAR (soft delete)
 //agora so muda o status pra 0 (soft delete)
 int deletar_membro_por_codigo_logico(NoEquipe* lista, int codigo_busca) {
-    //se nao for modo memoria a responsa nao eh sua
-    if (verificar_tipo_saida() == 1) //lógica de deleção txt complexa do colega
+    if (verificar_tipo_saida() == 1) //lógica de deleção txt
     {
         FILE *file = fopen("../b_output/membro/membros.txt", "r+");
         if (file == NULL)
@@ -220,10 +219,10 @@ int deletar_membro_por_codigo_logico(NoEquipe* lista, int codigo_busca) {
             return 0;
         }
     }
-    //implementação do colega para BIN
+    //implementação BIN
     else if (verificar_tipo_saida() == 2)
     {
-        exibir_mensagem_equipe("aviso:delecao binaria. responsa do colega.");
+        exibir_mensagem_equipe("aviso:delecao binaria.");
         return 0; //aqui deveria ter a implementacao dele
     }
     //sua versão para memoria (modo 3)
@@ -322,4 +321,56 @@ void exibir_membros_inativos(NoEquipe* lista) {
         exibir_mensagem_equipe("nenhum membro inativo encontrado!");
     }
     printf("======================================\n");
+}
+
+NoEquipe* carregar_equipe(NoEquipe* lista) {
+    if (lista != NULL) return lista;
+
+    int tipo = verificar_tipo_saida();
+
+    if (tipo == 1) { //txt
+        FILE *file = fopen("../b_output/membro/membros.txt", "r");
+        if (file == NULL) return lista;
+
+        MembroEquipe m;
+        char linha[2048];
+
+        while (fgets(linha, sizeof(linha), file)) {
+            if (sscanf(linha,
+                "id:%d,nome:%49[^,],cpf:%11[^,],funcao:%49[^,],valor_diaria_hora:%f,status:%d",
+                &m.codigo,
+                m.nome,
+                m.cpf,
+                m.funcao,
+                &m.valor_diaria_hora,
+                &m.status) == 6) {
+                
+                NoEquipe *novo_no = (NoEquipe*) malloc(sizeof(NoEquipe));
+                if (novo_no != NULL) {
+                    copiar_dados_equipe(&(novo_no->dados), &m);
+                    novo_no->dados.status = m.status;
+                    novo_no->proximo = lista;
+                    lista = novo_no;
+                }
+            }
+        }
+        fclose(file);
+    } 
+    else if (tipo == 2) { //bin
+        FILE *file = fopen("../b_output/membro/membros.bin", "rb");
+        if (file == NULL) return lista;
+
+        MembroEquipe m;
+        while (fread(&m, sizeof(MembroEquipe), 1, file) == 1) {
+            NoEquipe *novo_no = (NoEquipe*) malloc(sizeof(NoEquipe));
+            if (novo_no != NULL) {
+                copiar_dados_equipe(&(novo_no->dados), &m);
+                novo_no->dados.status = m.status;
+                novo_no->proximo = lista;
+                lista = novo_no;
+            }
+        }
+        fclose(file);
+    }
+    return lista;
 }

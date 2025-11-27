@@ -100,4 +100,7 @@ void desalocar_lista_produtoras(NoProdutora* lista);
 // =============================================
 void exibir_todas_produtoras(NoProdutora* lista);
 
+//adicionado pelo henrique p corrigir aquele erro de carregamento: serve pra carregar a lista dos nossos salvos sempre
+//q a gente abrir o programa
+NoProdutora* carregar_produtoras(NoProdutora* lista);
 #endif
