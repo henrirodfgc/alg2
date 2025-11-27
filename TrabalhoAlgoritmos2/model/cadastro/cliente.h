@@ -23,7 +23,8 @@ char nome_contato[50];
 int status; //campo do soft delete
 } Cliente;
 
-//o nó da lista ligada pra dar pra ter vários clients ao mesmo tempo
+//*
+//o nó da lista ligada pra dar pra ter vários clients ao mesmo tempo 
 struct NoCliente {
 Cliente dados; //guarda os dados do client 
 NoCliente *proximo; //ponteiro pro proximo registro da lista

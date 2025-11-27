@@ -95,12 +95,8 @@ Equipamento* buscar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
 }
 
 //atualiza os dados de quem ja existe na lista (u)
-<<<<<<< HEAD
-void atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char* descricao, const char* categoria, int quantidade_estoque, float preco_custo, float valor_locacao) {
-=======
 int atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char* descricao, const char* categoria, int quantidade_estoque, float preco_custo, float valor_locacao) {
     //busca o recurso ativo na lista em memoria
->>>>>>> ba04d9a4c802be92fd18a5b3df336582f5bdc937
     Equipamento *recurso_existente = buscar_recurso_por_codigo(lista, codigo_busca);
     
     if (recurso_existente) {
@@ -113,10 +109,6 @@ int atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char*
         strncpy(recurso_existente->categoria, categoria, sizeof(recurso_existente->categoria) - 1);
         recurso_existente->categoria[sizeof(recurso_existente->categoria) - 1] = '\0';
         
-<<<<<<< HEAD
-        if (verificar_tipo_saida() != 3) {
-            exibir_mensagem_recursos("recurso atualizado em memoria)");
-=======
         if (verificar_tipo_saida() == 1)
         {
             FILE *file = fopen("../b_output/recursos/recursos.txt", "r+");
@@ -204,7 +196,6 @@ int atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char*
                 return 0;
             }
 
->>>>>>> ba04d9a4c802be92fd18a5b3df336582f5bdc937
         }
         
     }

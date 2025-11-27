@@ -7,7 +7,7 @@
 #include "../../view/cadastro/cliente_view.h"
 #include "cliente_controller.h"
 
-//lista ligada
+//lista ligada *
 NoCliente * listaClientes = NULL; 
 
 //função da view
