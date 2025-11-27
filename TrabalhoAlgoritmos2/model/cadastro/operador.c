@@ -108,7 +108,7 @@ Operador* buscar_operador_por_codigo(NoOperador* lista, int codigo_busca){
     
 }
 
-void atualizar_operador_por_codigo(NoOperador* lista, int codigo_busca, const char* nome, const char* usuario, const char* senha){
+int atualizar_operador_por_codigo(NoOperador* lista, int codigo_busca, const char* nome, const char* usuario, const char* senha){
 
     Operador *operador_existente = buscar_operador_por_codigo(lista, codigo_busca);
 
@@ -122,9 +122,105 @@ void atualizar_operador_por_codigo(NoOperador* lista, int codigo_busca, const ch
 
         strncpy(operador_existente->senha, senha, sizeof(operador_existente-> senha) -1);
         operador_existente->senha[sizeof(operador_existente->senha)-1] = '\0';
+    
+         if (verificar_tipo_saida() == 1)
+        {
+            FILE *file = fopen("../b_output/operador/operadores.txt", "r+");
+            if (file==NULL)
+            {
+                printf("erro ao abrir o arquivo original!\n");
+            
+                return 0;
+            }
+
+            FILE *temp = fopen("../b_output/operador/temp.txt", "w+");
+            if (temp == NULL)
+            {
+                printf("erro ao criar arquivo temporario!\n");
+                fclose(file);
+                return 0;
+            }
+
+            Operador c;
+            char linha[2048];
+            int encontrado = 0;
+
+
+
+            while (fgets(linha, sizeof(linha), file))
+         {
+            //lê os campos
+            sscanf(linha,
+                   "id:%d,nome:%49[^,],usuario:%59[^,],senha:%19[^,],status:%d",
+                   &c.codigo,
+                   c.nome,
+                   c.usuario,
+                   c.senha,
+                   &c.status);
+                   
+                   
+
+            if (c.codigo == operador_existente->codigo)
+            {
+                fprintf(temp,
+                    "id:%d,nome:%s,usuario:%s,senha:%s,status:%d",
+                    operador_existente->codigo,
+                    operador_existente->nome,
+                    operador_existente->usuario,
+                    operador_existente->senha,
+                    operador_existente->status);
+                    
+
+                    encontrado = 1;
+            
+            } else {
+                fprintf(temp, "%s", linha);
+             }
+            
+            
+         }
+
+            fclose(file);
+            fclose(temp);
+
+
+            //substitui o original pelo temporário
+            if (remove("../b_output/operador/operadores.txt") != 0)
+            {
+                perror("erro ao remover o arquivo original");
+                return 0;
+            }
+
+            if (rename("../b_output/operador/temp.txt", "../b_output/operador/operadores.txt") != 0)
+            {
+                perror("erro ao renomear o arquivo temporario");
+                return 0;
+            }
+
+            if (encontrado)
+            {
+                printf("operador com id %d atualizado.\n", codigo_busca);
+                return 1;
+            }
+            else
+            {
+                printf("operador com id %d nao encontrado.\n", codigo_busca);
+                return 0;
+            }
+
+        }
+        
     }
+    return 1;
     
 }
+    
+    
+    
+    
+    
+    
+
 
 int deletar_operador_por_codigo(NoOperador* lista, int codigo_busca){
    if (verificar_tipo_saida() == 1) 

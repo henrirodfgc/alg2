@@ -18,7 +18,7 @@ typedef struct NoOperador
 
 NoOperador* adicionar_operador_na_lista(NoOperador* lista, Operador novo_operador);
 
-void atualizar_operador_por_codigo(NoOperador* lista, int codigo_busca, const char* nome, const char* usuario, const char* senha);
+int atualizar_operador_por_codigo(NoOperador* lista, int codigo_busca, const char* nome, const char* usuario, const char* senha);
 
 int deletar_operador_por_codigo(NoOperador* lista, int codigo_busca);
 

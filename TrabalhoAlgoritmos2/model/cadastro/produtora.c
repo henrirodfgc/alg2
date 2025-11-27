@@ -176,7 +176,7 @@ Produtora* buscar_produtora_por_cnpj(NoProdutora* lista, const char* cnpj_busca)
 //   - cnpj_busca: CNPJ da produtora a ser atualizada
 //   - demais parâmetros: Novos dados para atualização
 // =============================================
-void atualizar_produtora_por_cnpj(NoProdutora* lista, const char* cnpj_busca, 
+int atualizar_produtora_por_cnpj(NoProdutora* lista, const char* cnpj_busca, 
                                  const char* nome_fantasia, 
                                  const char* razao_social, const char* inscricao_estadual,    
                                  const char* email, const char* endereco_completo,  
@@ -225,7 +225,106 @@ void atualizar_produtora_por_cnpj(NoProdutora* lista, const char* cnpj_busca,
         // Atualiza margem de lucro padrão
         strncpy(produtora_existente->margem_de_lucro_padrao, margem_de_lucro_padrao, sizeof(produtora_existente->margem_de_lucro_padrao) - 1);
         produtora_existente->margem_de_lucro_padrao[sizeof(produtora_existente->margem_de_lucro_padrao) - 1] = '\0';
+    
+      if (verificar_tipo_saida() == 1)
+        {
+            FILE *file = fopen("../b_output/produtora/produtora.txt", "r+");
+            if (file==NULL)
+            {
+                printf("erro ao abrir o arquivo original!\n");
+            
+                return 0;
+            }
+
+            FILE *temp = fopen("../b_output/produtora/temp.txt", "w+");
+            if (temp == NULL)
+            {
+                printf("erro ao criar arquivo temporario!\n");
+                fclose(file);
+                return 0;
+            }
+
+            Produtora c;
+            char linha[2048];
+            int encontrado = 0;
+
+
+
+            while (fgets(linha, sizeof(linha), file))
+         {
+            //lê os campos
+            sscanf(linha,
+                   "nome_fantasia:%49[^,],razao_social:%99[^,],inscricao_estadual:%8[^,],cnpj:%13[^,],endereco:%255[^,],telefone:%10[^,],email:%49[^,],responsavel:%49[^,],telefone_responsavel:%10[^,],margem_lucro:%5[^,],status:%d",
+                    c.nome_fantasia,
+                    c.razao_social,
+                    c.inscricao_estadual,
+                    c.cnpj,
+                    c.endereco_completo,
+                    c.telefone,
+                    c.email,
+                    c.nome_do_responsavel,
+                    c.telefone_do_responsavel,
+                    c.margem_de_lucro_padrao,
+                    &c.status);
+                   
+
+            if (c.cnpj == produtora_existente->cnpj)
+            {
+                fprintf(temp,
+                     "nome_fantasia:%s,razao_social:%s,inscricao_estadual:%s,cnpj:%s,endereco_completo:%s,telefone:%s,email:%s,responsavel:%s,telefone_responsavel:%s,margem_lucro:%s,status:%d\n",
+                    produtora_existente->nome_fantasia,
+                    produtora_existente->razao_social,
+                    produtora_existente->inscricao_estadual,
+                    produtora_existente->cnpj,
+                    produtora_existente->endereco_completo,
+                    produtora_existente->telefone,
+                    produtora_existente->email,
+                    produtora_existente->nome_do_responsavel,
+                    produtora_existente->telefone_do_responsavel,
+                    produtora_existente->margem_de_lucro_padrao,
+                    produtora_existente->status);
+
+                    encontrado = 1;
+            
+            } else {
+                fprintf(temp, "%s", linha);
+             }
+            
+            
+         }
+
+            fclose(file);
+            fclose(temp);
+
+
+            //substitui o original pelo temporário
+            if (remove("../b_output/produtora/produtora.txt") != 0)
+            {
+                perror("erro ao remover o arquivo original");
+                return 0;
+            }
+
+            if (rename("../b_output/produtora/temp.txt", "../b_output/produtora/produtora.txt") != 0)
+            {
+                perror("erro ao renomear o arquivo temporario");
+                return 0;
+            }
+
+            if (encontrado)
+            {
+                printf("produtora com id %d atualizado.\n", cnpj_busca);
+                return 1;
+            }
+            else
+            {
+                printf("produtora com id %d nao encontrado.\n", cnpj_busca);
+                return 0;
+            }
+
+        }
+        
     }
+    return 1;
 }
 
 // =============================================

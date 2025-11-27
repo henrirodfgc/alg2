@@ -28,7 +28,7 @@ struct NoEquipe *proximo; //aponta para o proximo registro da lista
 NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro);
 
 //atualiza os dados de um membro q já existe pelo código
-void atualizar_membro_por_codigo(NoEquipe* lista, int codigo_busca, const char* nome, const char* cpf, const char* funcao, float valor_diaria_hora);
+int atualizar_membro_por_codigo(NoEquipe* lista, int codigo_busca, const char* nome, const char* cpf, const char* funcao, float valor_diaria_hora);
 
 //remove o nó libera a memoria e retorna a nova cabeça da lista
 NoEquipe* deletar_membro_por_codigo(NoEquipe* lista, int codigo_busca);
