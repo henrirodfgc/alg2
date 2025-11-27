@@ -114,7 +114,7 @@ MembroEquipe* buscar_membro_por_codigo(NoEquipe* lista, int codigo_busca) {
 }
 
 //atualiza os dados de quem já existe na lista (update)
-void atualizar_membro_por_codigo(NoEquipe* lista, int codigo_busca, const char* nome, const char* cpf, const char* funcao, float valor_diaria_hora) {
+int atualizar_membro_por_codigo(NoEquipe* lista, int codigo_busca, const char* nome, const char* cpf, const char* funcao, float valor_diaria_hora) {
     MembroEquipe *membro_existente = buscar_membro_por_codigo(lista, codigo_busca);
     
     if (membro_existente) {
@@ -129,11 +129,96 @@ void atualizar_membro_por_codigo(NoEquipe* lista, int codigo_busca, const char* 
         strncpy(membro_existente->funcao, funcao, sizeof(membro_existente->funcao) - 1);
         membro_existente->funcao[sizeof(membro_existente->funcao) - 1] = '\0';
         
-        //avisa se nao for modo memoria
-        if (verificar_tipo_saida() != 3) {
-            exibir_mensagem_equipe("");
+        
+        if (verificar_tipo_saida() == 1)
+        {
+            FILE *file = fopen("../b_output/membro/membros.txt", "r+");
+            if (file==NULL)
+            {
+                printf("erro ao abrir o arquivo original!\n");
+            
+                return 0;
+            }
+
+            FILE *temp = fopen("../b_output/membro/temp.txt", "w+");
+            if (temp == NULL)
+            {
+                printf("erro ao criar arquivo temporario!\n");
+                fclose(file);
+                return 0;
+            }
+
+            MembroEquipe c;
+            char linha[2048];
+            int encontrado = 0;
+
+
+
+            while (fgets(linha, sizeof(linha), file))
+         {
+            //lê os campos
+            sscanf(linha,
+                   "id:%d,nome:%49[^,],cpf:%11[^,],funcao:%49[^,],valor_diaria_hora:%.2f,status:%d",
+                   &c.codigo,
+                   c.nome,
+                   c.cpf,
+                   c.funcao,
+                   c.valor_diaria_hora,
+                   &c.status);
+                   
+
+            if (c.codigo == membro_existente->codigo)
+            {
+                fprintf(temp,
+                   "id:%d,nome:%s,cpf:%s,funcao:%s,valor_diaria_hora:%.2f,status:%d",
+                    membro_existente->codigo,
+                    membro_existente->nome,
+                    membro_existente->cpf,
+                    membro_existente->funcao,
+                    membro_existente->valor_diaria_hora,
+                    membro_existente->status);
+
+                    encontrado = 1;
+            
+            } else {
+                fprintf(temp, "%s", linha);
+             }
+            
+            
+         }
+
+            fclose(file);
+            fclose(temp);
+
+
+            //substitui o original pelo temporário
+            if (remove("../b_output/membro/membros.txt") != 0)
+            {
+                perror("erro ao remover o arquivo original");
+                return 0;
+            }
+
+            if (rename("../b_output/membro/temp.txt", "../b_output/membro/membros.txt") != 0)
+            {
+                perror("erro ao renomear o arquivo temporario");
+                return 0;
+            }
+
+            if (encontrado)
+            {
+                printf("membro com id %d atualizado.\n", codigo_busca);
+                return 1;
+            }
+            else
+            {
+                printf("membro com id %d nao encontrado.\n", codigo_busca);
+                return 0;
+            }
+
         }
+        
     }
+    return 1;
 }
 
 //deleta o nó da lista vira INATIVAR (soft delete)

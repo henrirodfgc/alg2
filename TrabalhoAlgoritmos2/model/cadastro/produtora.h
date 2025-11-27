@@ -56,7 +56,7 @@ NoProdutora* adicionar_produtora_na_lista(NoProdutora* lista, Produtora nova_pro
 //   - cnpj_busca: CNPJ da produtora a ser atualizada
 //   - demais parâmetros: Novos dados para atualização
 // =============================================
-void atualizar_produtora_por_cnpj(NoProdutora* lista, const char* cnpj_busca, 
+int atualizar_produtora_por_cnpj(NoProdutora* lista, const char* cnpj_busca, 
                                  const char* nome_fantasia, const char* razao_social, 
                                  const char* inscricao_estadual, 
                                  const char* endereco_completo, const char* telefone, 

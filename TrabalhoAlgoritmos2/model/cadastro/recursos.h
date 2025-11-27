@@ -29,7 +29,7 @@ NoRecurso* adicionar_recurso_na_lista(NoRecurso* lista, Equipamento novo_recurso
 Equipamento* buscar_recurso_por_codigo(NoRecurso* lista, int codigo_busca);
 
 //u: troca os dados do equip q ja existe
-void atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char* descricao, const char* categoria, int quantidade_estoque, float preco_custo, float valor_locacao);
+int atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char* descricao, const char* categoria, int quantidade_estoque, float preco_custo, float valor_locacao);
 
 //d: deleta o no (fisicamente msm)
 int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca);

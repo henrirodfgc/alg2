@@ -95,7 +95,12 @@ Equipamento* buscar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
 }
 
 //atualiza os dados de quem ja existe na lista (u)
+<<<<<<< HEAD
 void atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char* descricao, const char* categoria, int quantidade_estoque, float preco_custo, float valor_locacao) {
+=======
+int atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char* descricao, const char* categoria, int quantidade_estoque, float preco_custo, float valor_locacao) {
+    //busca o recurso ativo na lista em memoria
+>>>>>>> ba04d9a4c802be92fd18a5b3df336582f5bdc937
     Equipamento *recurso_existente = buscar_recurso_por_codigo(lista, codigo_busca);
     
     if (recurso_existente) {
@@ -108,10 +113,102 @@ void atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char
         strncpy(recurso_existente->categoria, categoria, sizeof(recurso_existente->categoria) - 1);
         recurso_existente->categoria[sizeof(recurso_existente->categoria) - 1] = '\0';
         
+<<<<<<< HEAD
         if (verificar_tipo_saida() != 3) {
             exibir_mensagem_recursos("recurso atualizado em memoria)");
+=======
+        if (verificar_tipo_saida() == 1)
+        {
+            FILE *file = fopen("../b_output/recursos/recursos.txt", "r+");
+            if (file==NULL)
+            {
+                printf("erro ao abrir o arquivo original!\n");
+            
+                return 0;
+            }
+
+            FILE *temp = fopen("../b_output/recursos/temp.txt", "w+");
+            if (temp == NULL)
+            {
+                printf("erro ao criar arquivo temporario!\n");
+                fclose(file);
+                return 0;
+            }
+
+            Equipamento c;
+            char linha[2048];
+            int encontrado = 0;
+
+
+
+            while (fgets(linha, sizeof(linha), file))
+         {
+            //lê os campos
+            sscanf(linha,
+                   "codigo:%d,descricaco:%99[^,],categoria:%49[^,],estoque:%d,preco_custo:%.2f,valor_locacao:%.2f,status:%d",
+                   &c.codigo,
+                   c.descricao,
+                   c.categoria,
+                   c.quantidade_estoque,
+                   c.preco_custo,
+                   c.valor_locacao,
+                   &c.status);
+                   
+
+            if (c.codigo == recurso_existente->codigo)
+            {
+                fprintf(temp,
+                   "codigo:%d,descricaco:%s,categoria:%s,estoque:%d,preco_custo:%.2f,valor_locacao:%.2f,status:%d",
+                    recurso_existente->codigo,
+                    recurso_existente->descricao,
+                    recurso_existente->categoria,
+                    recurso_existente->quantidade_estoque,
+                    recurso_existente->preco_custo,
+                    recurso_existente->valor_locacao,
+                    recurso_existente->status);
+
+                    encontrado = 1;
+            
+            } else {
+                fprintf(temp, "%s", linha);
+             }
+            
+            
+         }
+
+            fclose(file);
+            fclose(temp);
+
+
+            //substitui o original pelo temporário
+            if (remove("../b_output/recursos/recursos.txt") != 0)
+            {
+                perror("erro ao remover o arquivo original");
+                return 0;
+            }
+
+            if (rename("../b_output/recursos/temp.txt", "../b_output/recursos/recursos.txt") != 0)
+            {
+                perror("erro ao renomear o arquivo temporario");
+                return 0;
+            }
+
+            if (encontrado)
+            {
+                printf("recursos com id %d atualizado.\n", codigo_busca);
+                return 1;
+            }
+            else
+            {
+                printf("recursos com id %d nao encontrado.\n", codigo_busca);
+                return 0;
+            }
+
+>>>>>>> ba04d9a4c802be92fd18a5b3df336582f5bdc937
         }
+        
     }
+    return 1;
 }
 
 
