@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "controller/saida.h"
+#include "controller/orcamento/evento_controller.h"
 
 
 // =============================
@@ -83,7 +84,7 @@ int main() {
                 printf("Escolha a opção: ");
                 scanf(" %c", &troca);
                 
-                int trocou = troca_txt_bin(troca);
+                //int trocou = troca_txt_bin(troca);
 
                 
             }
@@ -107,6 +108,7 @@ int main() {
         printf("4 - Módulo Fornecedores e Parceiros\n");
         printf("5 - Módulo Recursos e Equipamentos\n"); // <<-- NOVO AQUI!
         printf("6 - Módulo operador\n");
+        printf("7 - Módulo de eventos/orçamentos\n");
         printf("0 - Fechar Sistema\n");
         printf("Escolha o módulo: ");
         scanf("%d", &opcao_principal);
@@ -123,13 +125,16 @@ int main() {
                 break;
             case 4:
                 iniciar_fornecedor_e_parceiro();
-                break; // <-- BREAK MANTIDO AQUI
-            case 5: // <<-- NOVO CASE!
+                break; 
+            case 5: 
                 iniciar_recursos(); 
                 break; 
             case 6:
                 iniciar_operador();
                 break;    
+            case 7:
+                iniciar_eventos();
+                break;
             case 0:
                 printf("Encerrando o sistema. Tchau!\n");
                 break;

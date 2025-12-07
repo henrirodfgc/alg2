@@ -5,15 +5,15 @@
 #include "../../view/cadastro/fornece_e_parce_view.h"
 #include "fornece_e_parce_controller.h"
 
-// Mantém os dados entre chamadas sem precisar do main
-static NoFornecedores_e_parceiros *listaFornecedores_e_parceiros = NULL;
+// mantem os dados entre chamadas sem precisar do main
+NoFornecedores_e_parceiros *listaFornecedores_e_parceiros = NULL;
 
 void iniciar_fornecedor_e_parceiro() {
     int opcao;
     int id_busca;
     Fornecedores_e_parceiros temp;
 
-    // Carrega dados ao iniciar
+    // carrega dados ao iniciar(fim da amnesia)
     listaFornecedores_e_parceiros = carregar_fornecedores_e_parceiros(listaFornecedores_e_parceiros);
 
     do {
@@ -22,31 +22,31 @@ void iniciar_fornecedor_e_parceiro() {
         getchar();
 
         switch (opcao) {
-            case 1: { // Cadastrar Fornecedor
+            case 1: { // cadastrar fornecedor
                 temp = ler_dados_fornecedor(); 
 
                 if (buscar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, temp.id) != NULL) {
-                    exibir_mensagem_fornece_e_parce("ERRO: Já existe um registro com este ID. Tente novamente");
+                    exibir_mensagem_fornece_e_parce("erro: ja existe um registro com este id. tente novamente");
                 } else {
                     listaFornecedores_e_parceiros = adicionar_fornecedor_na_lista(listaFornecedores_e_parceiros, temp);
-                    exibir_mensagem_fornece_e_parce("Fornecedor cadastrado com sucesso");
+                    exibir_mensagem_fornece_e_parce("fornecedor cadastrado com sucesso");
                 }
                 break;
             }
 
-            case 2: { // Cadastrar Parceiro
+            case 2: { // cadastrar parceiro
                 temp = ler_dados_parceiro(); 
 
                 if (buscar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, temp.id) != NULL) {
-                    exibir_mensagem_fornece_e_parce("ERRO: Já existe um registro com este ID. Tente novamente");
+                    exibir_mensagem_fornece_e_parce("erro: ja existe um registro com este id. tente novamente");
                 } else {
                     listaFornecedores_e_parceiros = adicionar_parceiros_na_lista(listaFornecedores_e_parceiros, temp);
-                    exibir_mensagem_fornece_e_parce("Parceiro cadastrado com sucesso");
+                    exibir_mensagem_fornece_e_parce("parceiro cadastrado com sucesso");
                 }
                 break;
             }
 
-            case 3: { // Buscar por ID
+            case 3: { // buscar por id
                 id_busca = ler_id_para_operacao_fornece_e_parce(); 
                 
                 Fornecedores_e_parceiros *registro_encontrado = buscar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, id_busca); 
@@ -54,97 +54,100 @@ void iniciar_fornecedor_e_parceiro() {
                 if (registro_encontrado != NULL) {
                     exibir_fornece_e_parce(registro_encontrado);
                 } else {
-                    exibir_mensagem_fornece_e_parce("Registro não encontrado");
+                    exibir_mensagem_fornece_e_parce("registro nao encontrado");
                 }
                 break;
             }
 
-            case 4: { // Listar Todos
+            case 4: { // listar todos
                 exibir_todas_fornece_e_parce(listaFornecedores_e_parceiros);
                 break;
             }
 
-            case 5: { // Atualizar Fornecedor
+            case 5: { // atualizar fornecedor
                 id_busca = ler_id_para_operacao_fornece_e_parce(); 
                 
                 Fornecedores_e_parceiros *fornecedor_encontrado = buscar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, id_busca);
 
                 if (fornecedor_encontrado == NULL) {
-                    exibir_mensagem_fornece_e_parce("Nenhum fornecedor cadastrado com este ID");
+                    exibir_mensagem_fornece_e_parce("nenhum fornecedor cadastrado com este id");
                 } else if (fornecedor_encontrado->tipo != TIPO_CNPJ) {
-                    exibir_mensagem_fornece_e_parce("Este ID pertence a um parceiro, não a um fornecedor");
+                    exibir_mensagem_fornece_e_parce("este id pertence a um parceiro, nao a um fornecedor");
                 } else {
-                    
+                    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    //variaveis para receber os dados novos da view
                     char nome_fantasia[50], razao_social[100], endereco[256];
                     char cnpj[15], telefone[20];
                     TipoServico servico;
 
-                    // Chama a view para preencher as variaveis
+                    //chama a view passando o registro atual pra preencher as variaveis
                     ler_dados_atualizacao_fornecedor(fornecedor_encontrado, nome_fantasia, razao_social, endereco, cnpj, telefone, &servico);
 
-                    // Chama o model para atualizar
+                    // agora chama o model com os dados PREENCHIDOS 
                     atualizar_fornecedor_por_id(listaFornecedores_e_parceiros, id_busca,  
                                                 nome_fantasia, razao_social, endereco,   
                                                 cnpj, telefone, servico);
                     
-                    exibir_mensagem_fornece_e_parce("Fornecedor atualizado com sucesso");
+                    exibir_mensagem_fornece_e_parce("fornecedor atualizado com sucesso");
                 }
                 break;
             }
 
-            case 6: { // Atualizar Parceiro
+            case 6: { // atualizar parceiro
                 id_busca = ler_id_para_operacao_fornece_e_parce(); 
                 
                 Fornecedores_e_parceiros *parceiro_encontrado = buscar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, id_busca);
 
                 if (parceiro_encontrado == NULL) {
-                    exibir_mensagem_fornece_e_parce("Nenhum parceiro cadastrado com este ID");
+                    exibir_mensagem_fornece_e_parce("nenhum parceiro cadastrado com este id");
                 } else if (parceiro_encontrado->tipo != TIPO_CPF) {
-                    exibir_mensagem_fornece_e_parce("Este ID pertence a um fornecedor, não a um parceiro");
+                    exibir_mensagem_fornece_e_parce("este id pertence a um fornecedor, nao a um parceiro");
                 } else {
-                    
+                    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    //variaveis para receber os dados
                     char nome_fantasia[50], razao_social[100], endereco[256];
                     char cpf[12], telefone[20];
                     TipoServico servico;
 
-                    // Chama a view para preencher as variaveis
+                    // chama a view para preencher as variaveis
                     ler_dados_atualizacao_parceiro(parceiro_encontrado, nome_fantasia, razao_social, endereco, cpf, telefone, &servico);
 
+                    // chama o model com os dados 
                     atualizar_parceiro_por_id(listaFornecedores_e_parceiros, id_busca,  
                                               nome_fantasia, razao_social, endereco,   
                                               cpf, telefone, servico);
                     
-                    exibir_mensagem_fornece_e_parce("Parceiro atualizado com sucesso");
+                    exibir_mensagem_fornece_e_parce("parceiro atualizado com sucesso");
                 }
                 break;
             }
 
-            case 7: { // Deletar
+            case 7: { // deletar
                 id_busca = ler_id_para_operacao_fornece_e_parce(); 
 
                 if (buscar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, id_busca) == NULL) {
-                    exibir_mensagem_fornece_e_parce("Nenhum registro para deletar com este ID");
+                    exibir_mensagem_fornece_e_parce("nenhum registro para deletar com este id");
                     break;
                 }
                 
                 listaFornecedores_e_parceiros = deletar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, id_busca);
-                exibir_mensagem_fornece_e_parce("Registro deletado com sucesso");
+                exibir_mensagem_fornece_e_parce("registro deletado com sucesso");
                 break;
             }
 
             case 0:
-                exibir_mensagem_fornece_e_parce("Voltando ao menu principal...");
+                exibir_mensagem_fornece_e_parce("voltando ao menu principal...");
                 break;
 
             default:
-                exibir_mensagem_fornece_e_parce("Opção inválida! Tente novamente.");
+                exibir_mensagem_fornece_e_parce("opcao invalida! tente novamente.");
         }
 
-        /*if (opcao != 0) {
-
-            printf("\nPressione Enter para continuar...");
+        // pausa se nao for sair
+        if (opcao != 0) {
+            printf("\npressione enter para continuar...");
             while (getchar() != '\n');
-        }*/
+        }
 
     } while (opcao != 0);
 }

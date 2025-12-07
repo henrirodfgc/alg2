@@ -49,7 +49,7 @@ NoRecurso* adicionar_recurso_na_lista(NoRecurso* lista, Equipamento novo_recurso
         }
  
         fprintf(file,
-            "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%d,custo:%.2f,locacao:%.2f,status:%d\n",
+            "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%f,custo:%.2f,locacao:%.2f,status:%d\n",
             novo_recurso.codigo,
             novo_recurso.descricao,
             novo_recurso.categoria,
@@ -137,7 +137,7 @@ int atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char*
          {
             //lê os campos
             sscanf(linha,
-                   "codigo:%d,descricaco:%99[^,],categoria:%49[^,],estoque:%d,preco_custo:%.2f,valor_locacao:%.2f,status:%d",
+                   "codigo:%d,descricaco:%99[^,],categoria:%49[^,],estoque:%f,preco_custo:%.2f,valor_locacao:%.2f,status:%d",
                    &c.codigo,
                    c.descricao,
                    c.categoria,
@@ -150,7 +150,7 @@ int atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char*
             if (c.codigo == recurso_existente->codigo)
             {
                 fprintf(temp,
-                   "codigo:%d,descricaco:%s,categoria:%s,estoque:%d,preco_custo:%.2f,valor_locacao:%.2f,status:%d",
+                   "codigo:%d,descricaco:%s,categoria:%s,estoque:%f,preco_custo:%.2f,valor_locacao:%.2f,status:%d",
                     recurso_existente->codigo,
                     recurso_existente->descricao,
                     recurso_existente->categoria,
@@ -229,7 +229,7 @@ int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
         while (fgets(linha, sizeof(linha), file))
         {
             sscanf(linha,
-                   "codigo:%d,descricao:%99[^,],categoria:%49[^,],quantidade_estoque:%d,custo:%.2f,locacao:%.2f,status:%d",
+                   "codigo:%d,descricao:%99[^,],categoria:%49[^,],quantidade_estoque:%f,custo:%.2f,locacao:%.2f,status:%d",
                    &c.codigo,
                    c.descricao,
                    c.categoria,
@@ -245,7 +245,7 @@ int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
             }
             
             fprintf(temp,
-                    "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%d,custo:%.2f,locacao:%.2f,status:%d\n",
+                    "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%f,custo:%.2f,locacao:%.2f,status:%d\n",
                    c.codigo,
                    c.descricao,
                    c.categoria,
@@ -351,7 +351,7 @@ NoRecurso* carregar_recursos(NoRecurso* lista) {
         while (fgets(linha, sizeof(linha), file)) {
 
             if (sscanf(linha, 
-                "codigo:%d,descricao:%99[^,],categoria:%49[^,],quantidade_estoque:%d,custo:%.2f,locacao:%.2f,status:%d",
+                "codigo:%d,descricao:%99[^,],categoria:%49[^,],quantidade_estoque:%f,custo:%.2f,locacao:%.2f,status:%d",
                 &e.codigo, e.descricao, e.categoria, &e.quantidade_estoque, 
                 &e.preco_custo, &e.valor_locacao, &e.status) == 7) {
                 
