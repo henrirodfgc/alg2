@@ -31,7 +31,7 @@
             "type": "shell",
             "command": "C:\\MinGW\\bin\\mingw32-make.exe",
             "args": ["clean"],
-            "group": "clean"
+            "group": "none"
         }
     ]
 }

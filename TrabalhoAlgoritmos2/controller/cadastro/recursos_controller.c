@@ -96,10 +96,6 @@ void iniciar_recursos() {
                 exibir_mensagem_recursos("opcao invalida. tente novamente.");
         }
         
-        if (opcao != 0) {
-            printf("\npressione enter para continuar...");
-            while (getchar() != '\n');
-        }
 
     } while (opcao != 0);
 

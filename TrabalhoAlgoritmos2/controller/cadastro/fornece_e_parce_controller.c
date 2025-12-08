@@ -141,11 +141,5 @@ void iniciar_fornecedor_e_parceiro() {
                 exibir_mensagem_fornece_e_parce("opcao invalida! tente novamente.");
         }
 
-        // pausa se nao for sair
-        if (opcao != 0) {
-            printf("\npressione enter para continuar...");
-            while (getchar() != '\n');
-        }
-
     } while (opcao != 0);
 }

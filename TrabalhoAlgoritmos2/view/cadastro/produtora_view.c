@@ -210,3 +210,18 @@ void ler_dados_atualizacao_produtora( char* cnpj, char* nome_fantasia,
 void exibir_mensagem_produtora(const char* msg) {
     printf("%s\n", msg);
 }
+
+void exibir_todas_produtoras(NoProdutora* lista) {
+    NoProdutora *atual = lista;
+    int cont = 0;
+    printf("\n==== lista de produtoras ====\n");
+    while (atual != NULL) {
+        if (atual->dados.status == 1) {
+            exibir_produtora(&(atual->dados));
+            cont++;
+        }
+        atual = atual->proximo;
+    }
+    if (cont == 0) printf("nenhuma produtora ativa.\n");
+    printf("=============================\n");
+}

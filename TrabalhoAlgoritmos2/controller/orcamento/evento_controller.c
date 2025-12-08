@@ -10,7 +10,7 @@
 extern NoCliente * listaClientes;
 extern NoCliente* carregar_clientes(NoCliente* lista);
 
-static NoEvento *listaEventos = NULL;
+NoEvento *listaEventos = NULL;
 static NoContaReceber *listaContas = NULL;
 
 void iniciar_eventos() {

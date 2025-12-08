@@ -36,10 +36,8 @@ NoFornecedores_e_parceiros* adicionar_fornecedor_na_lista(NoFornecedores_e_parce
     if (verificar_tipo_saida() == 1) {
         FILE *file = fopen("b_output/forne_parce/fornecedor.txt", "a");
         if (!file) file = fopen("../b_output/forne_parce/fornecedor.txt", "a");
-        
         if (file != NULL) {
-            fprintf(file,
-                "id:%d,nome_fantasia:%s,nome_razao:%s,endereco:%s,tipo:%d,cpf:%s,cnpj:%s,telefone:%s,servico:%d,status:%d\n",
+            fprintf(file, "id:%d,nome_fantasia:%s,nome_razao:%s,endereco:%s,tipo:%d,cpf:%s,cnpj:%s,telefone:%s,servico:%d,status:%d\n",
                 novo_fornecedor.id, novo_fornecedor.nome_fantasia, novo_fornecedor.nome_razao,
                 novo_fornecedor.endereco, novo_fornecedor.tipo, novo_fornecedor.cpf,
                 novo_fornecedor.cnpj, novo_fornecedor.telefone, novo_fornecedor.servico, novo_fornecedor.status);
@@ -48,7 +46,6 @@ NoFornecedores_e_parceiros* adicionar_fornecedor_na_lista(NoFornecedores_e_parce
     } else if (verificar_tipo_saida() == 2) {
         FILE *file = fopen("b_output/forne_parce/fornecedores.bin", "ab");
         if (!file) file = fopen("../b_output/forne_parce/fornecedores.bin", "ab");
-        
         if (file != NULL) {
             fwrite(&novo_fornecedor, sizeof(Fornecedores_e_parceiros), 1, file);
             fclose(file);
@@ -60,7 +57,6 @@ NoFornecedores_e_parceiros* adicionar_fornecedor_na_lista(NoFornecedores_e_parce
 NoFornecedores_e_parceiros* adicionar_parceiros_na_lista(NoFornecedores_e_parceiros* lista, Fornecedores_e_parceiros novo_parceiro){
     NoFornecedores_e_parceiros *novo_no = (NoFornecedores_e_parceiros*) malloc(sizeof(NoFornecedores_e_parceiros));
     if(novo_no == NULL) return lista;
-
     novo_parceiro.status = 1;
     copiar_dados_fornece_e_parce(&(novo_no->dados), &novo_parceiro);
     novo_no->proximo = lista;
@@ -68,10 +64,8 @@ NoFornecedores_e_parceiros* adicionar_parceiros_na_lista(NoFornecedores_e_parcei
     if (verificar_tipo_saida() == 1) {
         FILE *file = fopen("b_output/forne_parce/parceiro.txt", "a");
         if (!file) file = fopen("../b_output/forne_parce/parceiro.txt", "a");
-        
         if (file != NULL) {
-            fprintf(file,
-                "id:%d,nome_fantasia:%s,nome_razao:%s,endereco:%s,tipo:%d,cpf:%s,cnpj:%s,telefone:%s,servico:%d,status:%d\n",
+            fprintf(file, "id:%d,nome_fantasia:%s,nome_razao:%s,endereco:%s,tipo:%d,cpf:%s,cnpj:%s,telefone:%s,servico:%d,status:%d\n",
                 novo_parceiro.id, novo_parceiro.nome_fantasia, novo_parceiro.nome_razao,
                 novo_parceiro.endereco, novo_parceiro.tipo, novo_parceiro.cpf,
                 novo_parceiro.cnpj, novo_parceiro.telefone, novo_parceiro.servico, novo_parceiro.status);
@@ -80,7 +74,6 @@ NoFornecedores_e_parceiros* adicionar_parceiros_na_lista(NoFornecedores_e_parcei
     } else if (verificar_tipo_saida() == 2) {
         FILE *file = fopen("b_output/forne_parce/parceiros.bin", "ab");
         if (!file) file = fopen("../b_output/forne_parce/parceiros.bin", "ab");
-        
         if (file != NULL) {
             fwrite(&novo_parceiro, sizeof(Fornecedores_e_parceiros), 1, file);
             fclose(file);
@@ -108,17 +101,18 @@ NoFornecedores_e_parceiros* deletar_fornece_e_parce_por_id(NoFornecedores_e_parc
         }
         return lista;
     }
-    return lista; //delecao txt/bin nao implementada no model simplificado
+    return lista;
 }
 
-//atualizacao simplificada (apenas memoria)
 void atualizar_fornecedor_por_id(NoFornecedores_e_parceiros* lista, int id_busca, char *nome_fantasia, char *razao_social, char *endereco, char *cnpj, char *telefone, TipoServico servico){
     Fornecedores_e_parceiros *f = buscar_fornece_e_parce_por_id(lista, id_busca);
     if(f){
         strncpy(f->nome_fantasia, nome_fantasia, 49);
         strncpy(f->nome_razao, razao_social, 99);
         strncpy(f->endereco, endereco, 255);
-        //...outros campos
+        strncpy(f->cnpj, cnpj, 14);
+        strncpy(f->telefone, telefone, 19);
+        f->servico = servico;
     }
 }
 
@@ -126,7 +120,11 @@ void atualizar_parceiro_por_id(NoFornecedores_e_parceiros* lista, int id_busca, 
     Fornecedores_e_parceiros *p = buscar_fornece_e_parce_por_id(lista, id_busca);
     if(p){
         strncpy(p->nome_fantasia, nome_fantasia, 49);
-        //...outros campos
+        strncpy(p->nome_razao, razao_social, 99);
+        strncpy(p->endereco, endereco, 255);
+        strncpy(p->cpf, cpf, 11);
+        strncpy(p->telefone, telefone, 19);
+        p->servico = servico;
     }
 }
 
@@ -136,7 +134,6 @@ NoFornecedores_e_parceiros* carregar_fornecedores_e_parceiros(NoFornecedores_e_p
     int tipo = verificar_tipo_saida();
 
     if (tipo == 1) { 
-        // 1. Ler Fornecedores
         FILE *fileF = fopen("b_output/forne_parce/fornecedor.txt", "r");
         if (!fileF) fileF = fopen("../b_output/forne_parce/fornecedor.txt", "r");
         
@@ -161,7 +158,6 @@ NoFornecedores_e_parceiros* carregar_fornecedores_e_parceiros(NoFornecedores_e_p
             fclose(fileF);
         }
 
-        // 2. Ler Parceiros
         FILE *fileP = fopen("b_output/forne_parce/parceiro.txt", "r");
         if (!fileP) fileP = fopen("../b_output/forne_parce/parceiro.txt", "r");
 
@@ -187,4 +183,13 @@ NoFornecedores_e_parceiros* carregar_fornecedores_e_parceiros(NoFornecedores_e_p
         }
     } 
     return lista;
+}
+
+void desalocar_lista_fornece_e_parce(NoFornecedores_e_parceiros* lista){
+    NoFornecedores_e_parceiros *atual = lista;
+    while(atual != NULL){
+        NoFornecedores_e_parceiros *proximo = atual->proximo;
+        free(atual);
+        atual = proximo;
+    }
 }

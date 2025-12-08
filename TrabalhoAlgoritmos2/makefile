@@ -39,7 +39,11 @@ OBJ = main.o \
 	model/transacao/contas_receber.o\
 	model/transacao/contas_pagar.o\
 	view/transacao/transacao_view.o\
-	controller/transacao/transacao_controller.o
+	controller/transacao/transacao_controller.o\
+	view/relatorio/relatorio_view.o\
+	controller/relatorio/relatorio_controller.o\
+	view/xml/xml_view.o\
+	controller/xml/xml_controller.o
 	
 	
 # Regra principal: compilar tudo
@@ -93,6 +97,15 @@ pre_clean:
 	if exist view/transacao/transacao_view.o del view/transacao/transacao_view.o
 	if exist controller/transacao/transacao_controller.o del controller/transacao/transacao_controller.o
 
+	# REGRAS PARA O MODULO RELATORIO (DELECAO INDIVIDUAL)
+	if exist controller/relatorio/relatorio_controller.o del controller/relatorio/relatorio_controller.o
+	if exist view/relatorio/relatorio_view.o del view/relatorio/relatorio_view.o
+
+	# NOVAS REGRAS PARA O MODULO XML (DELECAO INDIVIDUAL)
+	if exist controller/xml/xml_controller.o del controller/xml/xml_controller.o
+	if exist view/xml/xml_view.o del view/xml/xml_view.o
+
+
 # Regra pra limpar (vc roda make clean)
 clean:
 ifeq ($(OS),Windows_NT)
@@ -113,6 +126,10 @@ ifeq ($(OS),Windows_NT)
 	if exist "model\transacao" del "model\transacao\*.o" 2>nul
 	if exist "view\transacao" del "view\transacao\*.o" 2>nul
 	if exist "controller\transacao" del "controller\transacao\*.o" 2>nul
+	if exist "view\relatorio" del "view\relatorio\*.o" 2>nul
+	if exist "controller\relatorio" del "controller\relatorio\*.o" 2>nul
+	if exist "view\xml" del "view\xml\*.o" 2>nul
+	if exist "controller\xml" del "controller\xml\*.o" 2>nul
 
 else
 	@echo "[Unix] Verificando seguranca"

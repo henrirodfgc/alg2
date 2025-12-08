@@ -91,5 +91,5 @@ void exibir_mensagem_produtora(const char* msg);
 //   - Exemplo: "Digite o CNPJ para buscar: "
 // =============================================
 char* ler_cnpj_para_operacao(const char* operacao);
-
+void exibir_todas_produtoras(NoProdutora* lista);
 #endif

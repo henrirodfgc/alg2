@@ -10,7 +10,8 @@
 #include "controller/saida.h"
 #include "controller/orcamento/evento_controller.h"
 #include "controller/transacao/transacao_controller.h"
-
+#include "controller/xml/xml_controller.h"
+#include "controller/relatorio/relatorio_controller.h"
 
 // =============================
 // PONTO DE ENTRADA DO SISTEMA
@@ -108,6 +109,8 @@ int main() {
         printf("6 - Módulo operador\n");
         printf("7 - Módulo de eventos/orçamentos\n");
         printf("8 - Módulo Financeiro\n");
+        printf("9 - Modulo XML (Importar/Exportar)\n");
+        printf("10 - Relatorios Gerenciais (WEB)\n");
         printf("0 - Fechar Sistema\n");
         printf("Escolha o módulo: ");
         scanf("%d", &opcao_principal);
@@ -136,6 +139,12 @@ int main() {
                 break;
             case 8:
                 iniciar_modulo_financeiro();
+                break;
+            case 9:
+                iniciar_modulo_xml();
+                break;
+            case 10:
+                iniciar_modulo_relatorios();
                 break;
             case 0:
                 printf("Encerrando o sistema. Tchau!\n");

@@ -3,26 +3,6 @@
 #include "../../model/cadastro/recursos.h"
 #include "recursos_view.h"
 
-void exibir_todos_recursos(NoRecurso* lista) {
-    NoRecurso *atual = lista;
-    int contador = 0; 
-
-    exibir_cabecalho_lista_recursos(); 
-    
-    while (atual != NULL) {
-        if (atual->dados.status == 1) { 
-            exibir_recurso(&(atual->dados)); 
-            contador++;
-        }
-        atual = atual->proximo;
-    }
-
-    if (contador == 0) {
-        exibir_mensagem_recursos("nenhum recurso/equipamento cadastrado!");
-    }
-    exibir_rodape_lista_recursos(); 
-}
-//exibe o menu e pega a escolha do usuario
 int exibir_menu_recursos() {
     int opcao;
     printf("\n==== menu recursos e equipamentos ====\n");
@@ -37,21 +17,18 @@ int exibir_menu_recursos() {
     return opcao;
 }
 
-//pega todos os dados pra criar um novo equipamento
 Equipamento ler_dados_recurso() {
     Equipamento e;
     float frete, imposto, margem_lucro;
 
     printf("codigo:"); scanf("%d", &e.codigo);
     
-    //limpeza de buffer antes de ler string
     int ch;
     while ((ch = getchar()) != '\n' && ch != EOF);
 
-    printf("descricao (ex: caixa de som ativa):"); 
+    printf("descricao (ex: caixa de som):"); 
     scanf("%99[^\n]", e.descricao); 
     
-    //limpeza de buffer
     while ((ch = getchar()) != '\n' && ch != EOF);
 
     printf("categoria (ex: sonorizacao):"); 
@@ -59,14 +36,12 @@ Equipamento ler_dados_recurso() {
 
     printf("quantidade em estoque:"); scanf("%d", &e.quantidade_estoque);
     
-    //aqui começa a logica do calculo
     printf("preco de custo (r$):"); scanf("%f", &e.preco_custo);
     
     printf("valor do frete (r$):"); scanf("%f", &frete);
     printf("valor do imposto (r$):"); scanf("%f", &imposto);
     printf("margem de lucro pretendida (%%):"); scanf("%f", &margem_lucro);
 
-    //calculo: (custo + frete + imposto) * (margem / 100)
     float custo_total = e.preco_custo + frete + imposto;
     e.valor_locacao = custo_total * (margem_lucro / 100.0);
 
@@ -76,12 +51,10 @@ Equipamento ler_dados_recurso() {
     return e; 
 }
 
-//pega so os dados novos pra atualizar
 void ler_dados_atualizacao_recurso(char* descricao, char* categoria, int* quantidade_estoque, float* preco_custo, float* valor_locacao) {
     float frete, imposto, margem_lucro;
     int ch;
 
-    //limpa buffer
     while ((ch = getchar()) != '\n' && ch != EOF);
 
     printf("nova descricao:"); scanf("%99[^\n]", descricao);
@@ -94,7 +67,6 @@ void ler_dados_atualizacao_recurso(char* descricao, char* categoria, int* quanti
     
     printf("novo preco de custo (r$):"); scanf("%f", preco_custo);
     
-    //pede os dados pra recalcular a locacao
     printf("novo valor do frete (r$):"); scanf("%f", &frete);
     printf("novo valor do imposto (r$):"); scanf("%f", &imposto);
     printf("nova margem de lucro (%%):"); scanf("%f", &margem_lucro);
@@ -105,7 +77,6 @@ void ler_dados_atualizacao_recurso(char* descricao, char* categoria, int* quanti
     printf(">> novo valor de locacao calculado: r$ %.2f\n", *valor_locacao);
 }
 
-//mostra um equipamento com todos os campos
 void exibir_recurso(const Equipamento* recurso) {
     if (!recurso) {
         printf("+--------------------------+\n");
@@ -124,7 +95,6 @@ void exibir_recurso(const Equipamento* recurso) {
     printf("+---------------------------------+\n");
 }
 
-//funcao pra ler o codigo que o user quer usar pra alguma operacao
 int ler_codigo_para_operacao_recursos(const char* operacao) {
     int codigo;
     printf("digite o codigo do equipamento para %s:", operacao);
@@ -135,24 +105,24 @@ int ler_codigo_para_operacao_recursos(const char* operacao) {
     return codigo;
 }
 
-//mostra uma mensagem simples na tela
 void exibir_mensagem_recursos(const char* msg) {
     printf("%s\n", msg);
 }
 
-//cabecalho da lista
 void exibir_cabecalho_lista_recursos() {
     printf("\n==== lista de recursos e equipamentos ====\n");
 }
 
-//rodape da lista
 void exibir_rodape_lista_recursos() {
     printf("==========================================\n");
 }
+
 void exibir_todos_recursos(NoRecurso* lista) {
     NoRecurso *atual = lista;
     int contador = 0; 
+
     exibir_cabecalho_lista_recursos(); 
+    
     while (atual != NULL) {
         if (atual->dados.status == 1) { 
             exibir_recurso(&(atual->dados)); 
@@ -160,6 +130,7 @@ void exibir_todos_recursos(NoRecurso* lista) {
         }
         atual = atual->proximo;
     }
+
     if (contador == 0) {
         exibir_mensagem_recursos("nenhum recurso/equipamento cadastrado!");
     }

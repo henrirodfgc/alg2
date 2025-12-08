@@ -3,29 +3,22 @@
 #include <string.h>
 #include "fornece_e_parce_view.h"
 
-// =============================================
-// FUNÇÕES AUXILIARES PARA SERVIÇO (VIEW)
-// =============================================
-
-// Função para converter enum serviço em string
 const char* servico_para_string(TipoServico servico) {
     switch(servico) {
         case SERVICO_BUFFET: return "Buffet";
-        case SERVICO_SEGURANCA: return "Segurança";
-        case SERVICO_ATRACAO_MUSICAL: return "Atração Musical";
+        case SERVICO_SEGURANCA: return "Seguranca";
+        case SERVICO_ATRACAO_MUSICAL: return "Atracao Musical";
         default: return "Desconhecido";
     }
 }
 
-// Função para exibir menu de serviços e obter escolha do usuário
 TipoServico obter_servico_usuario() {
     int opcao_servico;
-    
-    printf("\nSelecione o serviço:\n");
+    printf("\nselecione o servico:\n");
     printf("1 - Buffet\n");
-    printf("2 - Segurança\n");
-    printf("3 - Atração Musical\n");
-    printf("Escolha: ");
+    printf("2 - Seguranca\n");
+    printf("3 - Atracao Musical\n");
+    printf("escolha: ");
     scanf("%d", &opcao_servico);
     getchar();
     
@@ -34,291 +27,165 @@ TipoServico obter_servico_usuario() {
         case 2: return SERVICO_SEGURANCA;
         case 3: return SERVICO_ATRACAO_MUSICAL;
         default: 
-            printf("Opção inválida! Definindo como Buffet.\n");
+            printf("opcao invalida, definindo padrao (Buffet).\n");
             return SERVICO_BUFFET;
     }
 }
 
-// Função para obter novo serviço do usuário (para atualizações)
 TipoServico obter_novo_servico_usuario(TipoServico servico_atual) {
-    int opcao_servico;
-    const char* servico_atual_str = servico_para_string(servico_atual);
-    
-    printf("\nServiço atual: %s\n", servico_atual_str);
-    printf("Novo Serviço:\n");
-    printf("1 - Buffet\n");
-    printf("2 - Segurança\n");
-    printf("3 - Atração Musical\n");
-    printf("4 - Manter serviço atual\n");
-    printf("Escolha: ");
-    scanf("%d", &opcao_servico);
+    int alterar;
+    printf("deseja alterar o servico (atual: %s)? (1-sim / 0-nao): ", servico_para_string(servico_atual));
+    scanf("%d", &alterar);
     getchar();
-    
-    switch(opcao_servico) {
-        case 1: return SERVICO_BUFFET;
-        case 2: return SERVICO_SEGURANCA;
-        case 3: return SERVICO_ATRACAO_MUSICAL;
-        case 4: return servico_atual;
-        default: 
-            printf("Opção inválida! Mantendo serviço atual.\n");
-            return servico_atual;
+
+    if (alterar == 1) {
+        return obter_servico_usuario();
     }
+    return servico_atual;
 }
 
-// =============================================
-// FUNÇÃO: exibir_menu_principal_fornece_parce
-// OBJETIVO: Exibir menu principal unificado
-// =============================================
 void exibir_menu_principal_fornece_parce() {
-    printf("\n+===================================+\n");
-    printf("|   SISTEMA FORNEC. E PARCEIROS    |\n");
-    printf("+===================================+\n");
-    printf("| 1 - Cadastrar Fornecedor         |\n");
-    printf("| 2 - Cadastrar Parceiro           |\n");
-    printf("| 3 - Buscar por ID (Ambos)        |\n");
-    printf("| 4 - Listar Todos                 |\n");
-    printf("| 5 - Atualizar Fornecedor         |\n");
-    printf("| 6 - Atualizar Parceiro           |\n");
-    printf("| 7 - Excluir Registro             |\n");
-    printf("| 0 - Voltar ao Menu Principal     |\n");
-    printf("+===================================+\n");
-    printf("Escolha: ");
+    printf("\n==== menu fornecedores e parceiros ====\n");
+    printf("1 - criar fornecedor\n");
+    printf("2 - criar parceiro\n");
+    printf("3 - exibir registro (id)\n");
+    printf("4 - listar todos\n");
+    printf("5 - atualizar fornecedor\n");
+    printf("6 - atualizar parceiro\n");
+    printf("7 - deletar registro\n");
+    printf("0 - voltar\n");
+    printf("escolha: ");
 }
 
-// =============================================
-// FUNÇÃO: exibir_fornece_e_parce
-// OBJETIVO: Exibir dados de um fornecedor/parceiro
-// =============================================
-void exibir_fornece_e_parce(const Fornecedores_e_parceiros* registro) {
-    if (registro == NULL) {
-        printf("Registro inválido!\n");
-        return;
-    }
-    
-    printf("\n+-----------------------------------+\n");
-    printf("|          DADOS CADASTRADOS        |\n");
-    printf("+-----------------------------------+\n");
-    printf("| ID: %-29d |\n", registro->id);
-    printf("| Nome Fantasia: %-19s |\n", registro->nome_fantasia);
-    printf("| Razão Social: %-20s |\n", registro->nome_razao);
-    printf("| Endereço: %-23s |\n", registro->endereco);
-    printf("| Telefone: %-23s |\n", registro->telefone);
-    printf("| Serviço: %-24s |\n", servico_para_string(registro->servico));
-    
-    if (registro->tipo == TIPO_CPF) {
-        printf("| CPF: %-26s |\n", registro->cpf);
-        printf("| Tipo: Parceiro (Pessoa Física)   |\n");
-    } else {
-        printf("| CNPJ: %-25s |\n", registro->cnpj);
-        printf("| Tipo: Fornecedor (Pessoa Jurídica)|\n");
-    }
-    printf("+-----------------------------------+\n");
+void exibir_fornece_e_parce(const Fornecedores_e_parceiros* f) {
+    if(!f) return;
+    char tipo_str[20];
+    if(f->tipo == TIPO_CNPJ) strcpy(tipo_str, "Fornecedor");
+    else strcpy(tipo_str, "Parceiro");
+
+    printf("\n----------------------------\n");
+    printf("id: %d | tipo: %s\n", f->id, tipo_str);
+    printf("nome fantasia: %s\n", f->nome_fantasia);
+    printf("razao social: %s\n", f->nome_razao);
+    printf("endereco: %s\n", f->endereco);
+    if(f->tipo == TIPO_CNPJ) printf("cnpj: %s\n", f->cnpj);
+    else printf("cpf: %s\n", f->cpf);
+    printf("telefone: %s\n", f->telefone);
+    printf("servico: %s\n", servico_para_string(f->servico));
+    printf("status: %d\n", f->status);
+    printf("----------------------------\n");
 }
 
-// =============================================
-// FUNÇÃO: ler_dados_fornecedor
-// OBJETIVO: Ler dados específicos para fornecedor
-// =============================================
 Fornecedores_e_parceiros ler_dados_fornecedor() {
-    Fornecedores_e_parceiros novo;
-    
-    printf("\n+-----------------------------+\n");
-    printf("|   CADASTRO DE FORNECEDOR   |\n");
-    printf("+-----------------------------+\n");
-    
-    printf("ID: ");
-    scanf("%d", &novo.id);
-    getchar();
-    
-    printf("Nome Fantasia: ");
-    fgets(novo.nome_fantasia, sizeof(novo.nome_fantasia), stdin);
-    novo.nome_fantasia[strcspn(novo.nome_fantasia, "\n")] = 0;
-    
-    printf("Razão Social: ");
-    fgets(novo.nome_razao, sizeof(novo.nome_razao), stdin);
-    novo.nome_razao[strcspn(novo.nome_razao, "\n")] = 0;
-    
-    printf("Endereço: ");
-    fgets(novo.endereco, sizeof(novo.endereco), stdin);
-    novo.endereco[strcspn(novo.endereco, "\n")] = 0;
-    
-    printf("Telefone: ");
-    fgets(novo.telefone, sizeof(novo.telefone), stdin);
-    novo.telefone[strcspn(novo.telefone, "\n")] = 0;
-    
-    printf("CNPJ: ");
-    fgets(novo.cnpj, sizeof(novo.cnpj), stdin);
-    novo.cnpj[strcspn(novo.cnpj, "\n")] = 0;
-    
-    // SERVIÇO: Agora toda a lógica está na view
-    novo.servico = obter_servico_usuario();
-    
-    // Define como fornecedor (CNPJ)
-    novo.tipo = TIPO_CNPJ;
-    strcpy(novo.cpf, "");
-    
-    return novo;
+    Fornecedores_e_parceiros f;
+    printf("\nid: "); scanf("%d", &f.id); getchar();
+    printf("nome fantasia: "); fgets(f.nome_fantasia, 50, stdin); f.nome_fantasia[strcspn(f.nome_fantasia, "\n")] = 0;
+    printf("razao social: "); fgets(f.nome_razao, 100, stdin); f.nome_razao[strcspn(f.nome_razao, "\n")] = 0;
+    printf("endereco: "); fgets(f.endereco, 256, stdin); f.endereco[strcspn(f.endereco, "\n")] = 0;
+    printf("cnpj: "); fgets(f.cnpj, 15, stdin); f.cnpj[strcspn(f.cnpj, "\n")] = 0;
+    printf("telefone: "); fgets(f.telefone, 20, stdin); f.telefone[strcspn(f.telefone, "\n")] = 0;
+    f.servico = obter_servico_usuario();
+    f.tipo = TIPO_CNPJ;
+    f.status = 1;
+    return f;
 }
 
-// =============================================
-// FUNÇÃO: ler_dados_parceiro
-// OBJETIVO: Ler dados específicos para parceiro
-// =============================================
 Fornecedores_e_parceiros ler_dados_parceiro() {
-    Fornecedores_e_parceiros novo;
-    
-    printf("\n+-----------------------------+\n");
-    printf("|    CADASTRO DE PARCEIRO    |\n");
-    printf("+-----------------------------+\n");
-    
-    printf("ID: ");
-    scanf("%d", &novo.id);
-    getchar();
-    
-    printf("Nome Fantasia: ");
-    fgets(novo.nome_fantasia, sizeof(novo.nome_fantasia), stdin);
-    novo.nome_fantasia[strcspn(novo.nome_fantasia, "\n")] = 0;
-    
-    printf("Razão Social: ");
-    fgets(novo.nome_razao, sizeof(novo.nome_razao), stdin);
-    novo.nome_razao[strcspn(novo.nome_razao, "\n")] = 0;
-    
-    printf("Endereço: ");
-    fgets(novo.endereco, sizeof(novo.endereco), stdin);
-    novo.endereco[strcspn(novo.endereco, "\n")] = 0;
-    
-    printf("Telefone: ");
-    fgets(novo.telefone, sizeof(novo.telefone), stdin);
-    novo.telefone[strcspn(novo.telefone, "\n")] = 0;
-    
-    printf("CPF: ");
-    fgets(novo.cpf, sizeof(novo.cpf), stdin);
-    novo.cpf[strcspn(novo.cpf, "\n")] = 0;
-    
-    // SERVIÇO: Agora toda a lógica está na view
-    novo.servico = obter_servico_usuario();
-    
-    // Define como parceiro (CPF)
-    novo.tipo = TIPO_CPF;
-    strcpy(novo.cnpj, "");
-    
-    return novo;
+    Fornecedores_e_parceiros p;
+    printf("\nid: "); scanf("%d", &p.id); getchar();
+    printf("nome fantasia: "); fgets(p.nome_fantasia, 50, stdin); p.nome_fantasia[strcspn(p.nome_fantasia, "\n")] = 0;
+    printf("nome completo: "); fgets(p.nome_razao, 100, stdin); p.nome_razao[strcspn(p.nome_razao, "\n")] = 0;
+    printf("endereco: "); fgets(p.endereco, 256, stdin); p.endereco[strcspn(p.endereco, "\n")] = 0;
+    printf("cpf: "); fgets(p.cpf, 12, stdin); p.cpf[strcspn(p.cpf, "\n")] = 0;
+    printf("telefone: "); fgets(p.telefone, 20, stdin); p.telefone[strcspn(p.telefone, "\n")] = 0;
+    p.servico = obter_servico_usuario();
+    p.tipo = TIPO_CPF;
+    p.status = 1;
+    return p;
 }
 
-// =============================================
-// FUNÇÃO: ler_dados_atualizacao_fornecedor
-// OBJETIVO: Ler dados para atualização de fornecedor
-// =============================================
-void ler_dados_atualizacao_fornecedor(Fornecedores_e_parceiros *atual, 
-                                      char *nome_fantasia, char *razao_social, 
-                                      char *endereco, char *cnpj, char *telefone, 
-                                      TipoServico *servico) {
-    
-    printf("Novo Nome Fantasia (atual: %s): ", atual->nome_fantasia);
-    fgets(nome_fantasia, 50, stdin);
-    nome_fantasia[strcspn(nome_fantasia, "\n")] = 0;
-    if (strlen(nome_fantasia) == 0) {
-        strcpy(nome_fantasia, atual->nome_fantasia);
-    }
-
-    printf("Nova Razão Social (atual: %s): ", atual->nome_razao);
-    fgets(razao_social, 100, stdin);
-    razao_social[strcspn(razao_social, "\n")] = 0;
-    if (strlen(razao_social) == 0) {
-        strcpy(razao_social, atual->nome_razao);
-    }
-
-    printf("Novo Endereço (atual: %s): ", atual->endereco);
-    fgets(endereco, 256, stdin);
-    endereco[strcspn(endereco, "\n")] = 0;
-    if (strlen(endereco) == 0) {
-        strcpy(endereco, atual->endereco);
-    }
-
-    printf("Novo CNPJ (atual: %s): ", atual->cnpj);
-    fgets(cnpj, 15, stdin);
-    cnpj[strcspn(cnpj, "\n")] = 0;
-    if (strlen(cnpj) == 0) {
-        strcpy(cnpj, atual->cnpj);
-    }
-
-    printf("Novo Telefone (atual: %s): ", atual->telefone);
-    fgets(telefone, 20, stdin);
-    telefone[strcspn(telefone, "\n")] = 0;
-    if (strlen(telefone) == 0) {
-        strcpy(telefone, atual->telefone);
-    }
-
-    // SERVIÇO: Lógica movida para a view
-    *servico = obter_novo_servico_usuario(atual->servico);
-}
-
-// =============================================
-// FUNÇÃO: ler_dados_atualizacao_parceiro
-// OBJETIVO: Ler dados para atualização de parceiro
-// =============================================
-void ler_dados_atualizacao_parceiro(Fornecedores_e_parceiros *atual, 
-                                    char *nome_fantasia, char *razao_social, 
-                                    char *endereco, char *cpf, char *telefone, 
-                                    TipoServico *servico) {
-    
-    printf("Novo Nome Fantasia (atual: %s): ", atual->nome_fantasia);
-    fgets(nome_fantasia, 50, stdin);
-    nome_fantasia[strcspn(nome_fantasia, "\n")] = 0;
-    if (strlen(nome_fantasia) == 0) {
-        strcpy(nome_fantasia, atual->nome_fantasia);
-    }
-
-    printf("Nova Razão Social (atual: %s): ", atual->nome_razao);
-    fgets(razao_social, 100, stdin);
-    razao_social[strcspn(razao_social, "\n")] = 0;
-    if (strlen(razao_social) == 0) {
-        strcpy(razao_social, atual->nome_razao);
-    }
-
-    printf("Novo Endereço (atual: %s): ", atual->endereco);
-    fgets(endereco, 256, stdin);
-    endereco[strcspn(endereco, "\n")] = 0;
-    if (strlen(endereco) == 0) {
-        strcpy(endereco, atual->endereco);
-    }
-
-    printf("Novo CPF (atual: %s): ", atual->cpf);
-    fgets(cpf, 12, stdin);
-    cpf[strcspn(cpf, "\n")] = 0;
-    if (strlen(cpf) == 0) {
-        strcpy(cpf, atual->cpf);
-    }
-
-    printf("Novo Telefone (atual: %s): ", atual->telefone);
-    fgets(telefone, 20, stdin);
-    telefone[strcspn(telefone, "\n")] = 0;
-    if (strlen(telefone) == 0) {
-        strcpy(telefone, atual->telefone);
-    }
-
-    // SERVIÇO: Lógica movida para a view
-    *servico = obter_novo_servico_usuario(atual->servico);
-}
-
-// =============================================
-// FUNÇÃO: exibir_mensagem_fornece_e_parce
-// OBJETIVO: Exibir mensagem formatada
-// =============================================
-void exibir_mensagem_fornece_e_parce(const char* msg) {
-    printf("\n+-----------------------------------+\n");
-    printf("| %-33s |\n", msg);
-    printf("+-----------------------------------+\n");
-}
-
-// =============================================
-// FUNÇÃO: ler_id_para_operacao
-// OBJETIVO: Ler ID do usuário para operações
-// =============================================
 int ler_id_para_operacao_fornece_e_parce() {
     int id;
-    printf("Digite o ID: ");
+    printf("digite o id para a operacao: ");
     scanf("%d", &id);
     getchar();
     return id;
+}
+
+void exibir_mensagem_fornece_e_parce(const char* msg) {
+    printf(">> %s\n", msg);
+}
+
+void exibir_todas_fornece_e_parce(NoFornecedores_e_parceiros* lista) {
+    NoFornecedores_e_parceiros *atual = lista;
+    if (atual == NULL) {
+        printf("nenhum registro encontrado.\n");
+        return;
+    }
+    printf("\n==== lista ====\n");
+    while (atual != NULL) {
+        if(atual->dados.status == 1) {
+            exibir_fornece_e_parce(&(atual->dados));
+        }
+        atual = atual->proximo;
+    }
+    printf("===============\n");
+}
+
+void ler_dados_atualizacao_fornecedor(Fornecedores_e_parceiros *atual, char *nome_fantasia, char *razao_social, char *endereco, char *cnpj, char *telefone, TipoServico *servico) {
+    printf("novo nome fantasia (atual: %s): ", atual->nome_fantasia);
+    fgets(nome_fantasia, 50, stdin);
+    nome_fantasia[strcspn(nome_fantasia, "\n")] = 0;
+    if(strlen(nome_fantasia) == 0) strcpy(nome_fantasia, atual->nome_fantasia);
+
+    printf("nova razao (atual: %s): ", atual->nome_razao);
+    fgets(razao_social, 100, stdin);
+    razao_social[strcspn(razao_social, "\n")] = 0;
+    if(strlen(razao_social) == 0) strcpy(razao_social, atual->nome_razao);
+
+    printf("novo endereco (atual: %s): ", atual->endereco);
+    fgets(endereco, 256, stdin);
+    endereco[strcspn(endereco, "\n")] = 0;
+    if(strlen(endereco) == 0) strcpy(endereco, atual->endereco);
+
+    printf("novo cnpj (atual: %s): ", atual->cnpj);
+    fgets(cnpj, 15, stdin);
+    cnpj[strcspn(cnpj, "\n")] = 0;
+    if(strlen(cnpj) == 0) strcpy(cnpj, atual->cnpj);
+
+    printf("novo telefone (atual: %s): ", atual->telefone);
+    fgets(telefone, 20, stdin);
+    telefone[strcspn(telefone, "\n")] = 0;
+    if(strlen(telefone) == 0) strcpy(telefone, atual->telefone);
+
+    *servico = obter_novo_servico_usuario(atual->servico);
+}
+
+void ler_dados_atualizacao_parceiro(Fornecedores_e_parceiros *atual, char *nome_fantasia, char *razao_social, char *endereco, char *cpf, char *telefone, TipoServico *servico) {
+    printf("novo nome fantasia (atual: %s): ", atual->nome_fantasia);
+    fgets(nome_fantasia, 50, stdin);
+    nome_fantasia[strcspn(nome_fantasia, "\n")] = 0;
+    if(strlen(nome_fantasia) == 0) strcpy(nome_fantasia, atual->nome_fantasia);
+
+    printf("novo nome completo (atual: %s): ", atual->nome_razao);
+    fgets(razao_social, 100, stdin);
+    razao_social[strcspn(razao_social, "\n")] = 0;
+    if(strlen(razao_social) == 0) strcpy(razao_social, atual->nome_razao);
+
+    printf("novo endereco (atual: %s): ", atual->endereco);
+    fgets(endereco, 256, stdin);
+    endereco[strcspn(endereco, "\n")] = 0;
+    if(strlen(endereco) == 0) strcpy(endereco, atual->endereco);
+
+    printf("novo cpf (atual: %s): ", atual->cpf);
+    fgets(cpf, 12, stdin);
+    cpf[strcspn(cpf, "\n")] = 0;
+    if(strlen(cpf) == 0) strcpy(cpf, atual->cpf);
+
+    printf("novo telefone (atual: %s): ", atual->telefone);
+    fgets(telefone, 20, stdin);
+    telefone[strcspn(telefone, "\n")] = 0;
+    if(strlen(telefone) == 0) strcpy(telefone, atual->telefone);
+
+    *servico = obter_novo_servico_usuario(atual->servico);
 }
