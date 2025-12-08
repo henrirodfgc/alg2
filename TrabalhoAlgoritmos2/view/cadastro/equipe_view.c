@@ -40,17 +40,16 @@ int exibir_menu_equipe() {
     printf("1 - criar membro\n");
     printf("2 - atualizar membro\n");
     printf("3 - exibir membro\n");
-    printf("4 - inativar membro (soft delete)\n"); // <--- MUDANCA AQUI!
+    printf("4 - inativar membro (soft delete)\n"); 
     printf("5 - listar todos (ativos)\n"); 
-    printf("6 - restaurar membro (reativar)\n"); // <--- NOVO!
-    printf("7 - listar so inativos\n"); // <--- NOVO!
+    printf("6 - restaurar membro (reativar)\n"); 
+    printf("7 - listar so inativos\n"); 
     printf("0 - voltar ao menu principal\n");
     printf("escolha: ");
-    scanf("%d", &opcao); //pega a escolha
+    scanf("%d", &opcao); 
     return opcao;
 }
 
-// Lê TODOS os dados de um membro pra criar um novo
 MembroEquipe ler_dados_membro() {
     MembroEquipe m;
     printf("codigo: "); scanf("%d", &m.codigo);
@@ -62,7 +61,7 @@ MembroEquipe ler_dados_membro() {
     return m; //devolve a struct cheia
 }
 
-// Lê os dados novos pra atualização
+//lê os dados novos pra atualização
 void ler_dados_atualizacao_membro(char* nome, char* cpf, char* funcao, float* valor_diaria_hora) {
     printf("novo nome: "); scanf(" %[^\n]", nome);
     printf("novo cpf (11 digitos): "); scanf(" %11[^\n]", cpf);
@@ -70,7 +69,7 @@ void ler_dados_atualizacao_membro(char* nome, char* cpf, char* funcao, float* va
     printf("novo valor diaria/hora (r$): "); scanf("%f", valor_diaria_hora);
 }
 
-// Função simples pra mostrar mensagem
+//função simples pra mostrar mensagem
 void exibir_mensagem_equipe(const char* msg) {
     printf("%s\n", msg);
 }

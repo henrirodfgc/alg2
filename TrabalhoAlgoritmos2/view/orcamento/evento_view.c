@@ -8,6 +8,7 @@ int exibir_menu_eventos() {
     printf("1 - criar novo orcamento\n");
     printf("2 - listar eventos\n");
     printf("3 - aprovar evento\n");
+    printf("4 - finalizar evento e liberar estoque");
     printf("0 - voltar\n");
     printf("escolha: ");
     scanf("%d", &op);

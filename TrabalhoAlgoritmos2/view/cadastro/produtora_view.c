@@ -82,7 +82,6 @@ void exibir_menu_produtora() {
     printf("5 - Listar todas\n"); 
     printf("0 - Sair\n");
     printf("Escolha: ");    
-    // CORREÇÃO: Esta função deveria apenas exibir o menu, não ler a opção
     // A leitura da opção deveria ser feita pela função chamadora
 }
 
@@ -176,13 +175,13 @@ void ler_dados_atualizacao_produtora( char* cnpj, char* nome_fantasia,
     scanf(" %100[^\n]", razao_social);
     
     printf("Nova inscrição estadual: "); 
-    scanf(" %9[^\n]", incricao_estadual); // CORREÇÃO: Parâmetro com nome errado
+    scanf(" %9[^\n]", incricao_estadual); 
     
     printf("Novo endereco: "); 
     scanf(" %256[^\n]", endereco_completo);
     
     printf("Novo telefone: "); 
-    scanf(" %11[^\n]", telefone); // Limita a 11 caracteres (DDD + número)
+    scanf(" %11[^\n]", telefone); 
     
     printf("Novo email: "); 
     scanf(" %50[^\n]", email);    
@@ -191,7 +190,7 @@ void ler_dados_atualizacao_produtora( char* cnpj, char* nome_fantasia,
     scanf(" %50[^\n]", nome_do_responsavel);
     
     printf("Novo telefone do responsável: "); 
-    scanf(" %11[^\n]", telefone_do_responsavel); // Limita a 11 caracteres
+    scanf(" %11[^\n]", telefone_do_responsavel);
         
     printf("Nova margem de lucro: "); 
     scanf(" %6[^\n]", margem_de_lucro_padrao);

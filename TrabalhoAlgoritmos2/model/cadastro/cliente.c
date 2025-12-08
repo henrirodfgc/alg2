@@ -61,7 +61,7 @@ NoCliente *adicionar_cliente_na_lista(NoCliente *lista, Cliente novo_cliente)
     //verifica se existe a pasta, se não existir ele cria
     if (_mkdir("../b_output/clientes") == -1 && errno != EEXIST)
     {
-        printf("erro ao criar pasta clientes!\n");
+        exibir_mensagem("erro ao criar pasta clientes!\n");
     }
 
     //salva no arquivo txt se o tipo saida for txt
@@ -72,7 +72,7 @@ NoCliente *adicionar_cliente_na_lista(NoCliente *lista, Cliente novo_cliente)
         //se der o erro ao abrir o arquivo
         if (file == NULL)
         {
-            printf("erro ao abrir o arquivo!\n");
+            exibir_mensagem("erro ao abrir o arquivo!\n");
             return lista;
         }
         //define cliente ativo
@@ -85,7 +85,7 @@ NoCliente *adicionar_cliente_na_lista(NoCliente *lista, Cliente novo_cliente)
                 novo_cliente.email, novo_cliente.telefone, novo_cliente.nome_contato, novo_cliente.status);
         //fecha o arquivo
         fclose(file);
-        printf("arquivo salvo com sucesso!\n");
+        exibir_mensagem("arquivo salvo com sucesso!\n");
     }
     //salva no arquivo bin se o tipo saida for bin 
     else if (verificar_tipo_saida() == 2)
@@ -93,14 +93,14 @@ NoCliente *adicionar_cliente_na_lista(NoCliente *lista, Cliente novo_cliente)
         FILE *file = fopen("../b_output/clientes/cliente.bin", "ab");
         if (file == NULL)
         {
-            printf("erro ao abrir o arquivo!");
+            exibir_mensagem("erro ao abrir o arquivo!");
             return lista;
         }
         novo_cliente.status = 1;
         if (fwrite(&novo_cliente, sizeof(Cliente), 1, file) != 1)
-            printf("erro ao escrever a struct no arquivo.\n");
+            exibir_mensagem("erro ao escrever a struct no arquivo.\n");
         else
-            printf("struct adicionada com sucesso ao final do arquivo.\n");
+            exibir_mensagem("struct adicionada com sucesso ao final do arquivo.\n");
         fclose(file);
     }
     //salva no arquivo txt se o tipo saida for mem
@@ -147,7 +147,7 @@ int deletar_cliente_por_id_logico(NoCliente *lista, int id_busca)
         FILE *file = fopen("../b_output/clientes/cliente.txt", "r+");
         if (file == NULL)
         {
-            printf("erro ao abrir o arquivo original!\n");
+            exibir_mensagem("erro ao abrir o arquivo original!\n");
             
             return 0;
         }
@@ -155,7 +155,7 @@ int deletar_cliente_por_id_logico(NoCliente *lista, int id_busca)
         FILE *temp = fopen("../b_output/clientes/temp.txt", "w+");
         if (temp == NULL)
         {
-            printf("erro ao criar arquivo temporario!\n");
+            exibir_mensagem("erro ao criar arquivo temporario!\n");
             fclose(file);
             return 0;
         }
@@ -211,12 +211,12 @@ int deletar_cliente_por_id_logico(NoCliente *lista, int id_busca)
 
         if (encontrado)
         {
-            printf("cliente com id %d marcado como inativo (status = 0).\n", id_busca);
+            exibir_mensagem("cliente com id %d marcado como inativo (status = 0).\n", id_busca);
             return 1;
         }
         else
         {
-            printf("cliente com id %d nao encontrado.\n", id_busca);
+            exibir_mensagem("cliente com id %d nao encontrado.\n", id_busca);
             return 0;
         }
     }
@@ -297,7 +297,7 @@ int atualizar_cliente_por_id(NoCliente *lista, int id_busca, const char *nome_cl
             FILE *file = fopen("../b_output/clientes/cliente.txt", "r+");
             if (file==NULL)
             {
-                printf("erro ao abrir o arquivo original!\n");
+                exibir_mensagem("erro ao abrir o arquivo original!\n");
             
                 return 0;
             }
@@ -305,7 +305,7 @@ int atualizar_cliente_por_id(NoCliente *lista, int id_busca, const char *nome_cl
             FILE *temp = fopen("../b_output/clientes/temp.txt", "w+");
             if (temp == NULL)
             {
-                printf("erro ao criar arquivo temporario!\n");
+                exibir_mensagem("erro ao criar arquivo temporario!\n");
                 fclose(file);
                 return 0;
             }
@@ -373,12 +373,12 @@ int atualizar_cliente_por_id(NoCliente *lista, int id_busca, const char *nome_cl
 
             if (encontrado)
             {
-                printf("cliente com id %d atualizado.\n", id_busca);
+                exibir_mensagem("cliente com id %d atualizado.\n", id_busca);
                 return 1;
             }
             else
             {
-                printf("cliente com id %d nao encontrado.\n", id_busca);
+                exibir_mensagem("cliente com id %d nao encontrado.\n", id_busca);
                 return 0;
             }
 
@@ -408,14 +408,14 @@ void desalocar_lista_clientes(NoCliente *lista)
 //so mostra quem tem status 1
 void exibir_todos_clientes(NoCliente *lista)
 {
-    //Logica para TXT
+    //logica para TXT
     if (verificar_tipo_saida() == 1)
     {
-        printf("\n==== lista de clientes cadastrados ====\n");
+        exibir_mensagem("\n==== lista de clientes cadastrados ====\n");
         FILE *file = fopen("../b_output/clientes/cliente.txt", "r");
         if (file == NULL)
         {
-            printf("erro ao abrir o arquivo txt!\n");
+            exibir_mensagem("erro ao abrir o arquivo txt!\n");
             return;
         }
         Cliente c;
@@ -445,16 +445,16 @@ void exibir_todos_clientes(NoCliente *lista)
             }
         }
         fclose(file);
-        printf("=======================================\n");
+        exibir_mensagem("=======================================\n");
     }
     //Logica para BIN
     else if (verificar_tipo_saida() == 2)
     {
-        printf("\n==== lista de clientes cadastrados ====\n");
+        exibir_mensagem("\n==== lista de clientes cadastrados ====\n");
         FILE *file = fopen("../b_output/clientes/cliente.bin", "rb");
         if (file == NULL)
         {
-            printf("erro ao abrir o arquivo bin!\n");
+            exibir_mensagem("erro ao abrir o arquivo bin!\n");
             return;
         }
 
@@ -467,7 +467,7 @@ void exibir_todos_clientes(NoCliente *lista)
             }
         }
         fclose(file);
-        printf("=======================================\n");
+        exibir_mensagem("=======================================\n");
     }
     //MEMORIA
     else if (verificar_tipo_saida() == 3)
@@ -475,7 +475,7 @@ void exibir_todos_clientes(NoCliente *lista)
         NoCliente *atual = lista;
         int contador_ativos = 0;
 
-        printf("\n==== lista de clientes cadastrados ====\n");
+        exibir_mensagem("\n==== lista de clientes cadastrados ====\n");
         while (atual != NULL)
         {
             //so mostra se o cliente tiver ativo
@@ -489,25 +489,25 @@ void exibir_todos_clientes(NoCliente *lista)
 
         if (contador_ativos == 0)
         {
-            printf("+--------------------------+\n");
-            printf("| nenhum cliente cadastrado! |\n");
-            printf("+--------------------------+\n");
+            exibir_mensagem("+--------------------------+\n");
+            exibir_mensagem("| nenhum cliente cadastrado! |\n");
+            exibir_mensagem("+--------------------------+\n");
         }
-        printf("=======================================\n");
+        exibir_mensagem("=======================================\n");
     }
 }
 
 //função pra mostrar só os clientes inativos (status 0)
 void exibir_todos_clientes_e_inativos(NoCliente *lista)
 {
-    //Logica para TXT
+    //logica para TXT
     if (verificar_tipo_saida() == 1)
     {
-        printf("\n==== lista de clientes inativos (deletados) ====\n");
+        exibir_mensagem("\n==== lista de clientes inativos (deletados) ====\n");
         FILE *file = fopen("../b_output/clientes/cliente.txt", "r");
         if (file == NULL)
         {
-            printf("erro ao abrir o arquivo txt!\n");
+            exibir_mensagem("erro ao abrir o arquivo txt!\n");
             return;
         }
         Cliente c;
@@ -535,16 +535,16 @@ void exibir_todos_clientes_e_inativos(NoCliente *lista)
             }
         }
         fclose(file);
-        printf("=======================================\n");
+        exibir_mensagem("=======================================\n");
     }
-    //Logica para BIN
+    //logica para BIN
     else if (verificar_tipo_saida() == 2)
     {
-        printf("\n==== lista de clientes inativos (deletados) ====\n");
+        exibir_mensagem("\n==== lista de clientes inativos (deletados) ====\n");
         FILE *file = fopen("../b_output/clientes/cliente.bin", "rb");
         if (file == NULL)
         {
-            printf("erro ao abrir o arquivo bin!\n");
+            exibir_mensagem("erro ao abrir o arquivo bin!\n");
             return;
         }
 
@@ -557,7 +557,7 @@ void exibir_todos_clientes_e_inativos(NoCliente *lista)
             }
         }
         fclose(file);
-        printf("=======================================\n");
+        exibir_mensagem("=======================================\n");
     }
     //sua logica para MEMORIA
     else if (verificar_tipo_saida() == 3)
@@ -565,7 +565,7 @@ void exibir_todos_clientes_e_inativos(NoCliente *lista)
         NoCliente *atual = lista;
         int contador_inativos = 0; //pra contar quantos clientes achou
 
-        printf("\n==== lista de clientes inativos (deletados) ====\n");
+        exibir_mensagem("\n==== lista de clientes inativos (deletados) ====\n");
         while (atual != NULL)
         {
             //agora o filtro só mostra se o status for 0 (inativo)
@@ -580,11 +580,11 @@ void exibir_todos_clientes_e_inativos(NoCliente *lista)
 
         if (contador_inativos == 0)
         {
-            printf("+--------------------------+\n");
-            printf("| nenhum cliente inativo encontrado! |\n"); //mensagem mais específica
-            printf("+--------------------------+\n");
+            exibir_mensagem("+--------------------------+\n");
+            exibir_mensagem("| nenhum cliente inativo encontrado! |\n"); 
+            exibir_mensagem("+--------------------------+\n");
         }
-        printf("=======================================\n");
+        exibir_mensagem("=======================================\n");
     }
 }
 

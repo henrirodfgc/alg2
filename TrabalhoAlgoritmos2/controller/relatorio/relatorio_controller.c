@@ -8,6 +8,7 @@
 #include "../../model/orcamento/evento.h"
 #include "../../model/transacao/caixa.h"
 
+//listas externas q precisamos ler
 extern NoCliente *listaClientes;
 extern NoCliente* carregar_clientes(NoCliente* lista);
 extern NoEvento *listaEventos;
@@ -41,16 +42,12 @@ void escrever_cabecalho_html(FILE* f, char* titulo) {
 void gerar_relatorio_clientes_html() {
     char* caminho = "b_output/relatorios/clientes.html";
     FILE *f = fopen(caminho, "w");
-    
     if (!f) {
         caminho = "../b_output/relatorios/clientes.html";
         f = fopen(caminho, "w");
     }
     
-    if (!f) {
-        exibir_mensagem_relatorio("erro critico: nao foi possivel criar o arquivo html. verifique se a pasta 'b_output/relatorios' existe.");
-        return;
-    }
+    if (!f) return;
 
     escrever_cabecalho_html(f, "relatorio geral de clientes");
 
@@ -78,28 +75,26 @@ void gerar_relatorio_clientes_html() {
     fprintf(f, "</body></html>");
     fclose(f);
 
-    exibir_mensagem_relatorio(">> relatorio gerado com sucesso!");
-    
-    char comando[300];
-    sprintf(comando, "start \"\" \"%s\"", caminho);
-    system(comando); 
+    exibir_mensagem_relatorio(">> relatorio gerado: b_output/relatorios/clientes.html");
+    char cmd[300]; sprintf(cmd, "start \"\" \"%s\"", caminho); system(cmd);
 }
 
-void gerar_relatorio_eventos_html() {
+void gerar_relatorio_eventos_html(int filtro_status) {
     char* caminho = "b_output/relatorios/eventos.html";
     FILE *f = fopen(caminho, "w");
-    
     if (!f) {
         caminho = "../b_output/relatorios/eventos.html";
         f = fopen(caminho, "w");
     }
     
-    if (!f) {
-        exibir_mensagem_relatorio("erro critico: nao foi possivel criar o arquivo html.");
-        return;
-    }
+    if (!f) return;
 
-    escrever_cabecalho_html(f, "relatorio de eventos e orcamentos");
+    //titulo dinamico
+    if(filtro_status == -1) escrever_cabecalho_html(f, "relatorio geral de eventos (todos)");
+    else if(filtro_status == 0) escrever_cabecalho_html(f, "relatorio de orcamentos pendentes");
+    else if(filtro_status == 1) escrever_cabecalho_html(f, "relatorio de eventos aprovados");
+    else if(filtro_status == 2) escrever_cabecalho_html(f, "relatorio de eventos finalizados");
+    else escrever_cabecalho_html(f, "relatorio de eventos filtrados");
 
     fprintf(f, "<table>");
     fprintf(f, "<thead><tr><th>cod</th><th>evento</th><th>cliente (id)</th><th>data</th><th>convidados</th><th>valor total</th><th>status</th></tr></thead>");
@@ -109,15 +104,23 @@ void gerar_relatorio_eventos_html() {
     NoEvento *atual = listaEventos;
     
     while (atual != NULL) {
-        char* status_str = (atual->dados.status == 1) ? "<b>aprovado</b>" : "orcamento";
-        char* cor_linha = (atual->dados.status == 1) ? "#d4edda" : "#fff3cd";
+        //logica de filtro: so imprime se for -1(todos) ou se o status bater com o pedido
+        if (filtro_status == -1 || atual->dados.status == filtro_status) {
+            
+            char* status_str = "Desconhecido";
+            char* cor_linha = "#ffffff";
 
-        fprintf(f, "<tr style='background-color: %s'>", cor_linha);
-        fprintf(f, "<td>%d</td><td>%s</td><td>%d</td><td>%s</td><td>%d</td><td>r$ %.2f</td><td>%s</td>", 
-                atual->dados.codigo, atual->dados.nome_evento, atual->dados.codigo_cliente,
-                atual->dados.data_inicio, atual->dados.quantidade_convidados,
-                atual->dados.valor_total, status_str);
-        fprintf(f, "</tr>");
+            if(atual->dados.status == 0) { status_str = "Orcamento"; cor_linha = "#fff3cd"; } //amarelo
+            else if(atual->dados.status == 1) { status_str = "<b>Aprovado</b>"; cor_linha = "#d4edda"; } //verde
+            else if(atual->dados.status == 2) { status_str = "Finalizado"; cor_linha = "#e2e3e5"; } //cinza
+
+            fprintf(f, "<tr style='background-color: %s'>", cor_linha);
+            fprintf(f, "<td>%d</td><td>%s</td><td>%d</td><td>%s</td><td>%d</td><td>r$ %.2f</td><td>%s</td>", 
+                    atual->dados.codigo, atual->dados.nome_evento, atual->dados.codigo_cliente,
+                    atual->dados.data_inicio, atual->dados.quantidade_convidados,
+                    atual->dados.valor_total, status_str);
+            fprintf(f, "</tr>");
+        }
         atual = atual->proximo;
     }
 
@@ -125,23 +128,35 @@ void gerar_relatorio_eventos_html() {
     fprintf(f, "</body></html>");
     fclose(f);
 
-    exibir_mensagem_relatorio(">> relatorio gerado com sucesso!");
-    
-    char comando[300];
-    sprintf(comando, "start \"\" \"%s\"", caminho);
-    system(comando);
+    exibir_mensagem_relatorio(">> relatorio gerado: b_output/relatorios/eventos.html");
+    char cmd[300]; sprintf(cmd, "start \"\" \"%s\"", caminho); system(cmd);
 }
 
 void iniciar_modulo_relatorios() {
     int op;
     do {
         op = exibir_menu_relatorios();
+        
         switch(op) {
-            case 1: gerar_relatorio_clientes_html(); break;
-            case 2: gerar_relatorio_eventos_html(); break;
-            case 0: exibir_mensagem_relatorio("voltando..."); break;
-            default: exibir_mensagem_relatorio("opcao invalida");
+            case 1: 
+                gerar_relatorio_clientes_html(); 
+                break;
+            case 2: {
+                int st;
+                ler_filtro_na_view("filtrar por qual status? (-1=todos, 0=orcamento, 1=aprovado, 2=finalizado): ");
+                scanf("%d", &st);
+                gerar_relatorio_eventos_html(st); 
+                break;
+            }
+            case 0: 
+                exibir_mensagem_relatorio("voltando..."); 
+                break;
+            default: 
+                exibir_mensagem_relatorio("opcao invalida");
         }
-        if(op!=0) pausar_tela_relatorio();
+        
+        if(op!=0) { 
+            pausar_tela_relatorio(); 
+        }
     } while(op != 0);
 }

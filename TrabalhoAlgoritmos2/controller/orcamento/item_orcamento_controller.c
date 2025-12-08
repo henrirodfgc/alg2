@@ -79,3 +79,36 @@ void gerenciar_itens_de_um_evento(int id_evento) {
         }
     } while (opcao != 0);
 }
+
+//devolve os itens pro estoque quando finaliza
+void estornar_estoque_evento(int id_evento) {
+    listaItens = carregar_itens_orcamento(listaItens);
+    listaRecursos = carregar_recursos(listaRecursos);
+
+    NoItemOrcamento *atual = listaItens;
+    int devolvidos = 0;
+
+    printf("\n>> Processando devolucao de estoque...\n");
+
+    while (atual != NULL) {
+    
+        if (atual->dados.id_evento == id_evento && atual->dados.tipo_item == 1) {
+            
+            Equipamento *equip = buscar_recurso_por_codigo(listaRecursos, atual->dados.id_estrangeiro);
+            
+            if (equip != NULL) {
+                //devolve a quantidade
+                equip->quantidade_estoque += atual->dados.quantidade;
+                printf("   + Devolvido: %d unid. de '%s' (Novo estoque: %d)\n", 
+                       atual->dados.quantidade, equip->descricao, equip->quantidade_estoque);
+                devolvidos++;
+            }
+        }
+        atual = atual->proximo;
+    }
+    if (devolvidos > 0) {
+        printf(">> %d tipos de equipamentos foram devolvidos ao estoque.\n", devolvidos);
+    } else {
+        printf(">> Nenhum equipamento fisico para devolver neste evento.\n");
+    }
+}

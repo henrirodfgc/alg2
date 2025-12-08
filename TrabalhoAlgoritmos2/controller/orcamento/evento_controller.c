@@ -57,7 +57,7 @@ void iniciar_eventos() {
                 
                 while(atual != NULL) {
                     if(atual->dados.codigo == id_evento) {
-                        exibir_evento(&(atual->dados)); //Mostra o evento pra confirmar
+                        exibir_evento(&(atual->dados)); //mostra o evento para confirmar
                         
                         if(atual->dados.status == 1) {
                             exibir_mensagem_evento("este evento ja esta aprovado!");
@@ -85,6 +85,43 @@ void iniciar_eventos() {
                 }
                 
                 if(!encontrou && id_evento != 0) exibir_mensagem_evento("evento nao encontrado.");
+                break;
+            }
+            case 4: { //finalizar evento
+                int id_evento = ler_id_evento_view("Digite o ID do evento para FINALIZAR");
+                NoEvento *atual = listaEventos;
+                int encontrou = 0;
+
+                while(atual != NULL) {
+                    if(atual->dados.codigo == id_evento) {
+                        exibir_evento(&(atual->dados));
+                        
+                        //finaliza so se for aprovado
+                        if(atual->dados.status != 1) {
+                            exibir_mensagem_evento("Erro: Apenas eventos APROVADOS podem ser finalizados.");
+                            encontrou = 1; break;
+                        }
+
+                        printf("Confirma finalizacao e devolucao do estoque? (1-Sim, 0-Nao): ");
+                        int confirmar;
+                        scanf("%d", &confirmar);
+                        
+                        if(confirmar == 1) {
+                            //devolve estoque
+                            estornar_estoque_evento(id_evento);
+
+                            //muda status pra finalizado
+                            atual->dados.status = 2; 
+                            reescrever_arquivo_eventos(listaEventos);
+                            
+                            exibir_mensagem_evento("Evento FINALIZADO com sucesso! Estoque liberado.");
+                        }
+                        encontrou = 1;
+                        break;
+                    }
+                    atual = atual->proximo;
+                }
+                if(!encontrou) exibir_mensagem_evento("Evento nao encontrado.");
                 break;
             }
             case 0:
