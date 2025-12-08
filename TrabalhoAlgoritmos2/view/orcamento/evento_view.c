@@ -58,3 +58,46 @@ void exibir_evento(const Evento* e) {
 void exibir_mensagem_evento(const char* msg) {
     printf(">> %s\n", msg);
 }
+int ler_id_evento_view(const char* prompt) {
+    int id;
+    printf("%s: ", prompt);
+    if (scanf("%d", &id) != 1) {
+        // Limpa o buffer de input (fundamental pra evitar loop de erro)
+        while (getchar() != '\n');
+        return 0; 
+    }
+    // Limpa o buffer de input
+    while (getchar() != '\n');
+    return id;
+}
+int confirmar_aprovacao_view() {
+    int confirmar;
+    printf("deseja aprovar? (1-sim, 0-nao): ");
+    scanf("%d", &confirmar);
+    while (getchar() != '\n');
+    return confirmar;
+}
+
+int ler_id_evento_view(const char* prompt) {
+    int id;
+    printf("%s: ", prompt);
+    if (scanf("%d", &id) != 1) {
+        while (getchar() != '\n');
+        return 0; 
+    }
+    while (getchar() != '\n');
+    return id;
+}
+
+int confirmar_aprovacao_view() {
+    int confirmar;
+    printf("deseja aprovar? (1-sim, 0-nao): ");
+    scanf("%d", &confirmar);
+    while (getchar() != '\n');
+    return confirmar;
+}
+void pausar_tela_evento() {
+    printf("\npressione enter para continuar...");
+    while (getchar() != '\n'); // Limpa buffer
+    getchar(); // Espera o enter
+}

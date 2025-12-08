@@ -6,8 +6,8 @@ int exibir_menu_itens() {
     int op;
     printf("\n--- gerenciar itens do evento ---\n");
     printf("1 - adicionar equipamento (estoque)\n");
-    printf("2 - adicionar equipe (funcionarios)\n"); //novo
-    printf("3 - adicionar servico (parceiros)\n");   //novo
+    printf("2 - adicionar equipe (funcionarios)\n"); 
+    printf("3 - adicionar servico (parceiros)\n");  
     printf("4 - ver itens adicionados\n");
     printf("0 - finalizar insercao de itens\n");
     printf("escolha: ");
@@ -31,7 +31,6 @@ ItemOrcamento ler_dados_item_orcamento(int id_evento, int tipo) {
     
     scanf("%d", &item.quantidade);
     
-    //se for servico, o preco eh combinado na hora (simplificacao)
     if (tipo == 3) {
         printf("digite o valor combinado deste servico (unitario): ");
         scanf("%f", &item.valor_unitario);
@@ -65,4 +64,19 @@ void exibir_lista_itens_evento(NoItemOrcamento* lista, int id_evento) {
     
     if (!encontrou) printf("nenhum item adicionado neste evento.\n");
     printf("--------------------------\n");
+}
+
+void exibir_mensagem_item(const char* msg) {
+    printf("%s\n", msg);
+}
+
+void exibir_mensagem_item_formatada(const char* formato, float valor) {
+    printf(formato, valor);
+    printf("\n");
+}
+
+void pausar_tela_itens() {
+    printf("pressione enter...");
+    while (getchar() != '\n'); 
+    getchar();
 }

@@ -3,7 +3,7 @@
 #include <string.h>
 #include "../../model/cadastro/recursos.h"
 #include "../../view/cadastro/recursos_view.h"
-#include "recursos_controller.h"git
+#include "recursos_controller.h"
 #include "../../model/transacao/contas_pagar.h"
 
 //lista dos recursos/equipamentos
@@ -19,8 +19,6 @@ void iniciar_recursos() {
     
     //carrega os dados
     listaRecursos = carregar_recursos(listaRecursos); 
-
-    //novo: carrega financeiro tb
     listaContasPagar = carregar_contas_pagar(listaContasPagar);
     
     do {

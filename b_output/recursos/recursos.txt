@@ -1,0 +1,1 @@
+codigo:5,descricao:5,categoria:5,quantidade_estoque:5,custo:5.00,locacao:0.75,status:1

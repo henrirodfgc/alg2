@@ -11,21 +11,19 @@ extern NoCliente * listaClientes;
 extern NoCliente* carregar_clientes(NoCliente* lista);
 
 static NoEvento *listaEventos = NULL;
-//lista de contas
 static NoContaReceber *listaContas = NULL;
 
 void iniciar_eventos() {
     int opcao;
     listaEventos = carregar_eventos(listaEventos); 
     listaClientes = carregar_clientes(listaClientes);
-    //carregar contas
     listaContas = carregar_contas_receber(listaContas);
     
     do {
         opcao = exibir_menu_eventos();
         
         switch(opcao) {
-            case 1: { //criar orcamento
+            case 1: { 
                 Evento novo = ler_dados_evento();
                 
                 Cliente *cliente_valido = buscar_cliente_por_id(listaClientes, novo.codigo_cliente);
@@ -38,11 +36,11 @@ void iniciar_eventos() {
                 listaEventos = adicionar_evento_na_lista(listaEventos, novo);
                 exibir_mensagem_evento("orcamento criado com sucesso!");
                 
-                printf(">> abrindo gerenciador de itens...\n");
+                exibir_mensagem_evento("abrindo gerenciador de itens...");
                 gerenciar_itens_de_um_evento(novo.codigo);
                 break;
             }
-            case 2: { //listar
+            case 2: { 
                 NoEvento *atual = listaEventos;
                 if(!atual) exibir_mensagem_evento("nenhum evento cadastrado.");
                 while(atual) {
@@ -51,17 +49,15 @@ void iniciar_eventos() {
                 }
                 break;
             }
-            case 3: { //aprovar evento
-                int id_evento;
-                printf("digite o id do evento para aprovar: ");
-                scanf("%d", &id_evento);
+            case 3: { 
+                int id_evento = ler_id_evento_view("digite o id do evento para aprovar");
                 
                 NoEvento *atual = listaEventos;
                 int encontrou = 0;
                 
                 while(atual != NULL) {
                     if(atual->dados.codigo == id_evento) {
-                        printf("evento: %s | status atual: %d\n", atual->dados.nome_evento, atual->dados.status);
+                        exibir_evento(&(atual->dados)); //Mostra o evento pra confirmar
                         
                         if(atual->dados.status == 1) {
                             exibir_mensagem_evento("este evento ja esta aprovado!");
@@ -69,15 +65,12 @@ void iniciar_eventos() {
                             break;
                         }
 
-                        printf("deseja aprovar? (1-sim, 0-nao): ");
-                        int confirmar;
-                        scanf("%d", &confirmar);
+                        int confirmar = confirmar_aprovacao_view();
                         
                         if(confirmar == 1) {
-                            atual->dados.status = 1; //aprovado
+                            atual->dados.status = 1; 
                             reescrever_arquivo_eventos(listaEventos);
                             
-                            //gera conta a receber automatico
                             listaContas = gerar_nova_conta(listaContas, 
                                              atual->dados.codigo, 
                                              atual->dados.codigo_cliente, 
@@ -91,7 +84,7 @@ void iniciar_eventos() {
                     atual = atual->proximo;
                 }
                 
-                if(!encontrou) exibir_mensagem_evento("evento nao encontrado.");
+                if(!encontrou && id_evento != 0) exibir_mensagem_evento("evento nao encontrado.");
                 break;
             }
             case 0:
@@ -102,13 +95,11 @@ void iniciar_eventos() {
         }
         
         if(opcao!=0) {
-            printf("pressione enter...");
-            getchar(); getchar(); 
+            pausar_tela_evento(); 
         }
         
     } while (opcao != 0);
     
     desalocar_lista_eventos(listaEventos);
-    //desalocar contas
     desalocar_lista_contas(listaContas);
 }

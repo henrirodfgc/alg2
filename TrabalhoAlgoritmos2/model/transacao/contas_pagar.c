@@ -11,12 +11,11 @@ NoContaPagar* gerar_nova_conta_pagar(NoContaPagar* lista, int id_recurso, float 
     novo_no->dados.id = rand() % 10000 + 1;
     novo_no->dados.id_recurso_compra = id_recurso;
     novo_no->dados.valor_total = valor;
-    novo_no->dados.status = 0; //pendente
+    novo_no->dados.status = 0; 
     strcpy(novo_no->dados.data_vencimento, "05/01/2026"); 
 
     novo_no->proximo = lista;
 
-    //persistencia txt
     if (verificar_tipo_saida() == 1) {
         FILE *file = fopen("b_output/financeiro/contas_pagar.txt", "a");
         if (!file) file = fopen("../b_output/financeiro/contas_pagar.txt", "a");
@@ -28,7 +27,6 @@ NoContaPagar* gerar_nova_conta_pagar(NoContaPagar* lista, int id_recurso, float 
             fclose(file);
         }
     }
-    //persistencia bin
     else if (verificar_tipo_saida() == 2) {
         FILE *file = fopen("b_output/financeiro/contas_pagar.bin", "ab");
         if (!file) file = fopen("../b_output/financeiro/contas_pagar.bin", "ab");

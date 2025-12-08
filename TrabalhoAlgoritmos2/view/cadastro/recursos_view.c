@@ -3,6 +3,25 @@
 #include "../../model/cadastro/recursos.h"
 #include "recursos_view.h"
 
+void exibir_todos_recursos(NoRecurso* lista) {
+    NoRecurso *atual = lista;
+    int contador = 0; 
+
+    exibir_cabecalho_lista_recursos(); 
+    
+    while (atual != NULL) {
+        if (atual->dados.status == 1) { 
+            exibir_recurso(&(atual->dados)); 
+            contador++;
+        }
+        atual = atual->proximo;
+    }
+
+    if (contador == 0) {
+        exibir_mensagem_recursos("nenhum recurso/equipamento cadastrado!");
+    }
+    exibir_rodape_lista_recursos(); 
+}
 //exibe o menu e pega a escolha do usuario
 int exibir_menu_recursos() {
     int opcao;
@@ -129,4 +148,20 @@ void exibir_cabecalho_lista_recursos() {
 //rodape da lista
 void exibir_rodape_lista_recursos() {
     printf("==========================================\n");
+}
+void exibir_todos_recursos(NoRecurso* lista) {
+    NoRecurso *atual = lista;
+    int contador = 0; 
+    exibir_cabecalho_lista_recursos(); 
+    while (atual != NULL) {
+        if (atual->dados.status == 1) { 
+            exibir_recurso(&(atual->dados)); 
+            contador++;
+        }
+        atual = atual->proximo;
+    }
+    if (contador == 0) {
+        exibir_mensagem_recursos("nenhum recurso/equipamento cadastrado!");
+    }
+    exibir_rodape_lista_recursos(); 
 }

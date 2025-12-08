@@ -4,28 +4,24 @@
 #include "item_orcamento.h"
 #include "../../controller/saida.h"
 
-//copia dados com seguranca
 void copiar_dados_item(ItemOrcamento *destino, const ItemOrcamento *origem) {
     if (!destino || !origem) return;
     *destino = *origem; 
 }
 
-//adiciona e salva
 NoItemOrcamento* adicionar_item_na_lista(NoItemOrcamento* lista, ItemOrcamento novo_item) {
     NoItemOrcamento *novo_no = (NoItemOrcamento*) malloc(sizeof(NoItemOrcamento));
     if (novo_no == NULL) return lista;
 
-    //calcula total do item antes de salvar
     novo_item.valor_total_item = novo_item.quantidade * novo_item.valor_unitario;
     novo_item.status = 1;
 
     copiar_dados_item(&(novo_no->dados), &novo_item);
     novo_no->proximo = lista;
 
-    //persistencia txt
     if (verificar_tipo_saida() == 1) {
-        FILE *file = fopen("b_output/itens_orcamento.txt", "a"); //com ../ se precisar
-        if (!file) file = fopen("../b_output/itens_orcamento.txt", "a"); //tentativa com ../
+        FILE *file = fopen("b_output/itens_orcamento.txt", "a"); 
+        if (!file) file = fopen("../b_output/itens_orcamento.txt", "a"); 
 
         if (file) {
             fprintf(file, 
@@ -38,7 +34,6 @@ NoItemOrcamento* adicionar_item_na_lista(NoItemOrcamento* lista, ItemOrcamento n
             fclose(file);
         }
     } 
-    //persistencia bin
     else if (verificar_tipo_saida() == 2) {
         FILE *file = fopen("b_output/itens_orcamento.bin", "ab");
         if (!file) file = fopen("../b_output/itens_orcamento.bin", "ab");
@@ -48,17 +43,14 @@ NoItemOrcamento* adicionar_item_na_lista(NoItemOrcamento* lista, ItemOrcamento n
             fclose(file);
         }
     }
-
     return novo_no;
 }
 
-//carrega dados
 NoItemOrcamento* carregar_itens_orcamento(NoItemOrcamento* lista) {
     if (lista != NULL) return lista;
-
     int tipo = verificar_tipo_saida();
     
-    if (tipo == 1) { //txt
+    if (tipo == 1) { 
         FILE *file = fopen("b_output/itens_orcamento.txt", "r");
         if (!file) file = fopen("../b_output/itens_orcamento.txt", "r");
         if (!file) return lista;
@@ -81,7 +73,7 @@ NoItemOrcamento* carregar_itens_orcamento(NoItemOrcamento* lista) {
         }
         fclose(file);
     }
-    else if (tipo == 2) { //bin
+    else if (tipo == 2) { 
         FILE *file = fopen("b_output/itens_orcamento.bin", "rb");
         if (!file) file = fopen("../b_output/itens_orcamento.bin", "rb");
         if (!file) return lista;

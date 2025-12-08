@@ -2,13 +2,14 @@
 #include "controller/cadastro/equipe_controller.h" 
 #include "controller/cadastro/produtora_controller.h"
 #include "controller/cadastro/fornece_e_parce_controller.h"
-#include "controller/cadastro/recursos_controller.h" // <<-- NOVO: INCLUDE PARA RECURSOS
+#include "controller/cadastro/recursos_controller.h" 
 #include "controller/cadastro/operador_controller.h"
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "controller/saida.h"
 #include "controller/orcamento/evento_controller.h"
+#include "controller/transacao/transacao_controller.h"
 
 
 // =============================
@@ -135,6 +136,7 @@ int main() {
                 break;
             case 8:
                 iniciar_modulo_financeiro();
+                break;
             case 0:
                 printf("Encerrando o sistema. Tchau!\n");
                 break;

@@ -15,7 +15,7 @@ Equipamento ler_dados_recurso();
 //pega so os dados novos pra atualizar
 void ler_dados_atualizacao_recurso(char* descricao, char* categoria, int* quantidade_estoque, float* preco_custo, float* valor_locacao);
 
-//mostra um equipamento com todos os campos bonitinho
+//mostra um equipamento com todos os campos 
 void exibir_recurso(const Equipamento* recurso);
 
 //funcao pra ler o codigo que o user quer usar pra alguma operacao
@@ -27,5 +27,5 @@ void exibir_mensagem_recursos(const char* msg);
 //funcoes auxiliares pra lista
 void exibir_cabecalho_lista_recursos();
 void exibir_rodape_lista_recursos();
-
+void exibir_todos_recursos(NoRecurso* lista);
 #endif

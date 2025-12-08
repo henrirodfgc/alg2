@@ -37,6 +37,7 @@ OBJ = main.o \
 	controller/orcamento/item_orcamento_controller.o\
 	model/transacao/caixa.o\
 	model/transacao/contas_receber.o\
+	model/transacao/contas_pagar.o\
 	view/transacao/transacao_view.o\
 	controller/transacao/transacao_controller.o
 	
@@ -85,10 +86,10 @@ pre_clean:
 	if exist view/orcamento/item_orcamento_view.o del view/orcamento/item_orcamento_view.o
 	if exist controller/orcamento/item_orcamento_controller.o del controller/orcamento/item_orcamento_controller.o
 
-	if exist model/transacao/contas_receber.o del model/transacao/contas_receber.o
-
+	# REGRAS PARA O MODULO TRANSACAO (DELECAO INDIVIDUAL)
 	if exist model/transacao/caixa.o del model/transacao/caixa.o
 	if exist model/transacao/contas_receber.o del model/transacao/contas_receber.o
+	if exist model/transacao/contas_pagar.o del model/transacao/contas_pagar.o
 	if exist view/transacao/transacao_view.o del view/transacao/transacao_view.o
 	if exist controller/transacao/transacao_controller.o del controller/transacao/transacao_controller.o
 
@@ -110,6 +111,8 @@ ifeq ($(OS),Windows_NT)
 	if exist "view\orcamento" del "view\orcamento\*.o" 2>nul
 	if exist "controller\orcamento" del "controller\orcamento\*.o" 2>nul
 	if exist "model\transacao" del "model\transacao\*.o" 2>nul
+	if exist "view\transacao" del "view\transacao\*.o" 2>nul
+	if exist "controller\transacao" del "controller\transacao\*.o" 2>nul
 
 else
 	@echo "[Unix] Verificando seguranca"
@@ -126,6 +129,8 @@ else
 	rm -f view/orcamento/*.o
 	rm -f controller/orcamento/*.o
 	rm -f model/transacao/*.o
+	rm -f view/transacao/*.o
+	rm -f controller/transacao/*.o
 	rm -f *.exe
 endif
 	@echo "Limpeza concluida"

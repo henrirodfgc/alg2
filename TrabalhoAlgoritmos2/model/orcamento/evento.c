@@ -4,7 +4,6 @@
 #include "evento.h"
 #include "../../controller/saida.h" 
 
-//copia dados de um evento pro outro com seguranca
 void copiar_dados_evento(Evento *destino, const Evento *origem) {
     if (!destino || !origem) return;
     
@@ -14,29 +13,25 @@ void copiar_dados_evento(Evento *destino, const Evento *origem) {
     destino->valor_total = origem->valor_total;
     destino->status = origem->status;
     
-    //copia strings
     strncpy(destino->nome_evento, origem->nome_evento, sizeof(destino->nome_evento)-1);
     destino->nome_evento[sizeof(destino->nome_evento)-1] = '\0';
-    
     strncpy(destino->data_inicio, origem->data_inicio, sizeof(destino->data_inicio)-1);
     destino->data_inicio[sizeof(destino->data_inicio)-1] = '\0';
-    
     strncpy(destino->data_fim, origem->data_fim, sizeof(destino->data_fim)-1);
     destino->data_fim[sizeof(destino->data_fim)-1] = '\0';
 }
 
-//adiciona na lista e salva
 NoEvento* adicionar_evento_na_lista(NoEvento* lista, Evento novo_evento) {
     NoEvento *novo_no = (NoEvento*) malloc(sizeof(NoEvento));
     if (novo_no == NULL) return lista;
     
     copiar_dados_evento(&(novo_no->dados), &novo_evento);
-    novo_no->proximo = lista; //insere no inicio
+    novo_no->proximo = lista; 
     
-    //persistencia txt
     if (verificar_tipo_saida() == 1) {
+        FILE *file = fopen("b_output/eventos.txt", "a"); 
+        if (!file) file = fopen("../b_output/eventos.txt", "a");
         
-        FILE *file = fopen("../b_output/eventos.txt", "a"); 
         if (file) {
             fprintf(file, 
                 "cod:%d,cli:%d,nome:%s,inicio:%s,fim:%s,qtd:%d,valor:%.2f,status:%d\n",
@@ -50,25 +45,20 @@ NoEvento* adicionar_evento_na_lista(NoEvento* lista, Evento novo_evento) {
                 novo_evento.status
             );
             fclose(file);
-        } else {
-            printf("erro critico: nao foi possivel salvar no arquivo ../b_output/eventos.txt!\n");
         }
     }
-    //persistencia bin
     else if (verificar_tipo_saida() == 2) {
-        FILE *file = fopen("../b_output/eventos.bin", "ab"); 
+        FILE *file = fopen("b_output/eventos.bin", "ab"); 
+        if (!file) file = fopen("../b_output/eventos.bin", "ab");
+
         if (file) {
             fwrite(&novo_evento, sizeof(Evento), 1, file);
             fclose(file);
-        } else {
-            printf("erro critico: nao foi possivel salvar no arquivo binario!\n");
         }
     }
-    
     return novo_no;
 }
 
-//busca simples
 Evento* buscar_evento_por_codigo(NoEvento* lista, int codigo) {
     NoEvento *atual = lista;
     while (atual != NULL) {
@@ -78,21 +68,18 @@ Evento* buscar_evento_por_codigo(NoEvento* lista, int codigo) {
     return NULL;
 }
 
-//carrega do arquivo (cura da amnesia)
 NoEvento* carregar_eventos(NoEvento* lista) {
     if (lista != NULL) return lista;
-    
     int tipo = verificar_tipo_saida();
 
-    if (tipo == 1) { //txt
-        
-        FILE *file = fopen("../b_output/eventos.txt", "r"); 
+    if (tipo == 1) { 
+        FILE *file = fopen("b_output/eventos.txt", "r"); 
+        if (!file) file = fopen("../b_output/eventos.txt", "r");
         if (!file) return lista;
         
         Evento e;
         char linha[2048];
         while (fgets(linha, sizeof(linha), file)) {
-            
             if (sscanf(linha, 
                 "cod:%d,cli:%d,nome:%99[^,],inicio:%11[^,],fim:%11[^,],qtd:%d,valor:%f,status:%d",
                 &e.codigo, &e.codigo_cliente, e.nome_evento, e.data_inicio,
@@ -108,9 +95,9 @@ NoEvento* carregar_eventos(NoEvento* lista) {
         }
         fclose(file);
     }
-    else if (tipo == 2) { //bin 
-
-        FILE *file = fopen("../b_output/eventos.bin", "rb"); 
+    else if (tipo == 2) { 
+        FILE *file = fopen("b_output/eventos.bin", "rb"); 
+        if (!file) file = fopen("../b_output/eventos.bin", "rb");
         if (!file) return lista;
 
         Evento e;
@@ -124,11 +111,9 @@ NoEvento* carregar_eventos(NoEvento* lista) {
         }
         fclose(file);
     }
-
     return lista;
 }
 
-//libera memoria
 void desalocar_lista_eventos(NoEvento* lista) {
     NoEvento *atual = lista;
     while (atual != NULL) {
@@ -138,15 +123,13 @@ void desalocar_lista_eventos(NoEvento* lista) {
     }
 }
 
-//funcao bruta pra salvar tudo de novo no arquivo(atualizar status)
 void reescrever_arquivo_eventos(NoEvento* lista) {
     int tipo = verificar_tipo_saida();
-
     if (tipo == 3) return;
 
     if (tipo == 1) { 
-        
-        FILE *file = fopen("../b_output/eventos.txt", "w"); 
+        FILE *file = fopen("b_output/eventos.txt", "w"); 
+        if (!file) file = fopen("../b_output/eventos.txt", "w"); 
         if (!file) return;
 
         NoEvento *atual = lista;
@@ -167,8 +150,8 @@ void reescrever_arquivo_eventos(NoEvento* lista) {
         fclose(file);
     }
     else if (tipo == 2) {
-        
-        FILE *file = fopen("../b_output/eventos.bin", "wb"); 
+        FILE *file = fopen("b_output/eventos.bin", "wb"); 
+        if (!file) file = fopen("../b_output/eventos.bin", "wb"); 
         if (!file) return;
 
         NoEvento *atual = lista;

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "caixa.h"
 #include "../../controller/saida.h"
 
@@ -49,7 +50,6 @@ void lancar_no_caixa(float valor, int tipo, const char* descricao) {
     }
 }
 
-//carrega o caixa para uma lista (pra view poder exibir)
 NoCaixa* carregar_extrato_caixa(NoCaixa* lista) {
     if (lista != NULL) return lista;
 
@@ -74,7 +74,6 @@ NoCaixa* carregar_extrato_caixa(NoCaixa* lista) {
         }
         fclose(file);
     }
-    //binario seria similar
     return lista;
 }
 

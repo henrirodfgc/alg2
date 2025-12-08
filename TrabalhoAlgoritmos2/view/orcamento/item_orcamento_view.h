@@ -12,4 +12,8 @@ void exibir_lista_itens_evento(NoItemOrcamento* lista, int id_evento);
 //menu especifico de itens
 int exibir_menu_itens();
 
+void exibir_mensagem_item(const char* msg);
+void exibir_mensagem_item_formatada(const char* formato, float valor); //pra valores
+void pausar_tela_itens(); 
+
 #endif

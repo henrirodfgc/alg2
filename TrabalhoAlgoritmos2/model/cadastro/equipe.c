@@ -32,60 +32,35 @@ MembroEquipe *buscar_membro_qualquer_status(NoEquipe *lista, int codigo_busca) {
 }
 
 NoEquipe* adicionar_membro_na_lista(NoEquipe* lista, MembroEquipe novo_membro) {
-    
     NoEquipe *novo_no = (NoEquipe*) malloc(sizeof(NoEquipe)); 
-    
-    if (novo_no == NULL) {
-        return lista; 
-    }
+    if (novo_no == NULL) return lista; 
 
     copiar_dados_equipe(&(novo_no->dados), &novo_membro);
     novo_no->proximo = lista;
 
-     if (verificar_tipo_saida() == 1)
-    {
+    if (verificar_tipo_saida() == 1) {
         FILE *file = fopen("b_output/membro/membros.txt", "a");
-        if (file == NULL)
-        {
-            printf("erro ao abrir o arquivo de membros!\n");
-            return lista;
-        }
+        if (!file) file = fopen("../b_output/membro/membros.txt", "a");
 
-        novo_membro.status = 1;
-
-        fprintf(file,
-            "id:%d,nome:%s,cpf:%s,funcao:%s,valor_diaria_hora:%.2f,status:%d\n",
-            novo_membro.codigo,
-            novo_membro.nome,
-            novo_membro.cpf,
-            novo_membro.funcao,
-            novo_membro.valor_diaria_hora,
-            novo_membro.status);
-        fclose(file);
-        printf("membro salvo com sucesso!!\n");
-    }
-
-    else if (verificar_tipo_saida() == 2)
-    {
-        FILE *file = fopen("b_output/membro/membros.bin", "ab");
-        if (file == NULL) {
-            printf("erro ao abrir o arquivo binario de membros!\n");
-            return lista;
-        }
-
-        novo_membro.status = 1;
-
-        if (fwrite(&novo_membro,sizeof(MembroEquipe),1,file) != 1)
-        {
-            printf("erro ao escrever strcut em binario\n");
-        } 
-        else
-        {
-            printf("struct salva com sucesso em membros.bin!\n");
+        if (file) {
+            novo_membro.status = 1;
+            fprintf(file,
+                "id:%d,nome:%s,cpf:%s,funcao:%s,valor_diaria_hora:%.2f,status:%d\n",
+                novo_membro.codigo, novo_membro.nome, novo_membro.cpf,
+                novo_membro.funcao, novo_membro.valor_diaria_hora, novo_membro.status);
             fclose(file);
         }
     }
+    else if (verificar_tipo_saida() == 2) {
+        FILE *file = fopen("b_output/membro/membros.bin", "ab");
+        if (!file) file = fopen("../b_output/membro/membros.bin", "ab");
 
+        if (file) {
+            novo_membro.status = 1;
+            fwrite(&novo_membro,sizeof(MembroEquipe),1,file);
+            fclose(file);
+        }
+    }
     return novo_no; 
 }
 
@@ -105,106 +80,55 @@ void atualizar_membro_por_codigo(NoEquipe* lista, int codigo_busca, const char* 
     
     if (membro_existente) {
         membro_existente->valor_diaria_hora = valor_diaria_hora;
-        
         strncpy(membro_existente->nome, nome, sizeof(membro_existente->nome) - 1);
         membro_existente->nome[sizeof(membro_existente->nome) - 1] = '\0';
         strncpy(membro_existente->cpf, cpf, sizeof(membro_existente->cpf) - 1);
         membro_existente->cpf[sizeof(membro_existente->cpf) - 1] = '\0';
         strncpy(membro_existente->funcao, funcao, sizeof(membro_existente->funcao) - 1);
         membro_existente->funcao[sizeof(membro_existente->funcao) - 1] = '\0';
-        
-        if (verificar_tipo_saida() != 3) {
-            exibir_mensagem_equipe("membro atualizado na memoria");
-        }
     }
 }
 
 int deletar_membro_por_codigo_logico(NoEquipe* lista, int codigo_busca) {
-    if (verificar_tipo_saida() == 1) 
-    {
+    if (verificar_tipo_saida() == 1) {
         FILE *file = fopen("b_output/membro/membros.txt", "r+");
-        if (file == NULL)
-        {
-            printf("erro ao abrir o arquivo original!\n");
-            return 0;
-        }
+        if (!file) file = fopen("../b_output/membro/membros.txt", "r+");
+        if (file == NULL) return 0;
 
         FILE *temp = fopen("b_output/membro/temp.txt", "w+");
-        if (temp == NULL)
-        {
-            printf("erro ao criar arquivo temporario!\n");
-            fclose(file);
-            return 0;
-        }
+        if (!temp) temp = fopen("../b_output/membro/temp.txt", "w+");
+        if (temp == NULL) { fclose(file); return 0; }
 
         MembroEquipe c;
         char linha[2048];
         int encontrado = 0;
 
-        while (fgets(linha, sizeof(linha), file))
-        {
+        while (fgets(linha, sizeof(linha), file)) {
             sscanf(linha,
                    "id:%d,nome:%49[^,],cpf:%11[^,],funcao:%49[^,],valor_diaria_hora:%f,status:%d",
-                   &c.codigo,
-                   c.nome,
-                   c.cpf,
-                   c.funcao,
-                   &c.valor_diaria_hora,
-                   &c.status);
+                   &c.codigo, c.nome, c.cpf, c.funcao, &c.valor_diaria_hora, &c.status);
                    
-            if (c.codigo == codigo_busca)
-            {
+            if (c.codigo == codigo_busca) {
                 c.status = 0; 
                 encontrado = 1;
             }
-            
             fprintf(temp,
                      "id:%d,nome:%s,cpf:%s,funcao:%s,valor_diaria_hora:%.2f,status:%d\n",
-                     c.codigo,
-                     c.nome,
-                     c.cpf,
-                     c.funcao,
-                     c.valor_diaria_hora,
-                     c.status);
+                     c.codigo, c.nome, c.cpf, c.funcao, c.valor_diaria_hora, c.status);
         }
-
         fclose(file);
         fclose(temp);
        
-        if (remove("b_output/membro/membros.txt") != 0)
-        {
-            perror("erro ao remover o arquivo original");
-            return 0;
-        }
+        remove("b_output/membro/membros.txt");
+        remove("../b_output/membro/membros.txt");
+        rename("b_output/membro/temp.txt", "b_output/membro/membros.txt");
+        rename("../b_output/membro/temp.txt", "../b_output/membro/membros.txt");
 
-        if (rename("b_output/membro/temp.txt", "b_output/membro/membros.txt") != 0)
-        {
-            perror("erro ao renomear o arquivo temporario");
-            return 0;
-        }
-
-        if (encontrado)
-        {
-            printf("membro com id %d marcado como inativo (status = 0).\n", codigo_busca);
-            return 1;
-        }
-        else
-        {
-            printf("membro com id %d nao encontrado.\n", codigo_busca);
-            return 0;
-        }
+        return encontrado;
     }
-    else if (verificar_tipo_saida() == 2)
-    {
-        exibir_mensagem_equipe("erro: delecao em binario nao implementada.");
-        return 0; 
-    }
-    else if (verificar_tipo_saida() == 3)
-    {
+    else if (verificar_tipo_saida() == 3) {
         MembroEquipe *membro_existente = buscar_membro_por_codigo(lista, codigo_busca);
-        
-        if (membro_existente && membro_existente->status == 1)
-        {
+        if (membro_existente && membro_existente->status == 1) {
             membro_existente->status = 0; 
             return 1; 
         }
@@ -215,35 +139,24 @@ int deletar_membro_por_codigo_logico(NoEquipe* lista, int codigo_busca) {
 
 void restaurar_membro_por_codigo(NoEquipe* lista, int codigo_busca) {
     if (verificar_tipo_saida() != 3) return;
-    
     MembroEquipe *membro_existente = buscar_membro_qualquer_status(lista, codigo_busca); 
-
     if (membro_existente && membro_existente->status == 0) {
         membro_existente->status = 1; 
     }
 }
 
 void desalocar_lista_equipe(NoEquipe* lista) {
-    if (verificar_tipo_saida() != 3) return;
-    
     NoEquipe *atual = lista;
-    NoEquipe *proximo_no;
     while (atual != NULL) {
-        proximo_no = atual->proximo; 
+        NoEquipe *prox = atual->proximo; 
         free(atual);
-        atual = proximo_no;
+        atual = prox;
     }
 }
 
 void exibir_todos_membros(NoEquipe* lista) {
-    if (verificar_tipo_saida() != 3) {
-        exibir_mensagem_equipe("");
-        return;
-    }
-    
     NoEquipe *atual = lista;
     int contador = 0;
-
     printf("\n==== lista de membros da equipe (ativos) ====\n");
     while (atual != NULL) {
         if (atual->dados.status == 1) { 
@@ -252,22 +165,13 @@ void exibir_todos_membros(NoEquipe* lista) {
         }
         atual = atual->proximo;
     }
-
-    if (contador == 0) {
-        exibir_mensagem_equipe("nenhum membro ativo cadastrado!");
-    }
+    if (contador == 0) printf("nenhum membro ativo cadastrado!\n");
     printf("======================================\n");
 }
 
 void exibir_membros_inativos(NoEquipe* lista) {
-    if (verificar_tipo_saida() != 3) {
-        exibir_mensagem_equipe("");
-        return;
-    }
-    
     NoEquipe *atual = lista;
     int contador = 0;
-
     printf("\n==== lista de membros inativos ====\n");
     while (atual != NULL) {
         if (atual->dados.status == 0) { 
@@ -276,34 +180,25 @@ void exibir_membros_inativos(NoEquipe* lista) {
         }
         atual = atual->proximo;
     }
-
-    if (contador == 0) {
-        exibir_mensagem_equipe("nenhum membro inativo encontrado!");
-    }
+    if (contador == 0) printf("nenhum membro inativo encontrado!\n");
     printf("======================================\n");
 }
 
 NoEquipe* carregar_equipe(NoEquipe* lista) {
     if (lista != NULL) return lista;
-
     int tipo = verificar_tipo_saida();
 
-    if (tipo == 1) { //txt
+    if (tipo == 1) { 
         FILE *file = fopen("b_output/membro/membros.txt", "r");
+        if (!file) file = fopen("../b_output/membro/membros.txt", "r");
         if (file == NULL) return lista;
 
         MembroEquipe m;
         char linha[2048];
-
         while (fgets(linha, sizeof(linha), file)) {
             if (sscanf(linha,
                 "id:%d,nome:%49[^,],cpf:%11[^,],funcao:%49[^,],valor_diaria_hora:%f,status:%d",
-                &m.codigo,
-                m.nome,
-                m.cpf,
-                m.funcao,
-                &m.valor_diaria_hora,
-                &m.status) == 6) {
+                &m.codigo, m.nome, m.cpf, m.funcao, &m.valor_diaria_hora, &m.status) == 6) {
                 
                 NoEquipe *novo_no = (NoEquipe*) malloc(sizeof(NoEquipe));
                 if (novo_no != NULL) {
@@ -316,8 +211,9 @@ NoEquipe* carregar_equipe(NoEquipe* lista) {
         }
         fclose(file);
     } 
-    else if (tipo == 2) { //bin
+    else if (tipo == 2) { 
         FILE *file = fopen("b_output/membro/membros.bin", "rb");
+        if (!file) file = fopen("../b_output/membro/membros.bin", "rb");
         if (file == NULL) return lista;
 
         MembroEquipe m;
