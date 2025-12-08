@@ -14,7 +14,7 @@ typedef struct {
     int quantidade;     //qtd ou horas (se for equipe)
     float valor_unitario; 
     float valor_total_item; 
-    int status;         
+    int status;         //1=ativo
 } ItemOrcamento;
 
 typedef struct NoItemOrcamento {

@@ -13,7 +13,7 @@ void iniciar_fornecedor_e_parceiro() {
     int id_busca;
     Fornecedores_e_parceiros temp;
 
-    // carrega dados ao iniciar(fim da amnesia)
+    // carrega dados ao iniciar
     listaFornecedores_e_parceiros = carregar_fornecedores_e_parceiros(listaFornecedores_e_parceiros);
 
     do {
@@ -74,7 +74,6 @@ void iniciar_fornecedor_e_parceiro() {
                 } else if (fornecedor_encontrado->tipo != TIPO_CNPJ) {
                     exibir_mensagem_fornece_e_parce("este id pertence a um parceiro, nao a um fornecedor");
                 } else {
-                    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
                     //variaveis para receber os dados novos da view
                     char nome_fantasia[50], razao_social[100], endereco[256];
                     char cnpj[15], telefone[20];
@@ -103,7 +102,6 @@ void iniciar_fornecedor_e_parceiro() {
                 } else if (parceiro_encontrado->tipo != TIPO_CPF) {
                     exibir_mensagem_fornece_e_parce("este id pertence a um fornecedor, nao a um parceiro");
                 } else {
-                    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
                     //variaveis para receber os dados
                     char nome_fantasia[50], razao_social[100], endereco[256];
                     char cpf[12], telefone[20];

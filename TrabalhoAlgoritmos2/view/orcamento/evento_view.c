@@ -32,8 +32,6 @@ Evento ler_dados_evento() {
     printf("Data Inicio (dd/mm/aaaa): "); scanf("%11s", e.data_inicio);
     printf("Data Fim (dd/mm/aaaa): "); scanf("%11s", e.data_fim);
     printf("Qtd Convidados: "); scanf("%d", &e.quantidade_convidados);
-    
-    //aqui vc poderia somar os recursos, mas vamo simplificar pro prazo
     printf("Valor Total Estimado (R$): "); scanf("%f", &e.valor_total);
     
     e.status = 0; //começa como orcamento (0)

@@ -1,1 +1,1 @@
-codigo:6485784,nome:,usuario:escricao:2,categoria:2,quantidade_estoque:2,custo:0.00þÿÿÿ,senha:,status:7405568codigo:6485784,nome:,usuario:escricao:2,categoria:2,quantidade_estoque:2,custo:0.00þÿÿÿ,senha:,status:7405568
+id:1,nome:1,usuario:1,senha:1,status:1

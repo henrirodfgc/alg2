@@ -27,5 +27,7 @@ void desalocar_lista_eventos(NoEvento* lista);
 
 //buscar evento
 Evento* buscar_evento_por_codigo(NoEvento* lista, int codigo);
+//funcao para salvar alteracao de status
+void reescrever_arquivo_eventos(NoEvento* lista);
 
 #endif

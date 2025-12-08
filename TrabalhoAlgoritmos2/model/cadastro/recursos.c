@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <direct.h> 
-#include <errno.h> 
-#include <windows.h> 
 #include "recursos.h"
 #include "../../controller/saida.h" 
 #include "../../view/cadastro/recursos_view.h" 
@@ -36,20 +33,19 @@ NoRecurso* adicionar_recurso_na_lista(NoRecurso* lista, Equipamento novo_recurso
     }
 
     copiar_dados_recurso(&(novo_no->dados), &novo_recurso);
-
     novo_no->proximo = lista;
 
     if (verificar_tipo_saida() == 1)
     {
-        FILE *file = fopen("../b_output/recursos/recursos.txt", "a"); 
+        FILE *file = fopen("b_output/recursos/recursos.txt", "a"); 
         if (file == NULL)
         {
             printf("erro ao abrir o arquivo de recursos!\n");
             return lista;
         }
- 
+
         fprintf(file,
-            "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%f,custo:%.2f,locacao:%.2f,status:%d\n",
+            "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%d,custo:%.2f,locacao:%.2f,status:%d\n",
             novo_recurso.codigo,
             novo_recurso.descricao,
             novo_recurso.categoria,
@@ -62,9 +58,9 @@ NoRecurso* adicionar_recurso_na_lista(NoRecurso* lista, Equipamento novo_recurso
     }
     else if (verificar_tipo_saida() == 2)
     {
-         FILE *file = fopen("../b_output/recursos/recursos.bin", "ab");
+         FILE *file = fopen("b_output/recursos/recursos.bin", "ab");
         if (file == NULL) {
-            printf("erro ao abrir o arquivo binário de recursos!\n");
+            printf("erro ao abrir o arquivo binario de recursos!\n");
             return lista;
         }
 
@@ -95,8 +91,7 @@ Equipamento* buscar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
 }
 
 //atualiza os dados de quem ja existe na lista (u)
-int atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char* descricao, const char* categoria, int quantidade_estoque, float preco_custo, float valor_locacao) {
-    //busca o recurso ativo na lista em memoria
+void atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char* descricao, const char* categoria, int quantidade_estoque, float preco_custo, float valor_locacao) {
     Equipamento *recurso_existente = buscar_recurso_por_codigo(lista, codigo_busca);
     
     if (recurso_existente) {
@@ -109,97 +104,10 @@ int atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char*
         strncpy(recurso_existente->categoria, categoria, sizeof(recurso_existente->categoria) - 1);
         recurso_existente->categoria[sizeof(recurso_existente->categoria) - 1] = '\0';
         
-        if (verificar_tipo_saida() == 1)
-        {
-            FILE *file = fopen("../b_output/recursos/recursos.txt", "r+");
-            if (file==NULL)
-            {
-                printf("erro ao abrir o arquivo original!\n");
-            
-                return 0;
-            }
-
-            FILE *temp = fopen("../b_output/recursos/temp.txt", "w+");
-            if (temp == NULL)
-            {
-                printf("erro ao criar arquivo temporario!\n");
-                fclose(file);
-                return 0;
-            }
-
-            Equipamento c;
-            char linha[2048];
-            int encontrado = 0;
-
-
-
-            while (fgets(linha, sizeof(linha), file))
-         {
-            //lê os campos
-            sscanf(linha,
-                   "codigo:%d,descricaco:%99[^,],categoria:%49[^,],estoque:%f,preco_custo:%.2f,valor_locacao:%.2f,status:%d",
-                   &c.codigo,
-                   c.descricao,
-                   c.categoria,
-                   c.quantidade_estoque,
-                   c.preco_custo,
-                   c.valor_locacao,
-                   &c.status);
-                   
-
-            if (c.codigo == recurso_existente->codigo)
-            {
-                fprintf(temp,
-                   "codigo:%d,descricaco:%s,categoria:%s,estoque:%f,preco_custo:%.2f,valor_locacao:%.2f,status:%d",
-                    recurso_existente->codigo,
-                    recurso_existente->descricao,
-                    recurso_existente->categoria,
-                    recurso_existente->quantidade_estoque,
-                    recurso_existente->preco_custo,
-                    recurso_existente->valor_locacao,
-                    recurso_existente->status);
-
-                    encontrado = 1;
-            
-            } else {
-                fprintf(temp, "%s", linha);
-             }
-            
-            
-         }
-
-            fclose(file);
-            fclose(temp);
-
-
-            //substitui o original pelo temporário
-            if (remove("../b_output/recursos/recursos.txt") != 0)
-            {
-                perror("erro ao remover o arquivo original");
-                return 0;
-            }
-
-            if (rename("../b_output/recursos/temp.txt", "../b_output/recursos/recursos.txt") != 0)
-            {
-                perror("erro ao renomear o arquivo temporario");
-                return 0;
-            }
-
-            if (encontrado)
-            {
-                printf("recursos com id %d atualizado.\n", codigo_busca);
-                return 1;
-            }
-            else
-            {
-                printf("recursos com id %d nao encontrado.\n", codigo_busca);
-                return 0;
-            }
-
+        if (verificar_tipo_saida() != 3) {
+            exibir_mensagem_recursos("recurso atualizado em memoria");
         }
-        
     }
-    return 1;
 }
 
 
@@ -207,14 +115,14 @@ int atualizar_recurso_por_codigo(NoRecurso* lista, int codigo_busca, const char*
 int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
     if (verificar_tipo_saida() == 1) 
     {
-        FILE *file = fopen("../b_output/recursos/recursos.txt", "r+");
+        FILE *file = fopen("b_output/recursos/recursos.txt", "r+");
         if (file == NULL)
         {
             printf("erro ao abrir o arquivo original!\n");
             return 0;
         }
 
-        FILE *temp = fopen("../b_output/recursos/temp.txt", "w+");
+        FILE *temp = fopen("b_output/recursos/temp.txt", "w+");
         if (temp == NULL)
         {
             printf("erro ao criar arquivo temporario!\n");
@@ -229,7 +137,7 @@ int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
         while (fgets(linha, sizeof(linha), file))
         {
             sscanf(linha,
-                   "codigo:%d,descricao:%99[^,],categoria:%49[^,],quantidade_estoque:%f,custo:%.2f,locacao:%.2f,status:%d",
+                   "codigo:%d,descricao:%99[^,],categoria:%49[^,],quantidade_estoque:%d,custo:%f,locacao:%f,status:%d",
                    &c.codigo,
                    c.descricao,
                    c.categoria,
@@ -244,8 +152,9 @@ int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
                 encontrado = 1;
             }
             
+            //fprintf pode usar %.2f
             fprintf(temp,
-                    "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%f,custo:%.2f,locacao:%.2f,status:%d\n",
+                    "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%d,custo:%.2f,locacao:%.2f,status:%d\n",
                    c.codigo,
                    c.descricao,
                    c.categoria,
@@ -258,13 +167,13 @@ int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
         fclose(file);
         fclose(temp);
        
-        if (remove("../b_output/recursos/recursos.txt") != 0)
+        if (remove("b_output/recursos/recursos.txt") != 0)
         {
             perror("erro ao remover o arquivo original");
             return 0;
         }
 
-        if (rename("../b_output/recursos/temp.txt", "../b_output/recursos/recursos.txt") != 0)
+        if (rename("b_output/recursos/temp.txt", "b_output/recursos/recursos.txt") != 0)
         {
             perror("erro ao renomear o arquivo temporario");
             return 0;
@@ -283,7 +192,7 @@ int deletar_recurso_por_codigo(NoRecurso* lista, int codigo_busca) {
     }
     else if (verificar_tipo_saida() == 2)
     {
-        exibir_mensagem_recursos("delecao binaria.");
+        exibir_mensagem_recursos("erro: delecao em binario nao implementada.");
         return 0; 
     }
     else if (verificar_tipo_saida() == 3)
@@ -341,17 +250,15 @@ NoRecurso* carregar_recursos(NoRecurso* lista) {
     int tipo = verificar_tipo_saida();
 
     if (tipo == 1) { //txt
-        //*
-        FILE *file = fopen("../b_output/recursos/recursos.txt", "r");
+        FILE *file = fopen("b_output/recursos/recursos.txt", "r");
         if (file == NULL) return lista; 
 
         Equipamento e;
         char linha[2048];
 
         while (fgets(linha, sizeof(linha), file)) {
-
             if (sscanf(linha, 
-                "codigo:%d,descricao:%99[^,],categoria:%49[^,],quantidade_estoque:%f,custo:%.2f,locacao:%.2f,status:%d",
+                "codigo:%d,descricao:%99[^,],categoria:%49[^,],quantidade_estoque:%d,custo:%f,locacao:%f,status:%d",
                 &e.codigo, e.descricao, e.categoria, &e.quantidade_estoque, 
                 &e.preco_custo, &e.valor_locacao, &e.status) == 7) {
                 
@@ -366,8 +273,7 @@ NoRecurso* carregar_recursos(NoRecurso* lista) {
         fclose(file);
     } 
     else if (tipo == 2) { //bin
-        //*
-        FILE *file = fopen("../b_output/recursos/recursos.bin", "rb");
+        FILE *file = fopen("b_output/recursos/recursos.bin", "rb");
         if (file == NULL) return lista;
 
         Equipamento e;

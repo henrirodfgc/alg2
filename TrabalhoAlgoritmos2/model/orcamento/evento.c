@@ -56,7 +56,7 @@ NoEvento* adicionar_evento_na_lista(NoEvento* lista, Evento novo_evento) {
     }
     //persistencia bin
     else if (verificar_tipo_saida() == 2) {
-        FILE *file = fopen("../b_output/eventos.bin", "ab"); //CORRECAO: Adicionado ../
+        FILE *file = fopen("../b_output/eventos.bin", "ab"); 
         if (file) {
             fwrite(&novo_evento, sizeof(Evento), 1, file);
             fclose(file);

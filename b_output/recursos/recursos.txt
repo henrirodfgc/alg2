@@ -1,4 +1,0 @@
-codigo:1,descricao:1,categoria:1,quantidade_estoque:1,custo:0.00,locacao:0.00,status:0
-codigo:2,descricao:2,categoria:2,quantidade_estoque:2,custo:0.00,locacao:0.00,status:0
-codigo:1,descricao:1,categoria:1,quantidade_estoque:1,custo:1.00,locacao:0.03,status:1
-codigo:1,descricao:1,categoria:1,quantidade_estoque:1,custo:1.00,locacao:0.03,status:1

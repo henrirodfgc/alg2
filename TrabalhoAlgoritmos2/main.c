@@ -94,9 +94,6 @@ int main() {
             }
         }
 
-    // =============================
-    // MENU PRINCIPAL (COMPLETO)
-    // =============================
     int opcao_principal;
     do {
         printf("\n================================\n");
@@ -106,9 +103,10 @@ int main() {
         printf("2 - Módulo Equipe\n"); 
         printf("3 - Módulo Produtora\n");
         printf("4 - Módulo Fornecedores e Parceiros\n");
-        printf("5 - Módulo Recursos e Equipamentos\n"); // <<-- NOVO AQUI!
+        printf("5 - Módulo Recursos e Equipamentos\n"); 
         printf("6 - Módulo operador\n");
         printf("7 - Módulo de eventos/orçamentos\n");
+        printf("8 - Módulo Financeiro\n");
         printf("0 - Fechar Sistema\n");
         printf("Escolha o módulo: ");
         scanf("%d", &opcao_principal);
@@ -135,6 +133,8 @@ int main() {
             case 7:
                 iniciar_eventos();
                 break;
+            case 8:
+                iniciar_modulo_financeiro();
             case 0:
                 printf("Encerrando o sistema. Tchau!\n");
                 break;

@@ -28,7 +28,6 @@ NoItemOrcamento* adicionar_item_na_lista(NoItemOrcamento* lista, ItemOrcamento n
         if (!file) file = fopen("../b_output/itens_orcamento.txt", "a"); //tentativa com ../
 
         if (file) {
-            //atualizado com tipo e id_estrangeiro
             fprintf(file, 
                 "id:%d,evt:%d,tipo:%d,ref:%d,qtd:%d,unit:%.2f,tot:%.2f,st:%d\n",
                 novo_item.id, novo_item.id_evento, 
@@ -67,7 +66,6 @@ NoItemOrcamento* carregar_itens_orcamento(NoItemOrcamento* lista) {
         ItemOrcamento it;
         char linha[2048];
         while (fgets(linha, sizeof(linha), file)) {
-            //atualizado leitura do tipo e ref
             if (sscanf(linha, 
                 "id:%d,evt:%d,tipo:%d,ref:%d,qtd:%d,unit:%f,tot:%f,st:%d",
                 &it.id, &it.id_evento, &it.tipo_item, &it.id_estrangeiro, 

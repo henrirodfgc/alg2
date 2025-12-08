@@ -1,2 +1,1 @@
 id:1,nome_cliente:1,nome_razao:1,idade:1,endereco:1,cpf:1,cnpj:1,email:1,telefone:1,nome_contato:1,status:1
-id:2,nome_cliente:3,nome_razao:3,idade:3,endereco:3,cpf:3,cnpj:3,email:3,telefone:3,nome_contato:3,status:0
