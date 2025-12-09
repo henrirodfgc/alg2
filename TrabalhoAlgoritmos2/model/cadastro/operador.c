@@ -151,5 +151,5 @@ void exibir_todos_operadores(NoOperador* lista){
         }
         atual = atual -> proximo;
     }
-    if (cont == 0) printf("nenhum operador ativo.\n");
+    if (cont == 0) exibir_mensagem_operador("nenhum operador ativo.\n");
 }

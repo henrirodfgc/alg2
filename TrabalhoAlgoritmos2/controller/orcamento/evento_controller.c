@@ -102,7 +102,7 @@ void iniciar_eventos() {
                             encontrou = 1; break;
                         }
 
-                        printf("Confirma finalizacao e devolucao do estoque? (1-Sim, 0-Nao): ");
+                        exibir_mensagem_evento("Confirma finalizacao e devolucao do estoque? (1-Sim, 0-Nao): ");
                         int confirmar;
                         scanf("%d", &confirmar);
                         

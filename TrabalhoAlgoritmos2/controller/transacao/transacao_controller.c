@@ -41,7 +41,7 @@ void iniciar_modulo_financeiro() {
         }
         
         if(opcao != 0) {
-            printf("pressione enter...");
+            exibir_mensagem_transacao("pressione enter...");
             getchar(); getchar();
         }
         

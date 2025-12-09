@@ -104,7 +104,7 @@ void gerar_relatorio_eventos_html(int filtro_status) {
     NoEvento *atual = listaEventos;
     
     while (atual != NULL) {
-        //logica de filtro: so imprime se for -1(todos) ou se o status bater com o pedido
+        //so imprime se for -1(todos) ou se o status bater com o pedido
         if (filtro_status == -1 || atual->dados.status == filtro_status) {
             
             char* status_str = "Desconhecido";

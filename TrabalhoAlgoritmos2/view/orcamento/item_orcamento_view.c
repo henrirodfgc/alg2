@@ -70,6 +70,10 @@ void exibir_mensagem_item(const char* msg) {
     printf("%s\n", msg);
 }
 
+int exibir_numero(const int* num) {
+    return num;
+}
+
 void exibir_mensagem_item_formatada(const char* formato, float valor) {
     printf(formato, valor);
     printf("\n");

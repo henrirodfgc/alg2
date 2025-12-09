@@ -211,20 +211,88 @@ int deletar_cliente_por_id_logico(NoCliente *lista, int id_busca)
 
         if (encontrado)
         {
-            exibir_mensagem("cliente com id %d marcado como inativo (status = 0).\n", id_busca);
+            exibir_mensagem("cliente com id: ");
+            exibir_numero(id_busca);
+            exibir_mensagem("marcado como inativo (status = 0).\n");
             return 1;
         }
         else
         {
-            exibir_mensagem("cliente com id %d nao encontrado.\n", id_busca);
+            exibir_mensagem("cliente com id :");
+            exibir_numero(id_busca);
+            exibir_mensagem("nao foi encontrado\n");
             return 0;
         }
     }
     //implementação BIN
     else if (verificar_tipo_saida() == 2)
     {
-        exibir_mensagem("aviso:delecao binaria.");
-        return 0; 
+            // Abrir o arquivo BINÁRIO (leitura e escrita - r+b)
+    FILE *file = fopen("../b_output/clientes/cliente.bin", "r+b"); 
+
+    if (file == NULL) {
+        exibir_mensagem("Erro ao abrir o arquivo binário para atualização!\n");
+        return 0;
+    }
+
+    Cliente c; // Estrutura do cliente
+
+    // Procurar o registro
+    int encontrado = 0;
+    long posicao_do_registro = 0;
+
+    // Loop que lê um registro por vez
+    while (fread(&c, sizeof(Cliente), 1, file) == 1) {
+        
+        // Guarda a posição inicial do registro atual no arquivo.
+        // O fseek anterior moveu o ponteiro, então voltamos para o início
+        // do registro recém-lido, que será o ponto de escrita se precisarmos.
+        posicao_do_registro = ftell(file) - sizeof(Cliente);
+        
+        // Verificar se é o ID buscado
+        if (c.id == id_busca) {
+            
+            // Verifica se o cliente já está inativo
+            if (c.status == 0) {
+                // Não faz nada, apenas informa
+                encontrado = 1; 
+                break; 
+            }
+            
+            // Se for o ID, atualiza o status para 0 (inativação lógica)
+            c.status = 0; 
+            encontrado = 1;
+            
+            // Voltar o ponteiro para o início do registro (onde estava antes do fread)
+            fseek(file, posicao_do_registro, SEEK_SET);
+            
+            // Reescrever o registro atualizado sobre o registro antigo
+            if (fwrite(&c, sizeof(Cliente), 1, file) != 1) {
+                exibir_mensagem("Erro ao reescrever o registro no arquivo binário.\n");
+                fclose(file);
+                return 0; 
+            }
+
+            // O registro foi atualizado. Sair do loop.
+            break; 
+        }
+    }
+
+    //  Fechar o arquivo
+    fclose(file); 
+
+    // Retornar o resultado
+    if (encontrado) {
+        exibir_mensagem("cliente com id: ");
+        exibir_numero(id_busca);
+        exibir_mensagem("marcado como inativo (status = 0).\n");;
+        return 1;
+    } else {
+        exibir_mensagem("cliente com id :");
+        exibir_numero(id_busca);
+        exibir_mensagem("nao foi encontrado\n");
+        return 0;
+    }
     }
     else if (verificar_tipo_saida() == 3)
     {
@@ -373,12 +441,16 @@ int atualizar_cliente_por_id(NoCliente *lista, int id_busca, const char *nome_cl
 
             if (encontrado)
             {
-                exibir_mensagem("cliente com id %d atualizado.\n", id_busca);
+                exibir_mensagem("cliente com id: ");
+                exibir_numero(id_busca);
+                exibir_mensagem("nao encontrado.\n");
                 return 1;
             }
             else
             {
-                exibir_mensagem("cliente com id %d nao encontrado.\n", id_busca);
+                exibir_mensagem("cliente com id: ");
+                exibir_numero(id_busca);
+                exibir_mensagem("nao encontrado.\n");
                 return 0;
             }
 
@@ -386,7 +458,75 @@ int atualizar_cliente_por_id(NoCliente *lista, int id_busca, const char *nome_cl
             
         }
     }
+    else if (verificar_tipo_saida() == 2) {
+        if (!cliente_existente) {
+                exibir_mensagem("cliente com id: ");
+                exibir_numero(id_busca);
+                exibir_mensagem("nao encontrado na lista para atualizar.\n");
+            return 0;
+        }
+
+        //Abrir o arquivo BINÁRIO (leitura e escrita - r+b)
+        FILE *file = fopen("../b_output/clientes/cliente.bin", "r+b"); 
+
+        if (file == NULL) {
+            exibir_mensagem("Erro ao abrir o arquivo binário para atualização!\n");
+            return 0;
+        }
+
+        Cliente c; 
+        int encontrado = 0;
+        long posicao_do_registro = 0;
+
+        // Loop que lê um registro por vez para encontrar a posição
+        while (fread(&c, sizeof(Cliente), 1, file) == 1) {
+            
+            // Guarda a posição inicial do registro
+            posicao_do_registro = ftell(file) - sizeof(Cliente);
+            
+            // Verificar se é o ID que queremos atualizar
+            if (c.id == id_busca) { 
+                encontrado = 1;
+                
+                // Voltar o ponteiro para o início do registro
+                fseek(file, posicao_do_registro, SEEK_SET);
+                
+                // Reescrever o registro atualizado (da memória) sobre o registro antigo
+                
+                if (fwrite(cliente_existente, sizeof(Cliente), 1, file) != 1) {
+                    exibir_mensagem("Erro ao reescrever o registro atualizado no arquivo binário.\n");
+                    fclose(file);
+                    return 0; 
+                }
+
+                // O registro foi atualizado. Sair do loop.
+                break; 
+            }
+        }
+
+        fclose(file); 
+
+        if (encontrado) {
+                exibir_mensagem("cliente com id: ");
+                exibir_numero(id_busca);
+                exibir_mensagem("atualizado com sucesso no arquivo binario.\n");
+            return 1;
+        } else {
+                exibir_mensagem("cliente com id: ");
+                exibir_numero(id_busca);
+                exibir_mensagem("nao encontrado no arquivo para atualizacao.\n");
+            return 0;
+        }
+    }
+    
+    
+    // garantindo que o retorno seja 1 (sucesso) após a operação.
     return 1;
+
+
+
+
+            
 }
 
 void desalocar_lista_clientes(NoCliente *lista)

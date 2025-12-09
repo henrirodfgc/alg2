@@ -120,7 +120,7 @@ void iniciar_operador(){
 
         if (opcao != 0)
         {
-            printf("\nPressione Enter para continuar...");
+            exibir_mensagem_operador("\nPressione Enter para continuar...");
             while (getchar() != '\n');
         }
         

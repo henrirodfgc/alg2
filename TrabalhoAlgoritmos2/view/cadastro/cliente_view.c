@@ -114,3 +114,8 @@ void ler_dados_atualizacao(char* nome_cliente, int* idade, char* endereco, char*
 void exibir_mensagem(const char* msg) {
     printf("%s\n", msg);
 }
+
+int exibir_numero(const int* num) {
+    
+    return num;
+}

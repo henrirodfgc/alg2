@@ -5,25 +5,19 @@
 #include "../../view/cadastro/produtora_view.h"
 #include "produtora_controller.h"
 
-// =============================================
-// FUNÇÃO: iniciar_produtora
-// OBJETIVO: Controlador principal do sistema de produtoras
-// DESCRIÇÃO: Orquestra o fluxo entre Model e View, gerencia o menu principal
-//            e coordena todas as operações CRUD do sistema
-// =============================================
+
 void iniciar_produtora() {
     // Inicialização das variáveis do controlador
-    NoProdutora *listaProdutora = NULL;  // Lista encadeada de produtoras (inicia vazia)
-    int opcao;                           // Armazena a escolha do usuário no menu
-    char* cnpj_busca;                    // CNPJ para operações de busca/atualização/exclusão
-    Produtora temp;                      // Estrutura temporária para novos dados
+    NoProdutora *listaProdutora = NULL;  
+    int opcao;                           
+    char* cnpj_busca;                    
+    Produtora temp;                      
 
     listaProdutora = carregar_produtoras(listaProdutora); //funçao p carregar a lista
 
-    // =============================================
-    // LOOP PRINCIPAL DA APLICAÇÃO
-    // Mantém o sistema rodando até usuário escolher sair
-    // =============================================
+    
+    // loop principal
+    
     do {
         // Exibe o menu de opções para o usuário
         exibir_menu_produtora(); 
@@ -31,13 +25,11 @@ void iniciar_produtora() {
         // Solicita e lê a opção do usuário
         scanf("%d", &opcao); 
 
-        // =============================================
-        // PROCESSAMENTO DAS OPÇÕES DO MENU
-        // =============================================
+        
         switch (opcao) {
-            // =============================================
-            // CASO 1: CRIAR NOVA PRODUTORA
-            // =============================================
+           
+            // criar nova produtora
+            
             case 1: { 
                 // Coleta dados da nova produtora
                 temp = ler_dados_produtora(); 
@@ -54,9 +46,9 @@ void iniciar_produtora() {
                 break;
             }
 
-            // =============================================
-            // CASO 2: ATUALIZAR PRODUTORA EXISTENTE
-            // =============================================
+            
+            // atualizar produtora que ja existe
+            
             case 2: { 
                 // Solicita CNPJ da produtora a ser atualizada
                 cnpj_busca = ler_cnpj_para_operacao("atualizar"); 
@@ -73,7 +65,7 @@ void iniciar_produtora() {
                          telefone_do_responsavel[11], margem_de_lucro_padrao[6];
 
                     // Coleta os novos dados do usuário
-                    // CORREÇÃO: Parâmetros na ordem correta da função
+                    // Parâmetros na ordem correta da função
                     ler_dados_atualizacao_produtora(cnpj, nome_fantasia, razao_social,  
                                                    inscricao_estadual, email, endereco_completo, 
                                                    telefone, nome_do_responsavel, 
@@ -90,9 +82,9 @@ void iniciar_produtora() {
                 break;
             }
 
-            // =============================================
-            // CASO 3: EXIBIR PRODUTORA ESPECÍFICA
-            // =============================================
+           
+            //exibir produtora escolhida
+           
             case 3: { 
                 // Solicita CNPJ da produtora a ser exibida
                 cnpj_busca = ler_cnpj_para_operacao("exibir"); 
@@ -108,9 +100,9 @@ void iniciar_produtora() {
                 break;
             }
 
-            // =============================================
-            // CASO 4: DELETAR PRODUTORA
-            // =============================================
+            
+            //deletar produtora
+            
             case 4: { 
                 // Solicita CNPJ da produtora a ser deletada
                 cnpj_busca = ler_cnpj_para_operacao("deletar"); 
@@ -131,39 +123,39 @@ void iniciar_produtora() {
                 break;
             }
 
-            // =============================================
-            // CASO 5: LISTAR TODAS AS PRODUTORAS
-            // =============================================
+            
+            // listar todas as produtoras
+            
             case 5: { 
                 exibir_todas_produtoras(listaProdutora); // Exibe lista completa
                 break;
             }
 
-            // =============================================
-            // CASO 0: SAIR DO SISTEMA
-            // =============================================
+            
+            // caso 0: sair do sistema
+            
             case 0:
                 exibir_mensagem_produtora("Saindo do sistema de produtoras...");
                 break;
 
-            // =============================================
-            // CASO PADRÃO: OPÇÃO INVÁLIDA
-            // =============================================
+            
+            // CASO PADRAO: OPÇÃO INVÁLIDA
+          
             default:
                 exibir_mensagem_produtora("Opção inválida! Tente novamente.");
         }
 
         // Pausa para usuário ver o resultado antes de continuar
         if (opcao != 0) {
-            printf("\nPressione Enter para continuar...");
+            exibir_mensagem_produtora("\nPressione Enter para continuar...");
             while (getchar() != '\n'); // Espera usuário pressionar Enter
         }
 
     } while (opcao != 0); // Condição de saída: opção 0
 
-    // =============================================
-    // LIMPEZA FINAL - LIBERAÇÃO DE MEMÓRIA
-    // =============================================
+   
+    // liberar memoria
+    
     desalocar_lista_produtoras(listaProdutora);
     exibir_mensagem_produtora("Memória liberada. Sistema encerrado.");
 }

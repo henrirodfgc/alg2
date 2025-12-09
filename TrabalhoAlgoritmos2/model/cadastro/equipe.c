@@ -157,7 +157,7 @@ void desalocar_lista_equipe(NoEquipe* lista) {
 void exibir_todos_membros(NoEquipe* lista) {
     NoEquipe *atual = lista;
     int contador = 0;
-    printf("\n==== lista de membros da equipe (ativos) ====\n");
+    exibir_mensagem_equipe("\n==== lista de membros da equipe (ativos) ====\n");
     while (atual != NULL) {
         if (atual->dados.status == 1) { 
             exibir_membro(&(atual->dados)); 
@@ -165,14 +165,14 @@ void exibir_todos_membros(NoEquipe* lista) {
         }
         atual = atual->proximo;
     }
-    if (contador == 0) printf("nenhum membro ativo cadastrado!\n");
-    printf("======================================\n");
+    if (contador == 0) exibir_mensagem_equipe("nenhum membro ativo cadastrado!\n");
+    exibir_mensagem_equipe("======================================\n");
 }
 
 void exibir_membros_inativos(NoEquipe* lista) {
     NoEquipe *atual = lista;
     int contador = 0;
-    printf("\n==== lista de membros inativos ====\n");
+    exibir_mensagem_equipe("\n==== lista de membros inativos ====\n");
     while (atual != NULL) {
         if (atual->dados.status == 0) { 
             exibir_membro(&(atual->dados)); 
@@ -180,8 +180,8 @@ void exibir_membros_inativos(NoEquipe* lista) {
         }
         atual = atual->proximo;
     }
-    if (contador == 0) printf("nenhum membro inativo encontrado!\n");
-    printf("======================================\n");
+    if (contador == 0) exibir_mensagem_equipe("nenhum membro inativo encontrado!\n");
+    exibir_mensagem_equipe("======================================\n");
 }
 
 NoEquipe* carregar_equipe(NoEquipe* lista) {

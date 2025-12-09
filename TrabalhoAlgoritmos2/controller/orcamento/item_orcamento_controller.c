@@ -88,7 +88,7 @@ void estornar_estoque_evento(int id_evento) {
     NoItemOrcamento *atual = listaItens;
     int devolvidos = 0;
 
-    printf("\n>> Processando devolucao de estoque...\n");
+    exibir_mensagem_recursos("\n>> Processando devolucao de estoque...\n");
 
     while (atual != NULL) {
     
@@ -99,16 +99,20 @@ void estornar_estoque_evento(int id_evento) {
             if (equip != NULL) {
                 //devolve a quantidade
                 equip->quantidade_estoque += atual->dados.quantidade;
-                printf("   + Devolvido: %d unid. de '%s' (Novo estoque: %d)\n", 
-                       atual->dados.quantidade, equip->descricao, equip->quantidade_estoque);
+                printf("   + Unid. de '%s' devolvido:\n", equip->descricao);
+                exibir_numero(atual->dados.quantidade);
+                exibir_mensagem_item("(novo estoque: )");
+                exibir_numero(equip->quantidade_estoque);
                 devolvidos++;
             }
         }
         atual = atual->proximo;
     }
     if (devolvidos > 0) {
-        printf(">> %d tipos de equipamentos foram devolvidos ao estoque.\n", devolvidos);
+        exibir_mensagem_item(">>");
+        exibir_numero(devolvidos);
+        exibir_mensagem_item("tipos de equipamentos foram devolvidos ao estoque.\n");
     } else {
-        printf(">> Nenhum equipamento fisico para devolver neste evento.\n");
+        exibir_mensagem_item(">> Nenhum equipamento fisico para devolver neste evento.\n");
     }
 }

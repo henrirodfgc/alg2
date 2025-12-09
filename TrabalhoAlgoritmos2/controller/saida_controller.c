@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#include "../../view/cadastro/cliente_view.h"
 
 int verificar_tipo_saida (){
     FILE* file = fopen ("../b_output/tipo_file.txt","r"); // "r" tenta abrir ficheiro em modo leitura
@@ -16,7 +17,7 @@ int verificar_tipo_saida (){
     if (fgets(tipo, sizeof(tipo),file)==NULL)  //vai ler ate  sizeof(tipo) caracteres. se falhar retorna null e imprime o erro 
                                                //fecha arquivo, retorna 0.
     {
-        printf("Erro ao ler o arquivo tipo_file.txt.\n");
+        exibir_mensagem("Erro ao ler o arquivo tipo_file.txt.\n");
         fclose(file);
         return 0;
     }
@@ -36,7 +37,7 @@ int verificar_tipo_saida (){
         int retorna = 3;
         return retorna;
     } else {
-        printf("Tipo de arquivo inválido no tipo_file.txt.\n");
+        exibir_mensagem("Tipo de arquivo inválido no tipo_file.txt.\n");
         return 0;
     }
 }
@@ -53,7 +54,7 @@ int troca_txt_bin(char troca){
     
     if ((atual == 1 && troca == 't') || (atual == 2 && troca == 'b'))
     {
-        printf("Não é necessário trocar o formato, o arquivo já está selecionado neste formato.\n");
+        exibir_mensagem("Não é necessário trocar o formato, o arquivo já está selecionado neste formato.\n");
         return 0; // a troca nao é efetuada pois o usuario nao selecionou uma mudanca diferente da que ja estava selecionada.
     }
 
@@ -62,7 +63,7 @@ int troca_txt_bin(char troca){
     
     if (temp_file==NULL)
     {
-        printf("Erro ao criar arquivo.\n");
+        exibir_mensagem("Erro ao criar arquivo.\n");
         return 0;
     }
 
@@ -81,14 +82,14 @@ int troca_txt_bin(char troca){
     }
     else 
     {
-        printf("tipo de troca inválido. \n");
+        exibir_mensagem("tipo de troca inválido. \n");
         fclose(temp_file);
         return 0;
     }
 
     fclose(temp_file);
 
-    printf("sua troca foi realizada com sucesso!!");
+    exibir_mensagem("sua troca foi realizada com sucesso!!");
     return -1;
 }
 

@@ -3,14 +3,7 @@
 #include "../../model/cadastro/produtora.h"
 #include "produtora_view.h"
 
-// =============================================
-// FUNÇÃO: ler_cnpj_para_operacao
-// OBJETIVO: Solicita CNPJ do usuário para operações específicas
-// PARÂMETROS:
-//   - operacao: String descrevendo a operação (buscar, atualizar, deletar)
-// RETORNO: Ponteiro para string estática contendo o CNPJ ou NULL em caso de erro
-// OBSERVAÇÃO: Usa buffer estático - não é thread-safe
-// =============================================
+
 char* ler_cnpj_para_operacao(const char* operacao) {
     static char cnpj[15]; // Buffer estático para armazenar CNPJ (14 dígitos + \0)
     
@@ -26,16 +19,7 @@ char* ler_cnpj_para_operacao(const char* operacao) {
     return cnpj; // Retorna ponteiro para o CNPJ lido
 }
 
-// =============================================
-// FUNÇÃO: exibir_produtora
-// OBJETIVO: Exibe os dados de uma produtora formatados na tela
-// PARÂMETROS:
-//   - produtora: Ponteiro para estrutura Produtora a ser exibida
-// COMPORTAMENTO:
-//   - Verifica se ponteiro é válido
-//   - Exibe mensagem de "inexistente" se for NULL
-//   - Formata saída com bordas para melhor visualização
-// =============================================
+
 void exibir_produtora(const Produtora* produtora) {
     // Verifica se a produtora existe
     if (!produtora) {
@@ -60,21 +44,13 @@ void exibir_produtora(const Produtora* produtora) {
     printf("+---------------------------------+\n");
 }
 
-// =============================================
-// FUNÇÃO: exibir_menu_produtora
-// OBJETIVO: Exibe menu de opções para gerenciamento de produtoras
-// COMPORTAMENTO:
-//   - Mostra todas as operações CRUD disponíveis
-//   - Inclui opção para listar todas e sair
-//   - Coleta a escolha do usuário via scanf
-// OBSERVAÇÃO: A função deveria apenas exibir, não coletar a opção
-// =============================================
+
 void exibir_menu_produtora() {
     
-    // Cabeçalho do menu
+    
     printf("\n==== MENU PRODUTORA ====\n");
     
-    // Opções disponíveis
+    
     printf("1 - Criar produtora\n");
     printf("2 - Atualizar produtora\n");
     printf("3 - Exibir produtora\n");
@@ -82,19 +58,10 @@ void exibir_menu_produtora() {
     printf("5 - Listar todas\n"); 
     printf("0 - Sair\n");
     printf("Escolha: ");    
-    // A leitura da opção deveria ser feita pela função chamadora
+   
 }
 
-// =============================================
-// FUNÇÃO: ler_dados_produtora
-// OBJETIVO: Coleta todos os dados necessários para criar uma nova produtora
-// RETORNO: Estrutura Produtora preenchida com os dados informados
-// COMPORTAMENTO:
-//   - Solicita cada campo individualmente ao usuário
-//   - Usa scanf com [^\n] para permitir espaços
-//   - Aplica limites de tamanho nos campos numéricos
-// OBSERVAÇÃO: Ordem dos campos poderia ser revisada para melhor UX
-// =============================================
+
 Produtora ler_dados_produtora() {
     Produtora c; // Estrutura temporária para armazenar dados
      int ch;
@@ -109,60 +76,51 @@ Produtora ler_dados_produtora() {
 
     printf("Nome Fantasia: "); 
     scanf(" %50[^\n]", c.nome_fantasia); // Espaço antes para consumir quebra de linha
-    while ((ch = getchar()) != '\n' && ch != EOF); // Limpa após cada leitura
+    while ((ch = getchar()) != '\n' && ch != EOF); 
 
     printf("Razão Social: "); 
     scanf("%100[^\n]", c.razao_social);
-    while ((ch = getchar()) != '\n' && ch != EOF); // Limpa após cada leitura
+    while ((ch = getchar()) != '\n' && ch != EOF); 
 
     printf("Inscrição Estadual: "); 
     scanf("%9[^\n]", c.inscricao_estadual); // Limita a 9 caracteres
-    while ((ch = getchar()) != '\n' && ch != EOF); // Limpa após cada leitura
+    while ((ch = getchar()) != '\n' && ch != EOF); 
 
     printf("Endereco: "); 
     scanf(" %256[^\n]", c.endereco_completo);
-    while ((ch = getchar()) != '\n' && ch != EOF); // Limpa após cada leitura
+    while ((ch = getchar()) != '\n' && ch != EOF); 
 
     printf("Telefone: "); 
     scanf(" %11[^\n]", c.telefone);
-    while ((ch = getchar()) != '\n' && ch != EOF); // Limpa após cada leitura
+    while ((ch = getchar()) != '\n' && ch != EOF); 
 
     printf("Email: "); 
     scanf(" %50[^\n]", c.email);
-    while ((ch = getchar()) != '\n' && ch != EOF); // Limpa após cada leitura
+    while ((ch = getchar()) != '\n' && ch != EOF); 
 
     printf("Nome do Responsável: "); 
     scanf(" %50[^\n]", c.nome_do_responsavel);
-    while ((ch = getchar()) != '\n' && ch != EOF); // Limpa após cada leitura
+    while ((ch = getchar()) != '\n' && ch != EOF); 
 
     printf("Telefone do Responsável: "); 
     scanf(" %11[^\n]", c.telefone_do_responsavel); 
-    while ((ch = getchar()) != '\n' && ch != EOF); // Limpa após cada leitura
+    while ((ch = getchar()) != '\n' && ch != EOF); 
 
     printf("Margem de Lucro Padrão: "); 
     scanf(" %6[^\n]", c.margem_de_lucro_padrao);
-    while ((ch = getchar()) != '\n' && ch != EOF); // Limpa após cada leitura
+    while ((ch = getchar()) != '\n' && ch != EOF); 
 
     return c; // Retorna estrutura preenchida
 }
 
-// =============================================
-// FUNÇÃO: ler_dados_atualizacao_produtora
-// OBJETIVO: Coleta novos dados para atualizar uma produtora existente
-// PARÂMETROS: Ponteiros para buffers que receberão os novos dados
-// COMPORTAMENTO:
-//   - Solicita novos valores para cada campo
-//   - Preenche os buffers fornecidos com os dados informados
-//   - Aplica limites de tamanho em campos numéricos
-// OBSERVAÇÃO: Nome do parâmetro "incricao_estadual" está com typo
-// =============================================
+
 void ler_dados_atualizacao_produtora( char* cnpj, char* nome_fantasia, 
                                      char* razao_social, char* incricao_estadual,
                                      char* endereco_completo, char* telefone, 
                                      char* email, char* nome_do_responsavel,  
                                      char* telefone_do_responsavel,char* margem_de_lucro_padrao) {
     
-    // Coleta novos dados para cada campo
+    
    
    
     printf("Nova cnpj(14 digitos): "); 
@@ -197,15 +155,7 @@ void ler_dados_atualizacao_produtora( char* cnpj, char* nome_fantasia,
         
 }
 
-// =============================================
-// FUNÇÃO: exibir_mensagem_produtora
-// OBJETIVO: Exibe mensagens de feedback para o usuário
-// PARÂMETROS:
-//   - msg: String contendo a mensagem a ser exibida
-// COMPORTAMENTO:
-//   - Função simples para padronizar exibição de mensagens
-//   - Usada para sucesso, erro, alertas e informações
-// =============================================
+
 void exibir_mensagem_produtora(const char* msg) {
     printf("%s\n", msg);
 }
