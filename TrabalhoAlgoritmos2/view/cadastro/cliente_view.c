@@ -115,7 +115,6 @@ void exibir_mensagem(const char* msg) {
     printf("%s\n", msg);
 }
 
-int exibir_numero(const int* num) {
-    
-    return num;
+void exibir_numero(int num) {
+    printf("%d", num);
 }

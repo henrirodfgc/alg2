@@ -13,7 +13,7 @@ void exibir_lista_itens_evento(NoItemOrcamento* lista, int id_evento);
 int exibir_menu_itens();
 
 void exibir_mensagem_item(const char* msg);
-int exibir_numero(const int* num);
+void exibir_numero_item(int num);
 void exibir_mensagem_item_formatada(const char* formato, float valor); //pra valores
 void pausar_tela_itens(); 
 

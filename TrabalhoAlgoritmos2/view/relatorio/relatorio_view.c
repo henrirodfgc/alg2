@@ -22,3 +22,6 @@ void pausar_tela_relatorio() {
     while (getchar() != '\n'); 
     getchar();
 }
+void ler_filtro_na_view(const char* msg) {
+    printf("%s", msg);
+}

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
-#include "../../view/cadastro/cliente_view.h"
+#include "../view/cadastro/cliente_view.h"
 
 int verificar_tipo_saida (){
     FILE* file = fopen ("../b_output/tipo_file.txt","r"); // "r" tenta abrir ficheiro em modo leitura

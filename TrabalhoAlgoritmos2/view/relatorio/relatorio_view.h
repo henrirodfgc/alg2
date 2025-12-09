@@ -9,5 +9,6 @@ void exibir_mensagem_relatorio(const char* msg);
 
 //pausa
 void pausar_tela_relatorio();
+void ler_filtro_na_view(const char* msg);
 
 #endif

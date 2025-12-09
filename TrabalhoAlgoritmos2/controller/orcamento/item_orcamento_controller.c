@@ -100,9 +100,9 @@ void estornar_estoque_evento(int id_evento) {
                 //devolve a quantidade
                 equip->quantidade_estoque += atual->dados.quantidade;
                 printf("   + Unid. de '%s' devolvido:\n", equip->descricao);
-                exibir_numero(atual->dados.quantidade);
+                exibir_numero_item(atual->dados.quantidade);
                 exibir_mensagem_item("(novo estoque: )");
-                exibir_numero(equip->quantidade_estoque);
+                exibir_numero_item(equip->quantidade_estoque);
                 devolvidos++;
             }
         }
@@ -110,7 +110,7 @@ void estornar_estoque_evento(int id_evento) {
     }
     if (devolvidos > 0) {
         exibir_mensagem_item(">>");
-        exibir_numero(devolvidos);
+        exibir_numero_item(devolvidos);
         exibir_mensagem_item("tipos de equipamentos foram devolvidos ao estoque.\n");
     } else {
         exibir_mensagem_item(">> Nenhum equipamento fisico para devolver neste evento.\n");

@@ -21,6 +21,6 @@ void exibir_mensagem(const char* msg);
 //função pra ler o ID q o user quer usar pra alguma operação
 int ler_id_para_operacao(const char* operacao);
 
-int exibir_numero(const int* num);
+void exibir_numero(int num);
 
 #endif
