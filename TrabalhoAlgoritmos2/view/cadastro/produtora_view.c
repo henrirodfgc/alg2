@@ -47,6 +47,7 @@ Produtora ler_dados_produtora() {
     Produtora p;
     int ch;
     
+
     while ((ch = getchar()) != '\n' && ch !=EOF);
 
     printf("CNPJ: ");

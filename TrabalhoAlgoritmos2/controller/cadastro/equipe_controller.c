@@ -6,6 +6,7 @@
 #include "equipe_controller.h"
 #include "../../controller/saida.h"
 
+
 //lista ligada p guardar a equipe
 NoEquipe *listaEquipe = NULL; 
 

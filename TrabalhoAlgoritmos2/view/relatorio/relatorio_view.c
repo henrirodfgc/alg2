@@ -9,6 +9,10 @@ int exibir_menu_relatorios() {
     printf("2 - Clientes (CSV / Excel)\n");
     printf("3 - Eventos (HTML / Navegador)\n");
     printf("4 - Eventos (CSV / Excel)\n");
+    printf("----------------------------------\n");
+    printf("5 - Listagem de Equipamentos (HTML)\n"); 
+    printf("6 - Cronograma de Alocacao de Recursos (HTML)\n"); 
+    printf("7 - Relatorio Financeiro Completo (HTML)\n"); 
     printf("0 - Voltar\n");
     printf("Escolha: ");
     scanf("%d", &op);

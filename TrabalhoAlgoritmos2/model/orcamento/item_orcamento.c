@@ -4,6 +4,8 @@
 #include "item_orcamento.h"
 #include "../../controller/saida.h"
 
+NoItemOrcamento *listaItensOrcamento = NULL;
+
 void copiar_dados_item(ItemOrcamento *destino, const ItemOrcamento *origem) {
     if (!destino || !origem) return;
     *destino = *origem; 

@@ -33,5 +33,6 @@ MembroEquipe* buscar_membro_qualquer_status(NoEquipe* lista, int codigo_busca);
 void desalocar_lista_equipe(NoEquipe* lista); 
 void exibir_todos_membros(NoEquipe* lista); 
 NoEquipe* carregar_equipe(NoEquipe* lista);
+int obter_proximo_codigo_equipe(NoEquipe* lista);
 
 #endif

@@ -38,7 +38,7 @@ int main() {
         scanf(" %c", &escolha);
 
         FILE *file = fopen("../b_output/tipo_file.txt", "w");
-        if(!file) file = fopen("b_output/tipo_file.txt", "w"); // Tenta local se falhar
+        if(!file) file = fopen("b_output/tipo_file.txt", "w"); 
 
         if (escolha == 't') {
             fprintf(file, "txt");
@@ -82,7 +82,27 @@ int main() {
             printf("Escolha: ");
             ui_input_style();
             scanf(" %c", &troca);
-            ui_aviso("Troca de armazenamento deve ser implementada no controller!");
+
+            FILE *file = fopen("../b_output/tipo_file.txt", "w");
+            if (!file) file = fopen("b_output/tipo_file.txt", "w"); 
+
+            if (file) {
+                if (troca == 't') {
+                    fprintf(file, "txt");
+                    ui_sucesso("Armazenamento trocado para TXT. Reinicie o sistema para carregar.");
+                } else if (troca == 'b') {
+                    fprintf(file, "bin");
+                    ui_sucesso("Armazenamento trocado para BINARIO. Reinicie o sistema para carregar.");
+                } else if (troca == 'm') {
+                    fprintf(file, "mem");
+                    ui_sucesso("Armazenamento trocado para MEMORIA. Reinicie o sistema para carregar.");
+                } else {
+                    ui_erro("Opcao de troca invalida! Tipo de armazenamento anterior mantido.");
+                }
+                fclose(file);
+            } else {
+                ui_erro("Erro: Nao foi possivel abrir o arquivo de configuracao para a troca.");
+            }
         } else {
              ui_sucesso("Tipo mantido!");
         }

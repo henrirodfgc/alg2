@@ -5,6 +5,8 @@
 #include "caixa.h"
 #include "../../controller/saida.h"
 
+NoCaixa *listaCaixa = NULL;
+
 long data_para_long(const char* data) {
     int d, m, a;
     sscanf(data, "%d/%d/%d", &d, &m, &a);

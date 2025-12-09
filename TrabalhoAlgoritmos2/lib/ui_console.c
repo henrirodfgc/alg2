@@ -29,13 +29,12 @@ void ui_limpar_tela() {
 void ui_moldura(int x, int y, int largura, int altura, int cor) {
     ui_set_cor(cor);
     
-    // Topo
     ui_posicionar(x, y);
     printf("%c", 201); 
     for(int i=0; i<largura-2; i++) printf("%c", 205); 
     printf("%c", 187); 
 
-    // Laterais
+   
     for(int i=1; i<altura-1; i++) {
         ui_posicionar(x, y+i);
         printf("%c", 186); 
@@ -43,6 +42,7 @@ void ui_moldura(int x, int y, int largura, int altura, int cor) {
         printf("%c", 186); 
     }
 
+    // Base
     ui_posicionar(x, y+altura-1);
     printf("%c", 200); 
     for(int i=0; i<largura-2; i++) printf("%c", 205); 
@@ -77,11 +77,9 @@ void ui_cabecalho(const char* titulo) {
 void ui_barra_carregamento(const char* texto) {
     int largura_total = 40;
     int x_centro = (_get_largura_console() - largura_total) / 2;
-    int y_centro = 10;
+    int y_centro = 15;
 
-    ui_limpar_tela();
     ui_texto_centralizado(y_centro - 2, texto, COR_BRANCO);
-    
     
     ui_posicionar(x_centro, y_centro);
     printf("[");
@@ -91,8 +89,8 @@ void ui_barra_carregamento(const char* texto) {
     ui_set_cor(COR_VERDE);
     for(int i=0; i<=largura_total; i++) {
         ui_posicionar(x_centro + 1 + i, y_centro);
-        printf("%c", 219); 
-        Sleep(30); 
+        printf("%c", 219);
+        Sleep(20); 
     }
     ui_set_cor(COR_PADRAO);
     Sleep(500); 
@@ -100,18 +98,28 @@ void ui_barra_carregamento(const char* texto) {
 
 void ui_splash_logo() {
     ui_limpar_tela();
-    int y = 5;
-    int cor = COR_AZUL;
+    int y = 3;
+    int cor = COR_AZUL; 
     
-    // Logo simples em ASCII
-    ui_texto_centralizado(y++, "  ___  ___  ___  ___  _____ ", cor);
-    ui_texto_centralizado(y++, " / __||_ _|| __||  \\||_   _|", cor);
-    ui_texto_centralizado(y++, " \\__ \\ | | | _| | |) |  | |  ", cor);
-    ui_texto_centralizado(y++, " |___/|___||___||___/   |_|  ", cor);
-    ui_texto_centralizado(y++, "                             ", cor);
-    ui_texto_centralizado(y++, "   EVENT MANAGER 2025 PRO    ", COR_CIANO);
-    
-    ui_texto_centralizado(y+4, "Desenvolvido para Algoritmos II", COR_PADRAO);
+    ui_texto_centralizado(y++, "           ,**********,           ", cor);
+    ui_texto_centralizado(y++, "       ,******************,       ", cor);
+    ui_texto_centralizado(y++, "     ,**********************,     ", cor);
+    ui_texto_centralizado(y++, "    ,******'          `******,    ", cor);
+    ui_texto_centralizado(y++, "   ,*****.              .*****,   ", cor);
+    ui_texto_centralizado(y++, "   ,****,                ,****,   ", cor);
+    ui_texto_centralizado(y++, "   ,****,                         ", cor);
+    ui_texto_centralizado(y++, "   ,****,                         ", cor);
+    ui_texto_centralizado(y++, "   ,****,                         ", cor);
+    ui_texto_centralizado(y++, "   ,****,                ,****,   ", cor);
+    ui_texto_centralizado(y++, "   ,*****.              .*****,   ", cor);
+    ui_texto_centralizado(y++, "    `******.          .******'    ", cor);
+    ui_texto_centralizado(y++, "     `**********************'     ", cor);
+    ui_texto_centralizado(y++, "       `******************'       ", cor);
+    ui_texto_centralizado(y++, "           `**********'           ", cor);
+
+    y++; 
+    ui_texto_centralizado(y++, "PROGRAMACAO EM C - ALGORITMOS II", COR_BRANCO);
+    ui_texto_centralizado(y++, "Trabalho Pratico 2025", COR_CIANO);
     
     Sleep(1500);
 }

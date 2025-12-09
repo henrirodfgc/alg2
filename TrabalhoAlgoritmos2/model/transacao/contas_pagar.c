@@ -5,6 +5,10 @@
 #include "caixa.h" 
 #include "../../controller/saida.h"
 #include <time.h>
+#include "contas_pagar.h" 
+#include "../../view/transacao/transacao_view.h" 
+
+NoContaPagar *listaContasPagar = NULL;
 
 NoContaPagar* gerar_nova_conta_pagar(NoContaPagar* lista, int id_recurso, float valor) {
     NoContaPagar *novo_no = (NoContaPagar*) malloc(sizeof(NoContaPagar));

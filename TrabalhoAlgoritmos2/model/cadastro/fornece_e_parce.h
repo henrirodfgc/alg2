@@ -42,5 +42,6 @@ void desalocar_lista_fornece_e_parce(NoFornecedores_e_parceiros* lista);
 
 //carregar dados
 NoFornecedores_e_parceiros* carregar_fornecedores_e_parceiros(NoFornecedores_e_parceiros* lista);
+int obter_proximo_id_fornece(NoFornecedores_e_parceiros* lista);
 
 #endif
