@@ -1,15 +1,9 @@
-# =============================================
-# MAKEFILE (O COMPILADOR)
-# Pra compilar o projeto todo de uma vez no MinGW/Linux
-# =============================================
-
 CC = gcc
-# Flags de compilação: -Wall -Wextra pra mostrar todos os avisos (bom pra achar erro)
-# -I pra dizer onde estão os includes (model view controller)
-CFLAGS = -Wall -Wextra -Wunused -I./model -I./view -I./controller -g 
+CFLAGS = -Wall -Wextra -Wunused -I./model -I./view -I./controller -I./lib -g 
 
-TARGET = projeto_final.exe # O nome do arquivo final
+TARGET = projeto_final.exe 
 OBJ = main.o \
+	lib/ui_console.o \
 	model/cadastro/cliente.o\
 	model/cadastro/equipe.o\
 	controller/cadastro/cliente_controller.o\
@@ -46,17 +40,15 @@ OBJ = main.o \
 	controller/xml/xml_controller.o
 	
 	
-# Regra principal: compilar tudo
 $(TARGET): $(OBJ)
 	$(CC) $(OBJ) -o $(TARGET)
 	
-# Regra pra compilar e limpar antes (all)
 all: pre_clean $(TARGET)
 
-# Regra pra deletar os .o (objetos) e o .exe antes de compilar pra ser uma compilação limpa
 pre_clean:
 	if exist $(TARGET) del $(TARGET)
 	if exist main.o del main.o
+	if exist lib\ui_console.o del lib\ui_console.o
 	if exist model/cadastro/cliente.o del model/cadastro/cliente.o
 	if exist model/cadastro/equipe.o del model/cadastro/equipe.o
 	if exist view/cadastro/cliente_view.o del view/cadastro/cliente_view.o
@@ -90,23 +82,22 @@ pre_clean:
 	if exist view/orcamento/item_orcamento_view.o del view/orcamento/item_orcamento_view.o
 	if exist controller/orcamento/item_orcamento_controller.o del controller/orcamento/item_orcamento_controller.o
 
-	# REGRAS PARA O MODULO TRANSACAO (DELECAO INDIVIDUAL)
+	# REGRAS PARA O MODULO TRANSACAO
 	if exist model/transacao/caixa.o del model/transacao/caixa.o
 	if exist model/transacao/contas_receber.o del model/transacao/contas_receber.o
 	if exist model/transacao/contas_pagar.o del model/transacao/contas_pagar.o
 	if exist view/transacao/transacao_view.o del view/transacao/transacao_view.o
 	if exist controller/transacao/transacao_controller.o del controller/transacao/transacao_controller.o
 
-	# REGRAS PARA O MODULO RELATORIO (DELECAO INDIVIDUAL)
+	# REGRAS PARA O MODULO RELATORIO
 	if exist controller/relatorio/relatorio_controller.o del controller/relatorio/relatorio_controller.o
 	if exist view/relatorio/relatorio_view.o del view/relatorio/relatorio_view.o
 
-	# NOVAS REGRAS PARA O MODULO XML (DELECAO INDIVIDUAL)
+	# REGRAS PARA O MODULO XML
 	if exist controller/xml/xml_controller.o del controller/xml/xml_controller.o
 	if exist view/xml/xml_view.o del view/xml/xml_view.o
 
 
-# Regra pra limpar (vc roda make clean)
 clean:
 ifeq ($(OS),Windows_NT)
 	echo "[Windows] Verificando seguranca"
@@ -114,6 +105,7 @@ ifeq ($(OS),Windows_NT)
 	echo "[Windows] Limpando arquivos"
 	del *.o 2>nul
 	del *.exe 2>nul
+	if exist "lib" del "lib\*.o" 2>nul
 	if exist "model\cadastro" del "model\cadastro\*.o" 2>nul
 	if exist "view\cadastro" del "view\cadastro\*.o" 2>nul
 	if exist "controller\cadastro" del "controller\cadastro\*.o" 2>nul
@@ -136,6 +128,7 @@ else
 	if [ ! -f "main.c" ]; then echo "[ERRO] Nao esta no diretorio do projeto"; exit 1; fi
 	@echo "[Unix] Limpando arquivos"
 	rm -f *.o
+	rm -f lib/*.o
 	rm -f model/*.o
 	rm -f view/*.o
 	rm -f controller/*.o

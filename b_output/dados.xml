@@ -2,6 +2,14 @@
 <dados>
   <tabela-cliente>
     <registro>
+      <codigo>2</codigo>
+      <razao_social>2</razao_social>
+      <nome_fantasia>2</nome_fantasia>
+      <cpf_cnpj>2</cpf_cnpj>
+      <telefone>2</telefone>
+      <email>2</email>
+    </registro>
+    <registro>
       <codigo>1</codigo>
       <razao_social>1</razao_social>
       <nome_fantasia>1</nome_fantasia>
@@ -11,8 +19,42 @@
     </registro>
   </tabela-cliente>
   <tabela-equipamento>
+    <registro>
+      <codigo>2</codigo>
+      <descricao>microfone</descricao>
+      <categoria>sonorizacao</categoria>
+      <quantidade_estoque>5</quantidade_estoque>
+      <preco_custo>120.00</preco_custo>
+      <valor_locacao>41.00</valor_locacao>
+    </registro>
+    <registro>
+      <codigo>1</codigo>
+      <descricao>caixa de som</descricao>
+      <categoria>sonorizacao</categoria>
+      <quantidade_estoque>10</quantidade_estoque>
+      <preco_custo>850.00</preco_custo>
+      <valor_locacao>218.00</valor_locacao>
+    </registro>
   </tabela-equipamento>
   <tabela-evento>
+    <registro>
+      <codigo_evento>3</codigo_evento>
+      <nome_evento>42</nome_evento>
+      <codigo_cliente>2</codigo_cliente>
+      <status>Orcamento</status>
+    </registro>
+    <registro>
+      <codigo_evento>1</codigo_evento>
+      <nome_evento>evento</nome_evento>
+      <codigo_cliente>1</codigo_cliente>
+      <status>Aprovado</status>
+    </registro>
+    <registro>
+      <codigo_evento>2</codigo_evento>
+      <nome_evento>evento2</nome_evento>
+      <codigo_cliente>2</codigo_cliente>
+      <status>Orcamento</status>
+    </registro>
   </tabela-evento>
   <tabela-fornecedor>
     <registro>
@@ -27,8 +69,20 @@
       <tipo>1</tipo>
       <doc>1</doc>
     </registro>
+    <registro>
+      <id>0</id>
+      <nome>3</nome>
+      <tipo>1</tipo>
+      <doc>3</doc>
+    </registro>
   </tabela-fornecedor>
   <tabela-equipe>
+    <registro>
+      <codigo>2</codigo>
+      <nome>2</nome>
+      <funcao>2</funcao>
+      <valor_hora>2.00</valor_hora>
+    </registro>
     <registro>
       <codigo>1</codigo>
       <nome>1</nome>
@@ -37,10 +91,5 @@
     </registro>
   </tabela-equipe>
   <tabela-produtora>
-    <registro>
-      <cnpj>1</cnpj>
-      <nome>1</nome>
-      <email>1</email>
-    </registro>
   </tabela-produtora>
 </dados>

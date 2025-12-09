@@ -13,146 +13,117 @@
 #include "controller/xml/xml_controller.h"
 #include "controller/relatorio/relatorio_controller.h"
 #include <time.h>
+#include "ui_console.h" 
 
-// =============================
-// PONTO DE ENTRADA DO SISTEMA
-// =============================
 
 int main() {
     srand(time(NULL));
     system("chcp 65001");
     setlocale(LC_ALL, "pt-BR");
+    
     char selec;
     char troca;
-    //Funcao em saida_controller
-   printf("bem-vindo\n");
-    if (verificar_tipo_saida() == 0) {
     
-    char escolha;
-    printf("Escolha o tipo de armazenamento: \n");
-    printf("[t] para Txt\n");
-    printf("[b] para BIN\n");
-    printf("[m] para Memória\n");
-    printf("Escolha a opção: ");
-    scanf(" %c", &escolha);
+    if (verificar_tipo_saida() == 0) {
+        ui_cabecalho("CONFIGURACAO INICIAL");
+        printf("Escolha o tipo de armazenamento: \n");
+        ui_menu_item(1, "[t] Arquivo Texto (TXT)");
+        ui_menu_item(2, "[b] Arquivo Binario (BIN)");
+        ui_menu_item(3, "[m] Memoria RAM (Volatil)");
+        printf("\nEscolha a opcao: ");
+        ui_input_style();
+        
+        char escolha;
+        scanf(" %c", &escolha);
 
-    FILE *file = fopen("../b_output/tipo_file.txt", "w");
-    // salva a escolha no arquivo
-    if (escolha == 't') {
-        fprintf(file, "txt");
-    } else if (escolha == 'b') {
-        fprintf(file, "bin");
-    } else if (escolha == 'm') {
-        fprintf(file, "mem");
-    } else {
-        printf("Opção inválida!\n");
-        fecharArquivos(file);
-        return 1;
-    }
-    fecharArquivos(file);
-    }
-    else
-        {
-            if(verificar_tipo_saida() == 1)
-            {
-                printf("Armazenamento tipo: TXT\n");
-            }else if(verificar_tipo_saida() == 2)
-            {
-                printf("Armazenamento tipo: BIN\n");
-            }else if(verificar_tipo_saida() == 3)
-            {
-                printf("Armazenamento tipo: Memória\n");
-            }
+        FILE *file = fopen("../b_output/tipo_file.txt", "w");
+        if(!file) file = fopen("b_output/tipo_file.txt", "w"); // Tenta local se falhar
 
-            do
-            {
-                printf("Deseja mudar o tipo armazenado ?\n");
-                printf("[s] para sim\n");
-                printf("[n] para nao\n");
-                scanf(" %c", &selec);
-                if (selec !='s' && selec != 'n')
-                {
-                    printf("opção inválida\n");
-                }
-                
-            } while (selec !='s' && selec != 'n');
-            
-
-            if (selec=='s')
-            {
-                
-                printf("Escolha o tipo de armazenamento: \n");
-                printf("[t] para Txt\n");
-                printf("[b] para BIN\n");
-                printf("[m] para Memória\n");
-                printf("Escolha a opção: ");
-                scanf(" %c", &troca);
-                
-                //int trocou = troca_txt_bin(troca);
-
-                
-            }
-            else
-            {
-                 printf("tipo mantido!\n");
-            }
+        if (escolha == 't') {
+            fprintf(file, "txt");
+            ui_sucesso("Armazenamento definido como TXT.");
+        } else if (escolha == 'b') {
+            fprintf(file, "bin");
+            ui_sucesso("Armazenamento definido como BINARIO.");
+        } else if (escolha == 'm') {
+            fprintf(file, "mem");
+            ui_sucesso("Armazenamento definido como MEMORIA.");
+        } else {
+            ui_erro("Opcao invalida! Reinicie o sistema.");
+            if(file) fclose(file);
+            return 1;
         }
+        if(file) fclose(file);
+        system("pause");
+    }
+    else {
+
+        ui_limpar_tela();
+        ui_aviso("SISTEMA INICIADO");
+        if(verificar_tipo_saida() == 1) printf("Armazenamento atual: ARQUIVO TXT\n");
+        else if(verificar_tipo_saida() == 2) printf("Armazenamento atual: ARQUIVO BIN\n");
+        else if(verificar_tipo_saida() == 3) printf("Armazenamento atual: MEMORIA RAM\n");
+
+        do {
+            printf("\nDeseja mudar o tipo de armazenamento?\n");
+            printf("[s] Sim\n");
+            printf("[n] Nao\n");
+            ui_input_style();
+            scanf(" %c", &selec);
+            if (selec !='s' && selec != 'n') ui_erro("Opcao invalida");
+        } while (selec !='s' && selec != 'n');
+
+        if (selec == 's') {
+            ui_cabecalho("TROCAR ARMAZENAMENTO");
+            printf("[t] Para Txt\n");
+            printf("[b] Para BIN\n");
+            printf("[m] Para Memoria\n");
+            printf("Escolha: ");
+            ui_input_style();
+            scanf(" %c", &troca);
+            ui_aviso("Troca de armazenamento deve ser implementada no controller!");
+        } else {
+             ui_sucesso("Tipo mantido!");
+        }
+        system("pause");
+    }
 
     int opcao_principal;
     do {
-        printf("\n================================\n");
-        printf("       MENU PRINCIPAL\n");
-        printf("================================\n");
-        printf("1 - Módulo Clientes\n");
-        printf("2 - Módulo Equipe\n"); 
-        printf("3 - Módulo Produtora\n");
-        printf("4 - Módulo Fornecedores e Parceiros\n");
-        printf("5 - Módulo Recursos e Equipamentos\n"); 
-        printf("6 - Módulo operador\n");
-        printf("7 - Módulo de eventos/orçamentos\n");
-        printf("8 - Módulo Financeiro\n");
-        printf("9 - Modulo XML (Importar/Exportar)\n");
-        printf("10 - Relatorios Gerenciais (WEB)\n");
-        printf("0 - Fechar Sistema\n");
-        printf("Escolha o módulo: ");
+        ui_cabecalho("GESTAO DE EVENTOS - MENU PRINCIPAL");
+        
+        ui_menu_item(1, "Modulo Clientes");
+        ui_menu_item(2, "Modulo Equipe");
+        ui_menu_item(3, "Modulo Produtora");
+        ui_menu_item(4, "Modulo Fornecedores e Parceiros");
+        ui_menu_item(5, "Modulo Recursos e Equipamentos");
+        ui_menu_item(6, "Modulo Operador");
+        printf("----------------------------------------\n");
+        ui_menu_item(7, "Modulo de Eventos e Orcamentos");
+        ui_menu_item(8, "Modulo Financeiro");
+        printf("----------------------------------------\n");
+        ui_menu_item(9, "Modulo XML (Importar/Exportar)");
+        ui_menu_item(10, "Relatorios Gerenciais (WEB/HTML)");
+        printf("----------------------------------------\n");
+        ui_menu_item(0, "Fechar Sistema");
+        
+        printf("\nEscolha o modulo: ");
+        ui_input_style();
         scanf("%d", &opcao_principal);
 
         switch (opcao_principal) {
-            case 1:
-                iniciar_sistema(); 
-                break;
-            case 2:
-                iniciar_equipe(); 
-                break;
-            case 3:
-                iniciar_produtora();
-                break;
-            case 4:
-                iniciar_fornecedor_e_parceiro();
-                break; 
-            case 5: 
-                iniciar_recursos(); 
-                break; 
-            case 6:
-                iniciar_operador();
-                break;    
-            case 7:
-                iniciar_eventos();
-                break;
-            case 8:
-                iniciar_modulo_financeiro();
-                break;
-            case 9:
-                iniciar_modulo_xml();
-                break;
-            case 10:
-                iniciar_modulo_relatorios();
-                break;
-            case 0:
-                printf("Encerrando o sistema. Tchau!\n");
-                break;
-            default:
-                printf("Opção inválida. Tente novamente.\n");
+            case 1: iniciar_sistema(); break;
+            case 2: iniciar_equipe(); break;
+            case 3: iniciar_produtora(); break;
+            case 4: iniciar_fornecedor_e_parceiro(); break; 
+            case 5: iniciar_recursos(); break; 
+            case 6: iniciar_operador(); break;    
+            case 7: iniciar_eventos(); break;
+            case 8: iniciar_modulo_financeiro(); break;
+            case 9: iniciar_modulo_xml(); break;
+            case 10: iniciar_modulo_relatorios(); break;
+            case 0: ui_sucesso("Encerrando o sistema. Ate logo!"); break;
+            default: ui_erro("Opcao invalida. Tente novamente."); system("pause");
         }
     } while (opcao_principal != 0);
 
