@@ -32,4 +32,6 @@ void exibir_mensagem_recursos(const char* msg);
 
 NoRecurso* carregar_recursos(NoRecurso* lista);
 
+void reescrever_arquivo_recursos(NoRecurso* lista);
+
 #endif

@@ -1,2 +1,1 @@
-id:2,nome_fantasia:2,nome_razao:2,endereco:2,tipo:0,cpf:2,cnpj:,telefone:2,servico:1,status:1
-id:5,nome_fantasia:5,nome_razao:5,endereco:5,tipo:0,cpf:5,cnpj:,telefone:5,servico:1,status:1
+id:2,nome_fantasia:2,nome_razao:2,endereco:2,tipo:0,cpf:2,cnpj:WÀ}v,telefone:2,servico:1,status:1

@@ -23,11 +23,25 @@ void iniciar_modulo_financeiro() {
                 exibir_lista_contas_receber(listaContasView);
                 desalocar_lista_contas(listaContasView); //limpa da memoria dps de mostrar
                 break;
-            case 2:
+            case 2: {
                 listaCaixaView = carregar_extrato_caixa(NULL);
-                exibir_extrato_caixa_view(listaCaixaView);
+                
+                printf("Deseja filtrar por data? (1-Sim / 0-Nao [Ver tudo]): ");
+                int filtrar;
+                scanf("%d", &filtrar);
+                
+                if (filtrar == 1) {
+                    char inicio[12], fim[12];
+                    printf("Data inicial (dd/mm/aaaa): "); scanf("%s", inicio);
+                    printf("Data final (dd/mm/aaaa): "); scanf("%s", fim);
+                    exibir_extrato_caixa_filtrado(listaCaixaView, inicio, fim);
+                } else {
+                    exibir_extrato_caixa_view(listaCaixaView);
+                }
+                
                 desalocar_lista_caixa(listaCaixaView);
                 break;
+            }
             case 3: 
                 listaPagarView = carregar_contas_pagar(NULL);
                 exibir_lista_contas_pagar(listaPagarView);

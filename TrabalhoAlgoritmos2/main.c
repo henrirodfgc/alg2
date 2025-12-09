@@ -12,12 +12,14 @@
 #include "controller/transacao/transacao_controller.h"
 #include "controller/xml/xml_controller.h"
 #include "controller/relatorio/relatorio_controller.h"
+#include <time.h>
 
 // =============================
 // PONTO DE ENTRADA DO SISTEMA
 // =============================
 
 int main() {
+    srand(time(NULL));
     system("chcp 65001");
     setlocale(LC_ALL, "pt-BR");
     char selec;

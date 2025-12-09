@@ -161,3 +161,34 @@ NoRecurso* carregar_recursos(NoRecurso* lista) {
     }
     return lista; 
 }
+void reescrever_arquivo_recursos(NoRecurso* lista) {
+    int tipo = verificar_tipo_saida();
+    if (tipo == 3) return;
+
+    if (tipo == 1) { 
+        FILE *file = fopen("b_output/recursos/recursos.txt", "w"); 
+        if (!file) file = fopen("../b_output/recursos/recursos.txt", "w"); 
+        if (!file) return;
+
+        NoRecurso *atual = lista;
+        while (atual != NULL) {
+            fprintf(file, "codigo:%d,descricao:%s,categoria:%s,quantidade_estoque:%d,custo:%.2f,locacao:%.2f,status:%d\n",
+                atual->dados.codigo, atual->dados.descricao, atual->dados.categoria,
+                atual->dados.quantidade_estoque, atual->dados.preco_custo,
+                atual->dados.valor_locacao, atual->dados.status); 
+            atual = atual->proximo;
+        }
+        fclose(file);
+    } else if (tipo == 2) {
+         FILE *file = fopen("b_output/recursos/recursos.bin", "wb");
+         if (!file) file = fopen("../b_output/recursos/recursos.bin", "wb");
+         if (!file) return;
+         
+         NoRecurso *atual = lista;
+         while (atual != NULL) {
+            fwrite(&(atual->dados), sizeof(Equipamento), 1, file);
+            atual = atual->proximo;
+         }
+         fclose(file);
+    }
+}

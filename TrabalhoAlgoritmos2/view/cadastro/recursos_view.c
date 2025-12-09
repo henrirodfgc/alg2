@@ -11,6 +11,7 @@ int exibir_menu_recursos() {
     printf("3-exibir equipamento\n");
     printf("4-deletar equipamento (fisico)\n");
     printf("5-listar todos\n"); 
+    printf("6-entrada de nota fiscal (compras)\n");
     printf("0-voltar ao menu principal\n");
     printf("escolha:");
     scanf("%d", &opcao); 

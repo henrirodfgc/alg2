@@ -1,1 +1,1 @@
-nome_fantasia:5,razao_social:5,inscricao_estadual:5,cnpj:5,endereco:5,telefone:5,email:5,responsavel:5,telefone_responsavel:5,margem_lucro:5,status:1
+nome_fantasia:1,razao_social:1,inscricao_estadual:1,cnpj:1,endereco:1,telefone:1,email:1,responsavel:1,telefone_responsavel:1,margem_lucro:1,status:1

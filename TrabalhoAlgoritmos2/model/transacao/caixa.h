@@ -21,5 +21,6 @@ void exibir_extrato_caixa();
 float obter_saldo_atual();
 NoCaixa* carregar_extrato_caixa(NoCaixa* lista);
 void desalocar_lista_caixa(NoCaixa* lista);
+void exibir_extrato_caixa_filtrado(NoCaixa* lista, const char* data_inicio, const char* data_fim);
 
 #endif

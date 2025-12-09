@@ -5,8 +5,16 @@
 #include "caixa.h"
 #include "../../controller/saida.h"
 
+long data_para_long(const char* data) {
+    int d, m, a;
+    sscanf(data, "%d/%d/%d", &d, &m, &a);
+    return (a * 10000) + (m * 100) + d;
+}
+
 void obter_data_hoje(char* buffer) {
-    strcpy(buffer, "06/12/2025");
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    sprintf(buffer, "%02d/%02d/%04d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
 }
 
 float obter_saldo_atual() {
@@ -84,4 +92,30 @@ void desalocar_lista_caixa(NoCaixa* lista) {
         free(atual);
         atual = prox;
     }
+}
+void exibir_extrato_caixa_filtrado(NoCaixa* lista, const char* data_inicio, const char* data_fim) {
+    NoCaixa *atual = lista;
+    long inicio = data_para_long(data_inicio);
+    long fim = data_para_long(data_fim);
+    int encontrou = 0;
+
+    printf("\n=== EXTRATO DE CAIXA (%s a %s) ===\n", data_inicio, data_fim);
+    
+    while (atual != NULL) {
+        long data_atual = data_para_long(atual->dados.data);
+        
+        if (data_atual >= inicio && data_atual <= fim) {
+             printf("%s | %s | %s | R$ %.2f | Saldo: %.2f\n",
+                atual->dados.data, 
+                (atual->dados.tipo == 1 ? "ENTRADA" : "SAIDA"),
+                atual->dados.descricao,
+                atual->dados.valor,
+                atual->dados.saldo_final);
+             encontrou = 1;
+        }
+        atual = atual->proximo;
+    }
+    
+    if (!encontrou) printf("nenhum lancamento neste periodo.\n");
+    printf("==========================================\n");
 }

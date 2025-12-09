@@ -3,6 +3,7 @@
 #include <string.h>
 #include "contas_pagar.h"
 #include "../../controller/saida.h"
+#include <time.h>
 
 NoContaPagar* gerar_nova_conta_pagar(NoContaPagar* lista, int id_recurso, float valor) {
     NoContaPagar *novo_no = (NoContaPagar*) malloc(sizeof(NoContaPagar));
@@ -12,7 +13,14 @@ NoContaPagar* gerar_nova_conta_pagar(NoContaPagar* lista, int id_recurso, float 
     novo_no->dados.id_recurso_compra = id_recurso;
     novo_no->dados.valor_total = valor;
     novo_no->dados.status = 0; 
-    strcpy(novo_no->dados.data_vencimento, "05/01/2026"); 
+    
+    time_t agora = time(NULL);
+    agora += (30 * 24 * 60 * 60); 
+    
+    struct tm *tm_venc = localtime(&agora);
+    
+    sprintf(novo_no->dados.data_vencimento, "%02d/%02d/%04d", 
+            tm_venc->tm_mday, tm_venc->tm_mon + 1, tm_venc->tm_year + 1900);
 
     novo_no->proximo = lista;
 

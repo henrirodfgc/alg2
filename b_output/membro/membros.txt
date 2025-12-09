@@ -1,1 +1,1 @@
-id:5,nome:5,cpf:5,funcao:5,valor_diaria_hora:5.00,status:1
+id:1,nome:1,cpf:1,funcao:1,valor_diaria_hora:1.00,status:1

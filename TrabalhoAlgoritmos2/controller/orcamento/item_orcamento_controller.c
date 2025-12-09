@@ -32,12 +32,12 @@ void gerenciar_itens_de_um_evento(int id_evento) {
                 } else if (equip->quantidade_estoque < novo.quantidade) {
                     exibir_mensagem_item("erro:estoque insuficiente.");
                 } else {
-                    novo.valor_unitario = equip->valor_locacao;
-                    novo.id = rand() % 10000;
-                    listaItens = adicionar_item_na_lista(listaItens, novo);
-                    equip->quantidade_estoque -= novo.quantidade;
-                    exibir_mensagem_item("equipamento adicionado!");
-                }
+                        novo.valor_unitario = equip->valor_locacao;
+                        novo.id = rand() % 10000;
+                        listaItens = adicionar_item_na_lista(listaItens, novo);
+    
+            exibir_mensagem_item("item adicionado ao orcamento (estoque sera alocado na aprovacao)!");
+}
                 break;
             }
             case 2: { 

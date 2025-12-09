@@ -1,39 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <dados>
   <tabela-cliente>
     <registro>
-      <codigo>5</codigo>
-      <nome>5</nome>
-      <cpf_cnpj>5</cpf_cnpj>
-    </registro>
-    <registro>
       <codigo>1</codigo>
-      <nome>1</nome>
+      <razao_social>1</razao_social>
+      <nome_fantasia>1</nome_fantasia>
       <cpf_cnpj>1</cpf_cnpj>
+      <telefone>1</telefone>
+      <email>1</email>
     </registro>
   </tabela-cliente>
   <tabela-equipamento>
-    <registro>
-      <codigo>5</codigo>
-      <descricao>5</descricao>
-      <estoque>5</estoque>
-      <preco>0.75</preco>
-    </registro>
   </tabela-equipamento>
   <tabela-evento>
-    <registro>
-      <codigo>1</codigo>
-      <nome>1</nome>
-      <status>1</status>
-    </registro>
-    <registro>
-      <codigo>1</codigo>
-      <nome>1</nome>
-      <status>0</status>
-    </registro>
-    <registro>
-      <codigo>5</codigo>
-      <nome>5</nome>
-      <status>1</status>
-    </registro>
   </tabela-evento>
+  <tabela-fornecedor>
+    <registro>
+      <id>2</id>
+      <nome>2</nome>
+      <tipo>0</tipo>
+      <doc>2</doc>
+    </registro>
+    <registro>
+      <id>1</id>
+      <nome>1</nome>
+      <tipo>1</tipo>
+      <doc>1</doc>
+    </registro>
+  </tabela-fornecedor>
+  <tabela-equipe>
+    <registro>
+      <codigo>1</codigo>
+      <nome>1</nome>
+      <funcao>1</funcao>
+      <valor_hora>1.00</valor_hora>
+    </registro>
+  </tabela-equipe>
+  <tabela-produtora>
+    <registro>
+      <cnpj>1</cnpj>
+      <nome>1</nome>
+      <email>1</email>
+    </registro>
+  </tabela-produtora>
 </dados>

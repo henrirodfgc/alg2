@@ -3,6 +3,7 @@
 #include <string.h>
 #include "contas_receber.h"
 #include "../../controller/saida.h"
+#include <time.h>
 
 //gera uma conta nova automaticamente e salva
 NoContaReceber* gerar_nova_conta(NoContaReceber* lista, int id_evento, int id_cliente, float valor) {
@@ -15,7 +16,13 @@ NoContaReceber* gerar_nova_conta(NoContaReceber* lista, int id_evento, int id_cl
     novo_no->dados.valor_total = valor;
     novo_no->dados.status = 0; 
     
-    strcpy(novo_no->dados.data_vencimento, "30/12/2025"); 
+    time_t agora = time(NULL);
+    agora += (30 * 24 * 60 * 60); 
+    
+    struct tm *tm_venc = localtime(&agora);
+    
+    sprintf(novo_no->dados.data_vencimento, "%02d/%02d/%04d", 
+            tm_venc->tm_mday, tm_venc->tm_mon + 1, tm_venc->tm_year + 1900);
 
     novo_no->proximo = lista;
 

@@ -5,10 +5,8 @@
 #include "../../view/cadastro/produtora_view.h"
 #include "produtora_controller.h"
 
-
+NoProdutora *listaProdutora = NULL; 
 void iniciar_produtora() {
-    // Inicialização das variáveis do controlador
-    NoProdutora *listaProdutora = NULL;  
     int opcao;                           
     char* cnpj_busca;                    
     Produtora temp;                      
@@ -19,10 +17,9 @@ void iniciar_produtora() {
     // loop principal
     
     do {
-        // Exibe o menu de opções para o usuário
+    
         exibir_menu_produtora(); 
         
-        // Solicita e lê a opção do usuário
         scanf("%d", &opcao); 
 
         

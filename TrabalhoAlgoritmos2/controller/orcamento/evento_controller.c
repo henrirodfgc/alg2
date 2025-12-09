@@ -6,9 +6,15 @@
 #include "evento_controller.h"
 #include "item_orcamento_controller.h"
 #include "../../model/transacao/contas_receber.h"
+#include "../../model/cadastro/recursos.h"
+#include "../../model/orcamento/item_orcamento.h"
 
 extern NoCliente * listaClientes;
 extern NoCliente* carregar_clientes(NoCliente* lista);
+
+extern NoRecurso *listaRecursos;
+extern NoRecurso* carregar_recursos(NoRecurso* lista);
+extern NoItemOrcamento* carregar_itens_orcamento(NoItemOrcamento* lista);
 
 NoEvento *listaEventos = NULL;
 static NoContaReceber *listaContas = NULL;
@@ -57,7 +63,7 @@ void iniciar_eventos() {
                 
                 while(atual != NULL) {
                     if(atual->dados.codigo == id_evento) {
-                        exibir_evento(&(atual->dados)); //mostra o evento para confirmar
+                        exibir_evento(&(atual->dados)); 
                         
                         if(atual->dados.status == 1) {
                             exibir_mensagem_evento("este evento ja esta aprovado!");
@@ -65,9 +71,50 @@ void iniciar_eventos() {
                             break;
                         }
 
+                        NoItemOrcamento* listaItensTemp = NULL;
+                        listaItensTemp = carregar_itens_orcamento(listaItensTemp);
+                        listaRecursos = carregar_recursos(listaRecursos);
+                        
+                        int estoque_ok = 1;
+                        NoItemOrcamento *it = listaItensTemp;
+                        
+                        while(it != NULL) {
+                            if(it->dados.id_evento == id_evento && it->dados.tipo_item == 1) { // 1 = recurso
+                                Equipamento* eq = buscar_recurso_por_codigo(listaRecursos, it->dados.id_estrangeiro);
+                                if(eq == NULL || eq->quantidade_estoque < it->dados.quantidade) {
+                                    estoque_ok = 0;
+                                    char msg[200];
+                                    sprintf(msg, "Erro: Estoque insuficiente para o item ID %d (%s).", 
+                                            it->dados.id_estrangeiro, (eq ? eq->descricao : "desc."));
+                                    exibir_mensagem_evento(msg);
+                                    break;
+                                }
+                            }
+                            it = it->proximo;
+                        }
+
+                        if (!estoque_ok) {
+                            exibir_mensagem_evento("Nao foi possivel aprovar por falta de estoque.");
+                            encontrou = 1;
+                            
+                            break;
+                        }
+                        
+
                         int confirmar = confirmar_aprovacao_view();
                         
                         if(confirmar == 1) {
+                            it = listaItensTemp;
+                            while(it != NULL) {
+                                if(it->dados.id_evento == id_evento && it->dados.tipo_item == 1) {
+                                    Equipamento* eq = buscar_recurso_por_codigo(listaRecursos, it->dados.id_estrangeiro);
+                                    if(eq) {
+                                        eq->quantidade_estoque -= it->dados.quantidade;
+                                    }
+                                }
+                                it = it->proximo;
+                            }
+                            reescrever_arquivo_recursos(listaRecursos);
                             atual->dados.status = 1; 
                             reescrever_arquivo_eventos(listaEventos);
                             
@@ -76,11 +123,12 @@ void iniciar_eventos() {
                                              atual->dados.codigo_cliente, 
                                              atual->dados.valor_total);
                             
-                            exibir_mensagem_evento("evento aprovado e fatura gerada com sucesso!");
+                            exibir_mensagem_evento("evento aprovado, estoque alocado e fatura gerada!");
                         }
                         encontrou = 1;
                         break;
                     }
+                    
                     atual = atual->proximo;
                 }
                 
