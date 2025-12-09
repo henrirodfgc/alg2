@@ -10,6 +10,7 @@
 extern NoRecurso *listaRecursos;
 extern NoEquipe *listaEquipe; 
 extern NoFornecedores_e_parceiros *listaFornecedores_e_parceiros; 
+
 extern NoEquipe* carregar_equipe(NoEquipe* lista);
 extern NoFornecedores_e_parceiros* carregar_fornecedores_e_parceiros(NoFornecedores_e_parceiros* lista);
 
@@ -27,9 +28,12 @@ int obter_proximo_id_item(NoItemOrcamento* lista) {
 
 void gerenciar_itens_de_um_evento(int id_evento) {
     int opcao;
+    
     listaItens = carregar_itens_orcamento(listaItens);
-    listaEquipe = carregar_equipe(listaEquipe);
-    listaFornecedores_e_parceiros = carregar_fornecedores_e_parceiros(listaFornecedores_e_parceiros);
+    
+    if (listaEquipe == NULL) listaEquipe = carregar_equipe(listaEquipe);
+    if (listaFornecedores_e_parceiros == NULL) listaFornecedores_e_parceiros = carregar_fornecedores_e_parceiros(listaFornecedores_e_parceiros);
+
     
     do {
         opcao = exibir_menu_itens();
@@ -38,11 +42,11 @@ void gerenciar_itens_de_um_evento(int id_evento) {
         int sucesso = 0;
 
         switch(opcao) {
-            case 1: { 
+            case 1: {
                 novo = ler_dados_item_orcamento(id_evento, 1);
                 Equipamento *equip = buscar_recurso_por_codigo(listaRecursos, novo.id_estrangeiro);
                 if (equip == NULL) {
-                    exibir_mensagem_item("erro:equipamento nao encontrado.");
+                    exibir_mensagem_item("Erro: Equipamento nao encontrado.");
                 } else {
                     novo.valor_unitario = equip->valor_locacao;
                     exibir_mensagem_item("Equipamento adicionado (Disponibilidade sera checada na aprovacao).");
@@ -50,25 +54,25 @@ void gerenciar_itens_de_um_evento(int id_evento) {
                 }
                 break;
             }
-            case 2: { 
+            case 2: { // Equipe
                 novo = ler_dados_item_orcamento(id_evento, 2);
                 MembroEquipe *membro = buscar_membro_por_codigo(listaEquipe, novo.id_estrangeiro);
                 if (membro == NULL) {
-                    exibir_mensagem_item("erro:funcionario nao encontrado.");
+                    exibir_mensagem_item("Erro: Funcionario nao encontrado.");
                 } else {
                     novo.valor_unitario = membro->valor_diaria_hora;
-                    exibir_mensagem_item("membro da equipe adicionado!");
+                    exibir_mensagem_item("Membro da equipe adicionado!");
                     sucesso = 1;
                 }
                 break;
             }
-            case 3: { 
+            case 3: { // Parceiros
                 novo = ler_dados_item_orcamento(id_evento, 3);
                 Fornecedores_e_parceiros *parceiro = buscar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, novo.id_estrangeiro);
                 if (parceiro == NULL) {
-                    exibir_mensagem_item("erro:parceiro nao encontrado.");
+                    exibir_mensagem_item("Erro: Parceiro nao encontrado.");
                 } else {
-                    exibir_mensagem_item("servico adicionado!");
+                    exibir_mensagem_item("Servico adicionado!");
                     sucesso = 1;
                 }
                 break;
@@ -76,11 +80,11 @@ void gerenciar_itens_de_um_evento(int id_evento) {
             case 4: { 
                 exibir_lista_itens_evento(listaItens, id_evento);
                 float total = calcular_total_evento(listaItens, id_evento);
-                exibir_mensagem_item_formatada(">> total atual: r$ %.2f", total);
+                exibir_mensagem_item_formatada(">> Total atual: R$ %.2f", total);
                 break;
             }
             case 0: break;
-            default: exibir_mensagem_item("opcao invalida.");
+            default: exibir_mensagem_item("Opcao invalida.");
         }
 
         if (sucesso) {
@@ -95,5 +99,6 @@ void gerenciar_itens_de_um_evento(int id_evento) {
 }
 
 void estornar_estoque_evento(int id_evento) {
-    exibir_mensagem_item(">> Finalizacao: Liberando agenda dos recursos deste evento...");
+
+    (void)id_evento; 
 }

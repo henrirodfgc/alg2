@@ -1,1 +1,2 @@
+id:0,nome_fantasia:3,nome_razao:3,endereco:3,tipo:1,cpf:ò©|v,cnpj:3,telefone:3,servico:0,status:1
 id:1,nome_fantasia:1,nome_razao:1,endereco:1,tipo:1,cpf:ò©|v,cnpj:1,telefone:1,servico:0,status:1

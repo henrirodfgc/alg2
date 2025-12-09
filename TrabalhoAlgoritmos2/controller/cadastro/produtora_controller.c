@@ -1,158 +1,93 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "../../model/cadastro/produtora.h"
 #include "../../view/cadastro/produtora_view.h"
 #include "produtora_controller.h"
 
-NoProdutora *listaProdutora = NULL; 
+// Lista global
+NoProdutora *listaProdutora = NULL;
+
 void iniciar_produtora() {
-    int opcao;                           
-    char* cnpj_busca;                    
-    Produtora temp;                      
+    int opcao;
+    char cnpj_busca[20];
+    Produtora temp;
 
-    listaProdutora = carregar_produtoras(listaProdutora); //funçao p carregar a lista
+    listaProdutora = carregar_produtoras(listaProdutora);
 
-    
-    // loop principal
-    
     do {
-    
-        exibir_menu_produtora(); 
-        
-        scanf("%d", &opcao); 
+        opcao = exibir_menu_produtora();
 
-        
-        switch (opcao) {
-           
-            // criar nova produtora
-            
-            case 1: { 
-                // Coleta dados da nova produtora
-                temp = ler_dados_produtora(); 
-
-                // Verifica se já existe produtora com o mesmo CNPJ
+        switch(opcao) {
+            case 1: // Criar
+                temp = ler_dados_produtora();
                 if (buscar_produtora_por_cnpj(listaProdutora, temp.cnpj) != NULL) {
-                    exibir_mensagem_produtora("ERRO: Já existe uma produtora com este CNPJ. Tente novamente");
-                    break; // Sai do case sem criar duplicata
+                    exibir_mensagem_produtora("ERRO: Ja existe uma produtora com este CNPJ.");
                 } else {
-                    // Adiciona nova produtora na lista
                     listaProdutora = adicionar_produtora_na_lista(listaProdutora, temp);
                     exibir_mensagem_produtora("Produtora criada com sucesso");
                 }
                 break;
-            }
 
-            
-            // atualizar produtora que ja existe
-            
-            case 2: { 
-                // Solicita CNPJ da produtora a ser atualizada
-                cnpj_busca = ler_cnpj_para_operacao("atualizar"); 
+            case 2: {
+ 
+                printf("Digite o CNPJ da produtora para atualizar: ");
+                scanf("%s", cnpj_busca);
                 
-                // Busca produtora pelo CNPJ
-                Produtora *produtora_encontrado = buscar_produtora_por_cnpj(listaProdutora, cnpj_busca);
+                Produtora* p = buscar_produtora_por_cnpj(listaProdutora, cnpj_busca);
+                
+                if (p) {
+   
+                    char nome_fantasia[50], razao_social[100], inscricao[20];
+                    char endereco[256], telefone[20], email[50];
+                    char responsavel[50], tel_resp[20], margem[10];
 
-                if (produtora_encontrado == NULL) {
-                    exibir_mensagem_produtora("Nenhuma produtora cadastrada com este CNPJ");
-                } else {
-                    // Buffers para armazenar os novos dados
-                    char cnpj[14], nome_fantasia[50], razao_social[100], inscricao_estadual[9], 
-                         email[50], endereco_completo[300], telefone[11], nome_do_responsavel[50], 
-                         telefone_do_responsavel[11], margem_de_lucro_padrao[6];
 
-                    // Coleta os novos dados do usuário
-                    // Parâmetros na ordem correta da função
-                    ler_dados_atualizacao_produtora(cnpj, nome_fantasia, razao_social,  
-                                                   inscricao_estadual, email, endereco_completo, 
-                                                   telefone, nome_do_responsavel, 
-                                                   telefone_do_responsavel, margem_de_lucro_padrao);
+                    ler_dados_atualizacao_produtora(nome_fantasia, razao_social, inscricao, 
+                                                  endereco, telefone, email, 
+                                                  responsavel, tel_resp, margem);
 
-                    // Atualiza os dados da produtora
-                    atualizar_produtora_por_cnpj(listaProdutora, cnpj_busca,  
-                                                nome_fantasia, razao_social, inscricao_estadual,    
-                                                email, endereco_completo, telefone, nome_do_responsavel,  
-                                                telefone_do_responsavel, margem_de_lucro_padrao);
+                    atualizar_produtora_por_cnpj(listaProdutora, cnpj_busca, 
+                                                nome_fantasia, razao_social, inscricao, 
+                                                endereco, telefone, email, 
+                                                responsavel, margem, tel_resp);
                     
                     exibir_mensagem_produtora("Produtora atualizada com sucesso");
-                }
-                break;
-            }
-
-           
-            //exibir produtora escolhida
-           
-            case 3: { 
-                // Solicita CNPJ da produtora a ser exibida
-                cnpj_busca = ler_cnpj_para_operacao("exibir"); 
-                
-                // Busca produtora pelo CNPJ
-                Produtora *produtora_encontrada = buscar_produtora_por_cnpj(listaProdutora, cnpj_busca); 
-                
-                if (produtora_encontrada != NULL) {
-                    exibir_produtora(produtora_encontrada); // Exibe dados formatados
                 } else {
-                    exibir_mensagem_produtora("Produtora não encontrada");
+                    exibir_mensagem_produtora("Nenhuma produtora cadastrada com este CNPJ");
                 }
                 break;
             }
 
-            
-            //deletar produtora
-            
-            case 4: { 
-                // Solicita CNPJ da produtora a ser deletada
-                cnpj_busca = ler_cnpj_para_operacao("deletar"); 
+            case 3: 
+                printf("Digite o CNPJ para exibir: ");
+                scanf("%s", cnpj_busca);
+                Produtora* p = buscar_produtora_por_cnpj(listaProdutora, cnpj_busca);
+                exibir_produtora(p);
+                break;
 
-                // Verifica se a produtora existe antes de tentar deletar
-                if (buscar_produtora_por_cnpj(listaProdutora, cnpj_busca) == NULL) {
-                    exibir_mensagem_produtora("Nenhuma produtora para deletar com este CNPJ");
-                    break;
-                }
-                
-                // Remove produtora da lista
-                int sucesso = deletar_produtora_por_cnpj(listaProdutora, cnpj_busca);
-                if (sucesso) {
-                exibir_mensagem_produtora("Produtora deletada com sucesso");
+            case 4: 
+                printf("Digite o CNPJ para deletar: ");
+                scanf("%s", cnpj_busca);
+                if (deletar_produtora_por_cnpj(listaProdutora, cnpj_busca)) {
+                    exibir_mensagem_produtora("Produtora deletada com sucesso");
                 } else {
-                    exibir_mensagem_produtora("Erro ao deletar ou Produtora não encontrada");
+                    exibir_mensagem_produtora("Erro ao deletar ou Produtora nao encontrada");
                 }
                 break;
-            }
 
-            
-            // listar todas as produtoras
-            
-            case 5: { 
-                exibir_todas_produtoras(listaProdutora); // Exibe lista completa
+            case 5: 
+                exibir_todas_produtoras(listaProdutora);
                 break;
-            }
 
-            
-            // caso 0: sair do sistema
-            
             case 0:
-                exibir_mensagem_produtora("Saindo do sistema de produtoras...");
+                exibir_mensagem_produtora("Saindo...");
                 break;
 
-            
-            // CASO PADRAO: OPÇÃO INVÁLIDA
-          
             default:
-                exibir_mensagem_produtora("Opção inválida! Tente novamente.");
+                exibir_mensagem_produtora("Opcao invalida!");
         }
-
-        // Pausa para usuário ver o resultado antes de continuar
-        if (opcao != 0) {
-            exibir_mensagem_produtora("\nPressione Enter para continuar...");
-            while (getchar() != '\n'); // Espera usuário pressionar Enter
-        }
-
-    } while (opcao != 0); // Condição de saída: opção 0
-
-   
-    // liberar memoria
+    } while (opcao != 0);
     
     desalocar_lista_produtoras(listaProdutora);
-    exibir_mensagem_produtora("Memória liberada. Sistema encerrado.");
 }

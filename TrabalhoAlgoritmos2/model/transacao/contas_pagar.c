@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "contas_pagar.h"
+#include "caixa.h" 
 #include "../../controller/saida.h"
 #include <time.h>
 
@@ -16,9 +17,7 @@ NoContaPagar* gerar_nova_conta_pagar(NoContaPagar* lista, int id_recurso, float 
     
     time_t agora = time(NULL);
     agora += (30 * 24 * 60 * 60); 
-    
     struct tm *tm_venc = localtime(&agora);
-    
     sprintf(novo_no->dados.data_vencimento, "%02d/%02d/%04d", 
             tm_venc->tm_mday, tm_venc->tm_mon + 1, tm_venc->tm_year + 1900);
 
@@ -27,70 +26,104 @@ NoContaPagar* gerar_nova_conta_pagar(NoContaPagar* lista, int id_recurso, float 
     if (verificar_tipo_saida() == 1) {
         FILE *file = fopen("b_output/financeiro/contas_pagar.txt", "a");
         if (!file) file = fopen("../b_output/financeiro/contas_pagar.txt", "a");
-        
         if (file) {
             fprintf(file, "id:%d,rec:%d,val:%.2f,venc:%s,st:%d\n",
                 novo_no->dados.id, id_recurso, valor, 
                 novo_no->dados.data_vencimento, 0);
             fclose(file);
         }
-    }
-    else if (verificar_tipo_saida() == 2) {
+    } else if (verificar_tipo_saida() == 2) {
         FILE *file = fopen("b_output/financeiro/contas_pagar.bin", "ab");
         if (!file) file = fopen("../b_output/financeiro/contas_pagar.bin", "ab");
-        
         if (file) {
             fwrite(&(novo_no->dados), sizeof(ContaPagar), 1, file);
             fclose(file);
         }
     }
-    
     return novo_no;
 }
 
 NoContaPagar* carregar_contas_pagar(NoContaPagar* lista) {
     if (lista != NULL) return lista;
-    
     int tipo = verificar_tipo_saida();
+    
     if (tipo == 1) { 
         FILE *file = fopen("b_output/financeiro/contas_pagar.txt", "r");
         if (!file) file = fopen("../b_output/financeiro/contas_pagar.txt", "r");
         if (!file) return lista;
-
         ContaPagar c;
         char linha[2048];
         while (fgets(linha, sizeof(linha), file)) {
             if (sscanf(linha, "id:%d,rec:%d,val:%f,venc:%11[^,],st:%d",
                 &c.id, &c.id_recurso_compra, &c.valor_total, 
                 c.data_vencimento, &c.status) == 5) {
-                
                 NoContaPagar *novo = (NoContaPagar*) malloc(sizeof(NoContaPagar));
-                if (novo) {
-                    novo->dados = c;
-                    novo->proximo = lista;
-                    lista = novo;
-                }
+                if (novo) { novo->dados = c; novo->proximo = lista; lista = novo; }
             }
         }
         fclose(file);
-    }
-    else if (tipo == 2) {
+    } else if (tipo == 2) {
         FILE *file = fopen("b_output/financeiro/contas_pagar.bin", "rb");
         if (!file) file = fopen("../b_output/financeiro/contas_pagar.bin", "rb");
         if (!file) return lista;
-        
         ContaPagar c;
         while (fread(&c, sizeof(ContaPagar), 1, file) == 1) {
             NoContaPagar *novo = (NoContaPagar*) malloc(sizeof(NoContaPagar));
-            if (novo) {
-                novo->dados = c;
-                novo->proximo = lista;
-                lista = novo;
-            }
+            if (novo) { novo->dados = c; novo->proximo = lista; lista = novo; }
         }
         fclose(file);
     }
     return lista;
+}
+
+void reescrever_arquivo_pagar(NoContaPagar* lista) {
+    int tipo = verificar_tipo_saida();
+    if (tipo == 1) {
+        FILE *f = fopen("b_output/financeiro/contas_pagar.txt", "w");
+        if (!f) f = fopen("../b_output/financeiro/contas_pagar.txt", "w");
+        if (!f) return;
+        NoContaPagar* atual = lista;
+        while(atual) {
+            fprintf(f, "id:%d,rec:%d,val:%.2f,venc:%s,st:%d\n",
+                atual->dados.id, atual->dados.id_recurso_compra, 
+                atual->dados.valor_total, atual->dados.data_vencimento, atual->dados.status);
+            atual = atual->proximo;
+        }
+        fclose(f);
+    } else if (tipo == 2) {
+        FILE *f = fopen("b_output/financeiro/contas_pagar.bin", "wb");
+        if (!f) f = fopen("../b_output/financeiro/contas_pagar.bin", "wb");
+        if (!f) return;
+        NoContaPagar* atual = lista;
+        while(atual) {
+            fwrite(&(atual->dados), sizeof(ContaPagar), 1, f);
+            atual = atual->proximo;
+        }
+        fclose(f);
+    }
+}
+
+void baixar_conta_pagar(NoContaPagar* lista, int id_conta) {
+    NoContaPagar* atual = lista;
+    while(atual != NULL) {
+        if (atual->dados.id == id_conta) {
+            if (atual->dados.status == 1) {
+                printf("Erro: Conta %d ja esta paga!\n", id_conta);
+                return;
+            }
+            atual->dados.status = 1; 
+            reescrever_arquivo_pagar(lista);
+            
+            char desc[100];
+            sprintf(desc, "Pagamento Fatura ID %d (Compra Recurso %d)", id_conta, atual->dados.id_recurso_compra);
+            lancar_no_caixa(atual->dados.valor_total, 0, desc);
+            
+            printf(">> Sucesso! Conta %d paga e valor retirado do caixa.\n", id_conta);
+            return;
+        }
+        atual = atual->proximo;
+    }
+    printf("Erro: Conta ID %d nao encontrada.\n", id_conta);
 }
 
 void desalocar_lista_contas_pagar(NoContaPagar* lista) {

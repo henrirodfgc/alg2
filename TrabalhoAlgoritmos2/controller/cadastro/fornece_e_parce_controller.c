@@ -22,29 +22,35 @@ void iniciar_fornecedor_e_parceiro() {
         getchar();
 
         switch (opcao) {
-            case 1: { // cadastrar fornecedor
-                temp = ler_dados_fornecedor(); 
+            case 1: { 
+    temp = ler_dados_fornecedor(); 
 
-                if (buscar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, temp.id) != NULL) {
-                    exibir_mensagem_fornece_e_parce("erro: ja existe um registro com este id. tente novamente");
-                } else {
-                    listaFornecedores_e_parceiros = adicionar_fornecedor_na_lista(listaFornecedores_e_parceiros, temp);
-                    exibir_mensagem_fornece_e_parce("fornecedor cadastrado com sucesso");
-                }
-                break;
-            }
+    temp.id = obter_proximo_id_fornece(listaFornecedores_e_parceiros);
+    printf(">> ID gerado automaticamente: %d\n", temp.id);
 
-            case 2: { // cadastrar parceiro
-                temp = ler_dados_parceiro(); 
+    if (buscar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, temp.id) != NULL) {
+        exibir_mensagem_fornece_e_parce("erro: ja existe um registro com este id.");
+    } else {
+        listaFornecedores_e_parceiros = adicionar_fornecedor_na_lista(listaFornecedores_e_parceiros, temp);
+        exibir_mensagem_fornece_e_parce("fornecedor cadastrado com sucesso");
+    }
+    break;
+}
 
-                if (buscar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, temp.id) != NULL) {
-                    exibir_mensagem_fornece_e_parce("erro: ja existe um registro com este id. tente novamente");
-                } else {
-                    listaFornecedores_e_parceiros = adicionar_parceiros_na_lista(listaFornecedores_e_parceiros, temp);
-                    exibir_mensagem_fornece_e_parce("parceiro cadastrado com sucesso");
-                }
-                break;
-            }
+case 2: {
+    temp = ler_dados_parceiro(); 
+
+    temp.id = obter_proximo_id_fornece(listaFornecedores_e_parceiros);
+    printf(">> ID gerado automaticamente: %d\n", temp.id);
+
+    if (buscar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, temp.id) != NULL) {
+        exibir_mensagem_fornece_e_parce("erro: ja existe um registro com este id.");
+    } else {
+        listaFornecedores_e_parceiros = adicionar_parceiros_na_lista(listaFornecedores_e_parceiros, temp);
+        exibir_mensagem_fornece_e_parce("parceiro cadastrado com sucesso");
+    }
+    break;
+}
 
             case 3: { // buscar por id
                 id_busca = ler_id_para_operacao_fornece_e_parce(); 
@@ -142,4 +148,15 @@ void iniciar_fornecedor_e_parceiro() {
         }
 
     } while (opcao != 0);
+}
+int obter_proximo_id_fornece(NoFornecedores_e_parceiros* lista) {
+    int maior = 0;
+    NoFornecedores_e_parceiros* atual = lista;
+    while (atual != NULL) {
+        if (atual->dados.id > maior) {
+            maior = atual->dados.id;
+        }
+        atual = atual->proximo;
+    }
+    return maior + 1;
 }

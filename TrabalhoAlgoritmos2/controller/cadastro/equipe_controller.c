@@ -23,7 +23,10 @@ void iniciar_equipe() {
         switch (opcao) {
             case 1: { //criar membro
                 temp = ler_dados_membro(); //view lê todos os dados
-
+                
+                temp.codigo = obter_proximo_codigo_equipe(listaEquipe);
+                printf(">> Codigo gerado automaticamente: %d\n", temp.codigo);
+                
                 //confere se o código já existe (precisa ser único)
                 if (buscar_membro_por_codigo(listaEquipe, temp.codigo) != NULL) {
                     exibir_mensagem_equipe("erro:ja existe um membro da equipe com este codigo.");
@@ -102,4 +105,16 @@ void iniciar_equipe() {
 
     //libera a memória depois q terminar de usar
     desalocar_lista_equipe(listaEquipe); 
+}
+
+int obter_proximo_codigo_equipe(NoEquipe* lista) {
+    int maior = 0;
+    NoEquipe* atual = lista;
+    while (atual != NULL) {
+        if (atual->dados.codigo > maior) {
+            maior = atual->dados.codigo;
+        }
+        atual = atual->proximo;
+    }
+    return maior + 1;
 }

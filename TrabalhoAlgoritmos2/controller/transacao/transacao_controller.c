@@ -6,22 +6,27 @@
 #include "../../view/transacao/transacao_view.h"
 #include "../../model/transacao/contas_pagar.h"
 
-//listas locais para visualizacao
 static NoContaReceber *listaContasView = NULL;
 static NoCaixa *listaCaixaView = NULL;
 static NoContaPagar *listaPagarView = NULL;
 
+extern void baixar_conta_receber(NoContaReceber* lista, int id_conta);
+extern void baixar_conta_pagar(NoContaPagar* lista, int id_conta);
+
 void iniciar_modulo_financeiro() {
     int opcao;
     
+    listaContasView = carregar_contas_receber(listaContasView);
+    listaPagarView = carregar_contas_pagar(listaPagarView);
+
     do {
         opcao = exibir_menu_financeiro();
         
         switch(opcao) {
             case 1:
-                listaContasView = carregar_contas_receber(NULL); //recarrega sempre pra ver atualizado
+                desalocar_lista_contas(listaContasView); listaContasView = NULL;
+                listaContasView = carregar_contas_receber(NULL);
                 exibir_lista_contas_receber(listaContasView);
-                desalocar_lista_contas(listaContasView); //limpa da memoria dps de mostrar
                 break;
             case 2: {
                 listaCaixaView = carregar_extrato_caixa(NULL);
@@ -43,10 +48,22 @@ void iniciar_modulo_financeiro() {
                 break;
             }
             case 3: 
+                desalocar_lista_contas_pagar(listaPagarView); listaPagarView = NULL;
                 listaPagarView = carregar_contas_pagar(NULL);
                 exibir_lista_contas_pagar(listaPagarView);
-                desalocar_lista_contas_pagar(listaPagarView);
                 break;
+            case 4: { 
+                printf("Digite o ID da conta a receber (pagamento do cliente): ");
+                int id; scanf("%d", &id);
+                baixar_conta_receber(listaContasView, id);
+                break;
+            }
+            case 5: { 
+                printf("Digite o ID da conta a pagar (fornecedor): ");
+                int id; scanf("%d", &id);
+                baixar_conta_pagar(listaPagarView, id);
+                break;
+            }
             case 0:
                 exibir_mensagem_transacao("voltando...");
                 break;
@@ -60,4 +77,7 @@ void iniciar_modulo_financeiro() {
         }
         
     } while (opcao != 0);
+    
+    desalocar_lista_contas(listaContasView);
+    desalocar_lista_contas_pagar(listaPagarView);
 }
