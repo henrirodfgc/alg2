@@ -20,7 +20,8 @@ int main() {
     srand(time(NULL));
     system("chcp 65001");
     setlocale(LC_ALL, "pt-BR");
-    
+    ui_splash_logo(); 
+    ui_barra_carregamento("Carregando modulos e banco de dados...");
     char selec;
     char troca;
     
