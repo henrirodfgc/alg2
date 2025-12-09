@@ -26,6 +26,17 @@ void recarregar_lista_se_necessario() {
     }
 }
 
+int obter_proximo_id_cliente(NoCliente* lista) {
+    int maior_id = 0;
+    NoCliente* atual = lista;
+    while (atual != NULL) {
+        if (atual->dados.id > maior_id) {
+            maior_id = atual->dados.id;
+        }
+        atual = atual->proximo;
+    }
+    return maior_id + 1;
+}
 
 //função inicia módulo
 void iniciar_sistema() {
@@ -48,6 +59,9 @@ void iniciar_sistema() {
         switch (opcao) {
             case 1: { //criar um cliente
                 temp = ler_dados_cliente(); //view lê os dados
+
+                temp.id = obter_proximo_id_cliente(listaClientes);
+                    printf(">> ID gerado automaticamente: %d\n", temp.id);
 
                 //validação de unicidade
                 if (buscar_cliente_por_id(listaClientes, temp.id) != NULL) {

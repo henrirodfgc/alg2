@@ -61,31 +61,40 @@ int exibir_menu() {
     return opcao;
 }
 
-//lê todos os dados de um client pra criar um novo
 Cliente ler_dados_cliente() {
     Cliente c;
-    printf("id: "); scanf("%d", &c.id);
-    while (getchar() != '\n'); //limpa buffer dps do int
-    printf("nome (ou razao social): "); scanf(" %49[^\n]", c.nome_cliente); //%[] pra ler strings com espaco
+    
+    c.id = 0; 
+    
+    printf("nome (ou razao social): "); scanf(" %49[^\n]", c.nome_cliente); 
     while (getchar() != '\n');
+
     printf("nome fantasia (ou razao social): "); scanf(" %99[^\n]", c.nome_razao);
     while (getchar() != '\n');
+
     printf("idade: "); scanf("%d", &c.idade);
     while (getchar() != '\n');
+
     printf("endereco: "); scanf(" %255[^\n]", c.endereco);
     while (getchar() != '\n');
-    printf("cpf (11 digitos): "); scanf(" %11[^\n]", c.cpf); //%11[] limita os digitos
+
+    printf("cpf (11 digitos): "); scanf(" %11[^\n]", c.cpf); 
     while (getchar() != '\n');
-    printf("cnpj (14 digitos): "); scanf(" %14[^\n]", c.cnpj); //%14[] limita os digitos
+
+    printf("cnpj (14 digitos): "); scanf(" %14[^\n]", c.cnpj); 
     while (getchar() != '\n');
+
     printf("email: "); scanf(" %49[^\n]", c.email);
     while (getchar() != '\n');
+
     printf("telefone: "); scanf(" %19[^\n]", c.telefone);
     while (getchar() != '\n');
+
     printf("nome do contato: "); scanf(" %49[^\n]", c.nome_contato);
     while (getchar() != '\n');
-    c.status = 1; //define como ativo ao criar
-    return c; //devolve a struct cheia
+
+    c.status = 1; 
+    return c; 
 }
 
 //lê os dados novos pra atualização
