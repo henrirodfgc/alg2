@@ -21,8 +21,6 @@ int exibir_menu_recursos() {
 Equipamento ler_dados_recurso() {
     Equipamento e;
     float frete, imposto, margem_lucro;
-
-    printf("codigo:"); scanf("%d", &e.codigo);
     
     int ch;
     while ((ch = getchar()) != '\n' && ch != EOF);

@@ -1,0 +1,2 @@
+codigo:1,descricao:caixa de som,categoria:sonorizacao,quantidade_estoque:10,custo:850.00,locacao:218.00,status:1
+codigo:2,descricao:microfone,categoria:sonorizacao,quantidade_estoque:5,custo:120.00,locacao:41.00,status:1

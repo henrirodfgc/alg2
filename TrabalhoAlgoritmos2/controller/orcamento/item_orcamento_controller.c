@@ -15,6 +15,16 @@ extern NoFornecedores_e_parceiros* carregar_fornecedores_e_parceiros(NoFornecedo
 
 static NoItemOrcamento *listaItens = NULL;
 
+int obter_proximo_id_item(NoItemOrcamento* lista) {
+    int maior = 0;
+    NoItemOrcamento* atual = lista;
+    while (atual != NULL) {
+        if (atual->dados.id > maior) maior = atual->dados.id;
+        atual = atual->proximo;
+    }
+    return maior + 1;
+}
+
 void gerenciar_itens_de_um_evento(int id_evento) {
     int opcao;
     listaItens = carregar_itens_orcamento(listaItens);
@@ -23,45 +33,43 @@ void gerenciar_itens_de_um_evento(int id_evento) {
     
     do {
         opcao = exibir_menu_itens();
+        
+        ItemOrcamento novo;
+        int sucesso = 0;
+
         switch(opcao) {
             case 1: { 
-                ItemOrcamento novo = ler_dados_item_orcamento(id_evento, 1);
+                novo = ler_dados_item_orcamento(id_evento, 1);
                 Equipamento *equip = buscar_recurso_por_codigo(listaRecursos, novo.id_estrangeiro);
                 if (equip == NULL) {
                     exibir_mensagem_item("erro:equipamento nao encontrado.");
-                } else if (equip->quantidade_estoque < novo.quantidade) {
-                    exibir_mensagem_item("erro:estoque insuficiente.");
                 } else {
-                        novo.valor_unitario = equip->valor_locacao;
-                        novo.id = rand() % 10000;
-                        listaItens = adicionar_item_na_lista(listaItens, novo);
-    
-            exibir_mensagem_item("item adicionado ao orcamento (estoque sera alocado na aprovacao)!");
-}
+                    novo.valor_unitario = equip->valor_locacao;
+                    exibir_mensagem_item("Equipamento adicionado (Disponibilidade sera checada na aprovacao).");
+                    sucesso = 1;
+                }
                 break;
             }
             case 2: { 
-                ItemOrcamento novo = ler_dados_item_orcamento(id_evento, 2);
+                novo = ler_dados_item_orcamento(id_evento, 2);
                 MembroEquipe *membro = buscar_membro_por_codigo(listaEquipe, novo.id_estrangeiro);
                 if (membro == NULL) {
                     exibir_mensagem_item("erro:funcionario nao encontrado.");
                 } else {
                     novo.valor_unitario = membro->valor_diaria_hora;
-                    novo.id = rand() % 10000;
-                    listaItens = adicionar_item_na_lista(listaItens, novo);
                     exibir_mensagem_item("membro da equipe adicionado!");
+                    sucesso = 1;
                 }
                 break;
             }
             case 3: { 
-                ItemOrcamento novo = ler_dados_item_orcamento(id_evento, 3);
+                novo = ler_dados_item_orcamento(id_evento, 3);
                 Fornecedores_e_parceiros *parceiro = buscar_fornece_e_parce_por_id(listaFornecedores_e_parceiros, novo.id_estrangeiro);
                 if (parceiro == NULL) {
                     exibir_mensagem_item("erro:parceiro nao encontrado.");
                 } else {
-                    novo.id = rand() % 10000;
-                    listaItens = adicionar_item_na_lista(listaItens, novo);
                     exibir_mensagem_item("servico adicionado!");
+                    sucesso = 1;
                 }
                 break;
             }
@@ -74,45 +82,18 @@ void gerenciar_itens_de_um_evento(int id_evento) {
             case 0: break;
             default: exibir_mensagem_item("opcao invalida.");
         }
+
+        if (sucesso) {
+            novo.id = obter_proximo_id_item(listaItens);
+            listaItens = adicionar_item_na_lista(listaItens, novo);
+        }
+
         if (opcao != 0 && opcao != 4) { 
              pausar_tela_itens();
         }
     } while (opcao != 0);
 }
 
-//devolve os itens pro estoque quando finaliza
 void estornar_estoque_evento(int id_evento) {
-    listaItens = carregar_itens_orcamento(listaItens);
-    listaRecursos = carregar_recursos(listaRecursos);
-
-    NoItemOrcamento *atual = listaItens;
-    int devolvidos = 0;
-
-    exibir_mensagem_recursos("\n>> Processando devolucao de estoque...\n");
-
-    while (atual != NULL) {
-    
-        if (atual->dados.id_evento == id_evento && atual->dados.tipo_item == 1) {
-            
-            Equipamento *equip = buscar_recurso_por_codigo(listaRecursos, atual->dados.id_estrangeiro);
-            
-            if (equip != NULL) {
-                //devolve a quantidade
-                equip->quantidade_estoque += atual->dados.quantidade;
-                printf("   + Unid. de '%s' devolvido:\n", equip->descricao);
-                exibir_numero_item(atual->dados.quantidade);
-                exibir_mensagem_item("(novo estoque: )");
-                exibir_numero_item(equip->quantidade_estoque);
-                devolvidos++;
-            }
-        }
-        atual = atual->proximo;
-    }
-    if (devolvidos > 0) {
-        exibir_mensagem_item(">>");
-        exibir_numero_item(devolvidos);
-        exibir_mensagem_item("tipos de equipamentos foram devolvidos ao estoque.\n");
-    } else {
-        exibir_mensagem_item(">> Nenhum equipamento fisico para devolver neste evento.\n");
-    }
+    exibir_mensagem_item(">> Finalizacao: Liberando agenda dos recursos deste evento...");
 }

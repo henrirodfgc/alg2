@@ -1,0 +1,2 @@
+cod:2,cli:2,nome:evento2,inicio:09/12/2025,fim:20/12/2025,qtd:3000,valor:100000.00,status:0
+cod:1,cli:1,nome:evento,inicio:09/12/2025,fim:15/12/2025,qtd:2000,valor:50000.00,status:1

@@ -12,6 +12,18 @@ NoRecurso *listaRecursos = NULL;
 //lista de contas a pagar (tem q tar aqui em cima)
 static NoContaPagar *listaContasPagar = NULL;
 
+int obter_proximo_codigo_recurso(NoRecurso* lista) {
+    int maior = 0;
+    NoRecurso* atual = lista;
+    while (atual != NULL) {
+        if (atual->dados.codigo > maior) {
+            maior = atual->dados.codigo;
+        }
+        atual = atual->proximo;
+    }
+    return maior + 1;
+}
+
 void processar_entrada_nota_fiscal() {
     float frete_total, imposto_total, margem_lucro_padrao;
     int qtd_itens_nf = 0;
@@ -98,6 +110,9 @@ void iniciar_recursos() {
             case 1: { //criar um equipamento
                 temp = ler_dados_recurso();
 
+                temp.codigo = obter_proximo_codigo_recurso(listaRecursos);
+                printf(">> Codigo gerado automaticamente: %d\n", temp.codigo);
+                
                 if (buscar_recurso_por_codigo(listaRecursos, temp.codigo) != NULL) {
                     exibir_mensagem_recursos("erro:ja existe um equipamento ativo com este codigo.");
                     break; 

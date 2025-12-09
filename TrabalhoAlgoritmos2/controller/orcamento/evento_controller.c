@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "../../model/cadastro/cliente.h"
 #include "../../model/orcamento/evento.h"
 #include "../../view/orcamento/evento_view.h"
@@ -19,6 +20,23 @@ extern NoItemOrcamento* carregar_itens_orcamento(NoItemOrcamento* lista);
 NoEvento *listaEventos = NULL;
 static NoContaReceber *listaContas = NULL;
 
+long data_para_num_evt(const char* data) {
+    int d, m, a;
+    if (sscanf(data, "%d/%d/%d", &d, &m, &a) != 3) return 0;
+    return (long)a * 10000 + m * 100 + d;
+}
+
+int datas_colidem(const char* i1, const char* f1, const char* i2, const char* f2) {
+    long ini1 = data_para_num_evt(i1);
+    long fim1 = data_para_num_evt(f1);
+    long ini2 = data_para_num_evt(i2);
+    long fim2 = data_para_num_evt(f2);
+    
+    return (ini1 <= fim2 && ini2 <= fim1);
+}
+
+// ----------------------------------
+
 void iniciar_eventos() {
     int opcao;
     listaEventos = carregar_eventos(listaEventos); 
@@ -29,7 +47,7 @@ void iniciar_eventos() {
         opcao = exibir_menu_eventos();
         
         switch(opcao) {
-            case 1: { 
+            case 1: {
                 Evento novo = ler_dados_evento();
                 
                 Cliente *cliente_valido = buscar_cliente_por_id(listaClientes, novo.codigo_cliente);
@@ -39,6 +57,12 @@ void iniciar_eventos() {
                     break;
                 }
                 
+                int maior_id = 0;
+                NoEvento* aux = listaEventos;
+                while(aux){ if(aux->dados.codigo > maior_id) maior_id = aux->dados.codigo; aux=aux->proximo; }
+                novo.codigo = maior_id + 1;
+                printf(">> Evento gerado com Codigo: %d\n", novo.codigo);
+
                 listaEventos = adicionar_evento_na_lista(listaEventos, novo);
                 exibir_mensagem_evento("orcamento criado com sucesso!");
                 
@@ -58,116 +82,123 @@ void iniciar_eventos() {
             case 3: { 
                 int id_evento = ler_id_evento_view("digite o id do evento para aprovar");
                 
-                NoEvento *atual = listaEventos;
-                int encontrou = 0;
+                NoEvento *evento_alvo = NULL;
+                NoEvento *aux = listaEventos;
+                while(aux) { if(aux->dados.codigo == id_evento) { evento_alvo = aux; break; } aux = aux->proximo; }
+
+                if(evento_alvo == NULL) {
+                    exibir_mensagem_evento("evento nao encontrado.");
+                    break;
+                }
+
+                if(evento_alvo->dados.status == 1) {
+                    exibir_mensagem_evento("este evento ja esta aprovado!");
+                    break;
+                }
+
+                NoItemOrcamento* listaTodosItens = NULL;
+                listaTodosItens = carregar_itens_orcamento(listaTodosItens);
+                listaRecursos = carregar_recursos(listaRecursos);
                 
-                while(atual != NULL) {
-                    if(atual->dados.codigo == id_evento) {
-                        exibir_evento(&(atual->dados)); 
+                int pode_aprovar = 1;
+                
+                NoItemOrcamento *meu_item = listaTodosItens;
+                while(meu_item != NULL) {
+                    if(meu_item->dados.id_evento == id_evento && meu_item->dados.tipo_item == 1) {
                         
-                        if(atual->dados.status == 1) {
-                            exibir_mensagem_evento("este evento ja esta aprovado!");
-                            encontrou = 1;
-                            break;
+                        int id_equip = meu_item->dados.id_estrangeiro;
+                        int qtd_eu_quero = meu_item->dados.quantidade;
+                        
+                        Equipamento* eq_original = buscar_recurso_por_codigo(listaRecursos, id_equip);
+                        if(!eq_original) {
+                            printf("Erro: Equipamento ID %d nao existe no cadastro.\n", id_equip);
+                            pode_aprovar = 0; break;
                         }
 
-                        NoItemOrcamento* listaItensTemp = NULL;
-                        listaItensTemp = carregar_itens_orcamento(listaItensTemp);
-                        listaRecursos = carregar_recursos(listaRecursos);
-                        
-                        int estoque_ok = 1;
-                        NoItemOrcamento *it = listaItensTemp;
-                        
-                        while(it != NULL) {
-                            if(it->dados.id_evento == id_evento && it->dados.tipo_item == 1) { // 1 = recurso
-                                Equipamento* eq = buscar_recurso_por_codigo(listaRecursos, it->dados.id_estrangeiro);
-                                if(eq == NULL || eq->quantidade_estoque < it->dados.quantidade) {
-                                    estoque_ok = 0;
-                                    char msg[200];
-                                    sprintf(msg, "Erro: Estoque insuficiente para o item ID %d (%s).", 
-                                            it->dados.id_estrangeiro, (eq ? eq->descricao : "desc."));
-                                    exibir_mensagem_evento(msg);
-                                    break;
-                                }
-                            }
-                            it = it->proximo;
-                        }
+                        int estoque_total = eq_original->quantidade_estoque;
+                        int estoque_ocupado = 0;
 
-                        if (!estoque_ok) {
-                            exibir_mensagem_evento("Nao foi possivel aprovar por falta de estoque.");
-                            encontrou = 1;
-                            
-                            break;
-                        }
-                        
+                        NoEvento *evt_outro = listaEventos;
+                        while(evt_outro != NULL) {
 
-                        int confirmar = confirmar_aprovacao_view();
-                        
-                        if(confirmar == 1) {
-                            it = listaItensTemp;
-                            while(it != NULL) {
-                                if(it->dados.id_evento == id_evento && it->dados.tipo_item == 1) {
-                                    Equipamento* eq = buscar_recurso_por_codigo(listaRecursos, it->dados.id_estrangeiro);
-                                    if(eq) {
-                                        eq->quantidade_estoque -= it->dados.quantidade;
+                            if(evt_outro->dados.status == 1 && evt_outro->dados.codigo != id_evento) {
+
+                                if(datas_colidem(evento_alvo->dados.data_inicio, evento_alvo->dados.data_fim,
+                                                 evt_outro->dados.data_inicio, evt_outro->dados.data_fim)) {
+
+                                    NoItemOrcamento *item_outro = listaTodosItens;
+                                    while(item_outro != NULL) {
+                                        if(item_outro->dados.id_evento == evt_outro->dados.codigo &&
+                                           item_outro->dados.tipo_item == 1 &&
+                                           item_outro->dados.id_estrangeiro == id_equip) {
+                                            
+                                            estoque_ocupado += item_outro->dados.quantidade;
+                                        }
+                                        item_outro = item_outro->proximo;
                                     }
                                 }
-                                it = it->proximo;
                             }
-                            reescrever_arquivo_recursos(listaRecursos);
-                            atual->dados.status = 1; 
-                            reescrever_arquivo_eventos(listaEventos);
-                            
-                            listaContas = gerar_nova_conta(listaContas, 
-                                             atual->dados.codigo, 
-                                             atual->dados.codigo_cliente, 
-                                             atual->dados.valor_total);
-                            
-                            exibir_mensagem_evento("evento aprovado, estoque alocado e fatura gerada!");
+                            evt_outro = evt_outro->proximo;
                         }
-                        encontrou = 1;
-                        break;
+
+                        if (estoque_total - estoque_ocupado < qtd_eu_quero) {
+                            printf("CONFLITO DE DATA! Equip: %s\n", eq_original->descricao);
+                            printf("   Total na empresa: %d\n", estoque_total);
+                            printf("   Ocupado em outros eventos nessa data: %d\n", estoque_ocupado);
+                            printf("   Voce precisa de: %d. (Disponivel: %d)\n", qtd_eu_quero, (estoque_total - estoque_ocupado));
+                            pode_aprovar = 0;
+                            break;
+                        }
                     }
-                    
-                    atual = atual->proximo;
+                    meu_item = meu_item->proximo;
                 }
+
                 
-                if(!encontrou && id_evento != 0) exibir_mensagem_evento("evento nao encontrado.");
+                if (pode_aprovar) {
+                    int confirmar = confirmar_aprovacao_view();
+                    if(confirmar == 1) {
+                        evento_alvo->dados.status = 1; // 1 = Aprovado
+                        reescrever_arquivo_eventos(listaEventos);
+                        
+                        listaContas = gerar_nova_conta(listaContas, 
+                                         evento_alvo->dados.codigo, 
+                                         evento_alvo->dados.codigo_cliente, 
+                                         evento_alvo->dados.valor_total);
+                        
+                        exibir_mensagem_evento("Evento APROVADO! Agenda bloqueada para esses itens.");
+                    }
+                } else {
+                    exibir_mensagem_evento("Aprovacao negada por falta de disponibilidade na data.");
+                }
                 break;
             }
-            case 4: { //finalizar evento
+            case 4: { 
                 int id_evento = ler_id_evento_view("Digite o ID do evento para FINALIZAR");
-                NoEvento *atual = listaEventos;
+                NoEvento *aux = listaEventos;
                 int encontrou = 0;
 
-                while(atual != NULL) {
-                    if(atual->dados.codigo == id_evento) {
-                        exibir_evento(&(atual->dados));
+                while(aux != NULL) {
+                    if(aux->dados.codigo == id_evento) {
+                        exibir_evento(&(aux->dados));
                         
-                        //finaliza so se for aprovado
-                        if(atual->dados.status != 1) {
+                        if(aux->dados.status != 1) {
                             exibir_mensagem_evento("Erro: Apenas eventos APROVADOS podem ser finalizados.");
                             encontrou = 1; break;
                         }
 
-                        exibir_mensagem_evento("Confirma finalizacao e devolucao do estoque? (1-Sim, 0-Nao): ");
+                        exibir_mensagem_evento("Confirma finalizacao? (1-Sim, 0-Nao): ");
                         int confirmar;
                         scanf("%d", &confirmar);
                         
                         if(confirmar == 1) {
-                            //devolve estoque
-                            estornar_estoque_evento(id_evento);
-
-                            //muda status pra finalizado
-                            atual->dados.status = 2; 
+                            aux->dados.status = 2; 
                             reescrever_arquivo_eventos(listaEventos);
-                            
-                            exibir_mensagem_evento("Evento FINALIZADO com sucesso! Estoque liberado.");
+                            exibir_mensagem_evento("Evento FINALIZADO. Itens liberados na agenda.");
                         }
                         encontrou = 1;
                         break;
                     }
-                    atual = atual->proximo;
+                    aux = aux->proximo;
                 }
                 if(!encontrou) exibir_mensagem_evento("Evento nao encontrado.");
                 break;
@@ -179,9 +210,7 @@ void iniciar_eventos() {
                 exibir_mensagem_evento("opcao invalida");
         }
         
-        if(opcao!=0) {
-            pausar_tela_evento(); 
-        }
+        if(opcao!=0) pausar_tela_evento(); 
         
     } while (opcao != 0);
     

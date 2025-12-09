@@ -1,0 +1,4 @@
+id:1,evt:1,tipo:1,ref:1,qtd:3,unit:218.00,tot:654.00,st:1
+id:2,evt:1,tipo:1,ref:2,qtd:5,unit:41.00,tot:205.00,st:1
+id:3,evt:2,tipo:1,ref:1,qtd:9,unit:218.00,tot:1962.00,st:1
+id:4,evt:2,tipo:1,ref:2,qtd:5,unit:41.00,tot:205.00,st:1
